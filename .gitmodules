@@ -1,0 +1,3 @@
+[submodule "Player/vendor/spdlog"]
+	path = Player/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
