@@ -1,31 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "C++ Osu Music Player", "C++ Osu Music Player\C++ Osu Music Player.vcxproj", "{02F4B552-7B1A-4091-A6BC-4352C95555AF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Player", "Player\Player.vcxproj", "{724E55CA-5EF0-7FA0-47AB-93F433EC06F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
+		Dist|x64 = Dist|x64
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{02F4B552-7B1A-4091-A6BC-4352C95555AF}.Debug|x64.ActiveCfg = Debug|x64
-		{02F4B552-7B1A-4091-A6BC-4352C95555AF}.Debug|x64.Build.0 = Debug|x64
-		{02F4B552-7B1A-4091-A6BC-4352C95555AF}.Debug|x86.ActiveCfg = Debug|Win32
-		{02F4B552-7B1A-4091-A6BC-4352C95555AF}.Debug|x86.Build.0 = Debug|Win32
-		{02F4B552-7B1A-4091-A6BC-4352C95555AF}.Release|x64.ActiveCfg = Release|x64
-		{02F4B552-7B1A-4091-A6BC-4352C95555AF}.Release|x64.Build.0 = Release|x64
-		{02F4B552-7B1A-4091-A6BC-4352C95555AF}.Release|x86.ActiveCfg = Release|Win32
-		{02F4B552-7B1A-4091-A6BC-4352C95555AF}.Release|x86.Build.0 = Release|Win32
+		{724E55CA-5EF0-7FA0-47AB-93F433EC06F1}.Debug|x64.ActiveCfg = Debug|x64
+		{724E55CA-5EF0-7FA0-47AB-93F433EC06F1}.Debug|x64.Build.0 = Debug|x64
+		{724E55CA-5EF0-7FA0-47AB-93F433EC06F1}.Dist|x64.ActiveCfg = Dist|x64
+		{724E55CA-5EF0-7FA0-47AB-93F433EC06F1}.Dist|x64.Build.0 = Dist|x64
+		{724E55CA-5EF0-7FA0-47AB-93F433EC06F1}.Release|x64.ActiveCfg = Release|x64
+		{724E55CA-5EF0-7FA0-47AB-93F433EC06F1}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {ABDED26A-BCAE-495C-AAF6-8C740A3D1258}
 	EndGlobalSection
 EndGlobal
