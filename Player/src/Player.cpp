@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Logger.h"
+#include "osu/Parser.h"
 
-
-int main(int argc, const char* argv[])
+int main(int argc, const char * argv[])
 {
 	// Init the Logger for the whole Program
 	Parser::Logger::Init();
@@ -18,6 +18,11 @@ int main(int argc, const char* argv[])
 		}
 
 	}
+
+	Parser::Parser p("C:\\osu\\Songs\\");
+
+	auto Map = p.BeatmapFromFile("https://pastebin.com/raw/hYmYD6Uv");
+
 	system("PAUSE");
 
 	return 0xDEAD;
