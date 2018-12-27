@@ -3,4 +3,11 @@
 
 namespace Parser {
 
+	Hitobject::Hitobject()
+	{
+	}
+
+	Hitobject::~Hitobject()
+	{
+	}
 }
