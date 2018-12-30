@@ -14,7 +14,7 @@ namespace Parser {
 #ifdef _DEBUG
 		s_CoreLogger->set_level(spdlog::level::trace);
 #elif _RELEASE
-		s_CoreLogger->set_level(spdlog::level::warn);
+		s_CoreLogger->set_level(spdlog::level::info);
 #else
 		s_CoreLogger->set_level(spdlog::level::err);
 #endif
