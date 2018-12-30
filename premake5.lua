@@ -45,13 +45,14 @@ project "Player"
 
 	filter "configurations:Debug"
 		defines "_DEBUG"
-		optimize "Off"
+		optimize "Debug"
 		symbols "Full"
 
 	filter "configurations:Release"
 		defines "_RELEASE"
 		optimize "On"
+		symbols "On"
 
 	filter "configurations:Dist"
 		defines "_DIST"
-		optimize "Full"
+		optimize "Size"
