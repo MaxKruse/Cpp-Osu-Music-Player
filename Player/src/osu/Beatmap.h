@@ -61,7 +61,7 @@ namespace Parser {
 		std::string ToString() const
 		{
 			std::stringstream ss;
-			ss << "SearchBy => [Arist = " << m_Artist << ", ArtistUnicode = " << m_ArtistUnicode 
+			ss << "Metadata => [Arist = " << m_Artist << ", ArtistUnicode = " << m_ArtistUnicode 
 			<< ", Title = " << m_Title << ", TitleUnicode = " << m_TitleUnicode
 			<< ", Creator = " << m_Creator << ", Version = " << m_Version << "]";
 			return ss.str();
@@ -154,39 +154,47 @@ namespace Parser {
 
 		Beatmap(const std::string & FilePath, const std::string & BackgroundImage, std::vector<Hitobject> Hitobjects, std::vector<TimingPoint> Timingpoints, General& g, Metadata& m, SearchBy& s, Difficulty& d);
 		~Beatmap();
+
+		std::string ToString() const;
 		
 	private:
-		std::string m_FilePath;
-		std::vector<Hitobject> m_HitObjects;
+		std::string              m_FilePath;
+		std::vector<Hitobject>   m_HitObjects;
 		std::vector<TimingPoint> m_TimingPoints;
-		std::string m_BackgroundImage;
+		std::string              m_BackgroundImage;
 
 		General    m_General;
 		Metadata   m_Metadata;
 		SearchBy   m_SearchBy;
 		Difficulty m_Difficulty;
 
+
 	};
 
 	
 
-	inline std::ostream& operator<<(std::ostream& os, const General& e)
+	inline std::ostream& operator<<(std::ostream& os, const General & e)
 	{
 		return os << e.ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Metadata& m)
+	inline std::ostream& operator<<(std::ostream& os, const Metadata & m)
 	{
 		return os << m.ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const SearchBy& s)
+	inline std::ostream& operator<<(std::ostream& os, const SearchBy & s)
 	{
 		return os << s.ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Difficulty& d)
+	inline std::ostream& operator<<(std::ostream& os, const Difficulty & d)
 	{
 		return os << d.ToString();
+	}
+
+	inline std::ostream& operator<<(std::ostream& os, const Beatmap & b)
+	{
+		return os << b.ToString();
 	}
 }

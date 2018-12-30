@@ -13,6 +13,7 @@ namespace Parser {
 	/// Creates a Basic object for later use
 	/// </summary>
 	/// <param name="FilePath">The folderpath of the given file, example: "C:\\osu\\Songs\\1 - Suck my Dick\\" with trailing slash </param>
+	/// <param name="BackfroundImage">The name of the background file. Needs to be concat(full_path_withou_file, backgroundimage) to get the full path</param>
 	/// <param name="Hitobjects">A std::vector of all the Hitobjects (Slider, Circle, Spinner)</param>
 	/// <param name="g">General Data</param>
 	/// <param name="m">Metadata</param>
@@ -30,6 +31,20 @@ namespace Parser {
 	Beatmap::~Beatmap()
 	{
 		LOGGER_INFO("Deleting Beatmap From File => {}", m_FilePath);
+	}
+
+
+
+	std::string Beatmap::ToString() const
+	{
+		std::stringstream ss;
+		ss << "File => " << m_FilePath << '\n' << "Background Image Path => " << m_BackgroundImage << '\n';
+		ss << m_General << '\n';
+		ss << m_Metadata << '\n';
+		ss << m_SearchBy << '\n';
+		ss << m_Difficulty << '\n';
+
+		return ss.str();
 	}
 
 }

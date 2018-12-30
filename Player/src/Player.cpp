@@ -22,5 +22,7 @@ int main(int argc, const char * argv[])
 
 	auto Map = p.BeatmapFromFile("Test Osu File.osu");
 	
+	LOGGER_TRACE("{}", Map);
+
 	return 0xDEAD;
 }
