@@ -8,9 +8,7 @@ int main(int argc, const char * argv[])
 	Parser::Logger::Init();
 
 	printf("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
-
-	LOGGER_TRACE(L"かめりあ feat. ななひら");
-
+	
 	if (argc > 1)
 	{
 		for (size_t i = 1; i < argc; i++)
@@ -23,8 +21,6 @@ int main(int argc, const char * argv[])
 	Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
 
 	auto Map = p.BeatmapFromFile("Test Osu File.osu");
-
-	system("PAUSE");
-
+	
 	return 0xDEAD;
 }
