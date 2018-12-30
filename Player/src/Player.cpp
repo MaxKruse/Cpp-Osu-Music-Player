@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "Logger.h"
 #include "osu/Parser.h"
 
@@ -9,6 +9,7 @@ int main(int argc, const char * argv[])
 
 	printf("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
 
+	LOGGER_TRACE(L"かめりあ feat. ななひら");
 
 	if (argc > 1)
 	{
@@ -19,9 +20,9 @@ int main(int argc, const char * argv[])
 
 	}
 
-	Parser::Parser p("C:\\osu\\Songs\\");
+	Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
 
-	auto Map = p.BeatmapFromFile("https://pastebin.com/raw/hYmYD6Uv");
+	auto Map = p.BeatmapFromFile("Test Osu File.osu");
 
 	system("PAUSE");
 
