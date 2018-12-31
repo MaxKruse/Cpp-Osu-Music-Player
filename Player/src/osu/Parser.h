@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "Beatmap.h"
+#include "Hitcircle.h"
 
 namespace Parser {
 

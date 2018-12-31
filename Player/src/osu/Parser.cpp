@@ -74,35 +74,146 @@ namespace Parser {
 		return image;
 	}
 
+	std::vector<TimingPoint> Parser::ParseTimingPoints()
+	{
+		std::vector<TimingPoint> timingpoints;
+
+		bool timingpoints_start = false;
+		size_t counter = 0;
+
+		// Get Amount of Timingpoints to resize vector
+		for (auto& line : m_Text)
+		{
+
+			if (line.find("[TimingPoints]") != std::string::npos)
+			{
+				timingpoints_start = true;
+				continue;
+			}
+
+			if (timingpoints_start && line.length() <= 15) // There is 2 Empty lines after the last timingpoint
+			{
+				timingpoints_start = false;
+				break;
+			}
+
+			if (timingpoints_start && line.length() >= 15)
+			{
+				counter++;
+			}
+		}
+
+		timingpoints.reserve(counter);
+
+		for (auto& line : m_Text)
+		{
+			if (line.find("[TimingPoints]") != std::string::npos)
+			{
+				LOGGER_TRACE("TIMINGPOINTS LOCATED");
+				timingpoints_start = true;
+				continue;
+			}
+
+			if (line.length() <= 15 && timingpoints_start) // There is 2 Empty lines after the last timingpoint
+			{
+				timingpoints_start = false;
+				break;
+			}
+
+			if (timingpoints_start)
+			{
+				LOGGER_TRACE("FOUND TIMINGPOINT => {}", line);
+				LOGGER_TRACE("Parsing Now...");
+
+				std::vector<std::string> parts = split(line, ',');
+
+				long offset = stol(parts[0]);
+				unsigned short milliseconds_per_beat = stoi(parts[1]);
+				unsigned short sampleset = stoi(parts[3]);
+				unsigned short sampleindex = stoi(parts[4]);
+				unsigned short volume = stoi(parts[5]);
+				
+				bool inherited = false;
+
+				if (stoi(parts[6]) == 1)
+					inherited = true;
+
+				timingpoints.push_back(TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
+			}
+
+		}
+
+		return timingpoints;
+	}
+
 	std::vector<Hitobject> Parser::ParseHitobjects()
 	{
 		std::vector<Hitobject> hitobjects;
 
 		bool hitobjects_start = false;
+		size_t counter = 0;
+
+		// Get Amount of Hitobjects to resize vector
 		for (auto& line : m_Text)
 		{
-			if (hitobjects_start)
-			{
-				LOGGER_TRACE("FOUND HITOBJECT => {}", line);
-				LOGGER_TRACE("Parsing Now...");
-
-				std::vector<std::string> parts = split(line, ',');
-				
-			}
 
 			if (line.find("[HitObjects]") != std::string::npos)
 			{
 				hitobjects_start = true;
 				continue;
 			}
+
+			if (hitobjects_start && line.length() >= 16)
+			{
+				counter++;
+			}
+		}
+
+		hitobjects_start = false;
+
+		hitobjects.reserve(counter);
+
+		// actually fill the thing
+		for (auto& line : m_Text)
+		{
+
+			if (line.find("[HitObjects]") != std::string::npos)
+			{
+				hitobjects_start = true;
+				continue;
+			}
+
+			if (hitobjects_start && line.length() >= 16)
+			{
+				LOGGER_TRACE("FOUND HITOBJECT => {}", line);
+				LOGGER_TRACE("Parsing Now...");
+
+				std::vector<std::string> parts = split(line, ',');
+				
+				if (stoi(parts[3]) & 1) // Circle
+				{
+					hitobjects.push_back(Hitcircle(stoi(parts[0]), stoi(parts[1]), stol(parts[2]), stoi(parts[3])));
+					
+				}
+				else if (stoi(parts[3]) & 2) // Slider
+				{
+					// TODO: IMPLEMENT SLIDER
+					
+				}
+				else if (stoi(parts[3]) & 8)  // Spinner
+				{
+					// TODO: IMPLEMENT SPINNER
+					
+				}
+				else // Invalid Object
+				{
+					LOGGER_ERROR("Hitobject not supported => {}", line);
+				}
+
+			}
 		}
 		
 		return hitobjects;
-	}
-
-	std::vector<TimingPoint> Parser::ParseTimingPoints()
-	{
-		return std::vector<TimingPoint>();
 	}
 
 	General Parser::ParseGeneral()
