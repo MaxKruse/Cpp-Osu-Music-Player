@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "Logger.h"
 #include "Hitobject.h"
+#include "TimingPoint.h"
 
 namespace Parser {
 
@@ -16,6 +17,7 @@ namespace Parser {
 		int      m_Mode;
 
 		General()
+			: m_Mode(-1)
 		{
 			LOGGER_WARN("General cant be set!");
 		}
@@ -81,6 +83,7 @@ namespace Parser {
 		int         m_BeatmapSetID;
 
 		SearchBy()
+			: m_BeatmapSetID(-1), m_BeatmapID(-1)
 		{
 			LOGGER_WARN("SearchBy cant be set!");
 		}
@@ -120,6 +123,7 @@ namespace Parser {
 		unsigned short m_SliderTickRate;
 
 		Difficulty()
+			: m_ApproachRate(255), m_CircleSize(255), m_HPDrainRate(255), m_OverallDifficulty(255), m_SliderMultiplier(-1.0f), m_SliderTickRate(255)
 		{
 			LOGGER_WARN("Difficulty cant be set!");
 		}
@@ -139,14 +143,6 @@ namespace Parser {
 		}
 	};
 
-	class TimingPoint
-	{
-		TimingPoint()
-		{
-			LOGGER_WARN("TimingPoint cant be set!");
-		}
-	};
-
 	class Beatmap
 	{
 	public:
@@ -162,7 +158,7 @@ namespace Parser {
 		std::vector<Hitobject>   m_HitObjects;
 		std::vector<TimingPoint> m_TimingPoints;
 		std::string              m_BackgroundImage;
-
+		
 		General    m_General;
 		Metadata   m_Metadata;
 		SearchBy   m_SearchBy;
