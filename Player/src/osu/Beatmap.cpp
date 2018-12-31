@@ -33,12 +33,12 @@ namespace Parser {
 		LOGGER_INFO("Deleting Beatmap From File => {}", m_FilePath);
 	}
 
-
-
 	std::string Beatmap::ToString() const
 	{
 		std::stringstream ss;
-		ss << "File => " << m_FilePath << '\n' << "Background Image Path => " << m_BackgroundImage << '\n';
+		ss << '\n';
+		ss << "File => " << m_FilePath << '\n';
+		ss << "Background Image Path => " << m_BackgroundImage << '\n';
 		ss << m_General << '\n';
 		ss << m_Metadata << '\n';
 		ss << m_SearchBy << '\n';
