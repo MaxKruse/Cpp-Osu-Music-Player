@@ -11,6 +11,7 @@ int main(int argc, const char * argv[])
 	
 	if (argc > 1)
 	{
+		LOGGER_TRACE("Parsing Args now...");
 		for (size_t i = 1; i < argc; i++)
 		{
 			LOGGER_INFO("Arg[{0}] => {1}", i, argv[i]);
