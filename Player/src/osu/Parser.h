@@ -9,9 +9,10 @@ namespace Parser {
 	{
 	public:
 		Parser(const std::string& SongsFolderPath);
+		~Parser();
 
-		Beatmap BeatmapFromFile(const std::string & FilePath);
-		Beatmap BeatmapFromString(const std::vector<std::string> & Text);
+		Beatmap* BeatmapFromFile(const std::string & FilePath);
+		Beatmap* BeatmapFromString(const std::vector<std::string> & Text);
 
 		inline std::string const GetFilePath() const { return m_FullFilePath; }
 		inline std::string const GetFileName() const { return m_FileName; }
@@ -24,10 +25,17 @@ namespace Parser {
 
 		std::ifstream m_FileHandle;
 
+		General general;
+		Metadata meta;
+		SearchBy search;
+		Difficulty diff;
+
+		std::vector<TimingPoint*> timings;
+
 	private:
 		std::string ParseBackgroundImage();
-		std::vector<Hitobject> ParseHitobjects();
-		std::vector<TimingPoint> ParseTimingPoints();
+		std::vector<Hitobject*> ParseHitobjects();
+		std::vector<TimingPoint*> ParseTimingPoints();
 
 		General    ParseGeneral();
 		Metadata   ParseMetadata();
@@ -38,4 +46,4 @@ namespace Parser {
 		std::vector<std::string> split(const std::string & s, const char & delim);
 	};
 
-}
+}  // namespace Parser

@@ -9,10 +9,14 @@ namespace Parser {
 		LOGGER_INFO("Songs folder set => {}", m_SongsFolder);
 	}
 
-	Beatmap Parser::BeatmapFromFile(const std::string & FilePath)
+	Parser::~Parser()
+	{
+	}
+
+	Beatmap* Parser::BeatmapFromFile(const std::string & FilePath)
 	{
 		LOGGER_INFO("Parsing from file => {}", FilePath);
-		std::string Fullpath = std::string(m_SongsFolder + FilePath);
+		auto Fullpath = std::string(m_SongsFolder + FilePath);
 		m_FullFilePath = Fullpath;
 
 		m_FileName = FilePath;
@@ -20,7 +24,7 @@ namespace Parser {
 		m_Text = FileToStringVector(m_FullFilePath);
 
 		LOGGER_INFO("Parsing Background Image from file => {}", m_FullFilePath);
-		std::string image = ParseBackgroundImage();
+		auto image = ParseBackgroundImage();
 		LOGGER_INFO("Parsing General from file => {}", m_FullFilePath);
 		General general = ParseGeneral();
 		LOGGER_INFO("Parsing Metadata from file => {}", m_FullFilePath);
@@ -34,20 +38,22 @@ namespace Parser {
 
 		// TODO: Parsing TimingsPoints, Then Hitobjects
 		LOGGER_INFO("Parsing TimingsPoints from file => {}", m_FullFilePath);
-		std::vector<TimingPoint> timings = ParseTimingPoints();
+		std::vector<TimingPoint*> timings = ParseTimingPoints();
 		LOGGER_INFO("Parsing Hitobjects from file => {}", m_FullFilePath);
-		std::vector<Hitobject> hitobjects = ParseHitobjects();
+		std::vector<Hitobject*> hitobjects = ParseHitobjects();
 
-		return Beatmap(m_FullFilePath, image, hitobjects, timings, general, meta, search, diff);
+		m_Text = std::vector<std::string>();
+
+		return new Beatmap(m_FullFilePath, image, hitobjects, timings, general, meta, search, diff);
 	}
 
-	Beatmap Parser::BeatmapFromString(const std::vector<std::string> & Text)
+	Beatmap* Parser::BeatmapFromString(const std::vector<std::string> & Text)
 	{
 		LOGGER_INFO("Parsing from StringVector");
 		m_Text = Text;
 		m_FullFilePath = "NO PATH GIVEN";
 		m_FileName = "NO FILE GIVEN";
-		return Beatmap();
+		return new Beatmap();
 	}
 
 	std::string Parser::ParseBackgroundImage()
@@ -74,9 +80,9 @@ namespace Parser {
 		return image;
 	}
 
-	std::vector<TimingPoint> Parser::ParseTimingPoints()
+	std::vector<TimingPoint*> Parser::ParseTimingPoints()
 	{
-		std::vector<TimingPoint> timingpoints;
+		std::vector<TimingPoint*> timingpoints;
 
 		bool timingpoints_start = false;
 		size_t counter = 0;
@@ -138,7 +144,7 @@ namespace Parser {
 				if (stoi(parts[6]) == 1)
 					inherited = true;
 
-				timingpoints.push_back(TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
+				timingpoints.push_back(new TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
 			}
 
 		}
@@ -146,9 +152,9 @@ namespace Parser {
 		return timingpoints;
 	}
 
-	std::vector<Hitobject> Parser::ParseHitobjects()
+	std::vector<Hitobject*> Parser::ParseHitobjects()
 	{
-		std::vector<Hitobject> hitobjects;
+		std::vector<Hitobject*> hitobjects;
 
 		bool hitobjects_start = false;
 		size_t counter = 0;
@@ -192,7 +198,8 @@ namespace Parser {
 				
 				if (stoi(parts[3]) & 1) // Circle
 				{
-					hitobjects.push_back(Hitcircle(stoi(parts[0]), stoi(parts[1]), stol(parts[2]), stoi(parts[3])));
+					std::vector<std::string> extras = split(parts[5], ':');
+					hitobjects.push_back(new Hitcircle(stoi(parts[0]), stoi(parts[1]), stol(parts[2]), stoi(parts[3]), stoi(parts[4]), extras));
 					
 				}
 				else if (stoi(parts[3]) & 2) // Slider

@@ -19,11 +19,44 @@ int main(int argc, const char * argv[])
 
 	}
 
+	Sleep(1000);
+	Sleep(1000);
+	Sleep(1000);
+	Sleep(1000);
+	Sleep(1000);
+
+
 	Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
 
-	auto Map = p.BeatmapFromFile("Test Osu File.osu");
-	
-	LOGGER_TRACE("{}", Map);
+	auto Map1 = p.BeatmapFromFile("1.osu");
+	auto Map2 = p.BeatmapFromFile("2.osu");
+	auto Map3 = p.BeatmapFromFile("3.osu");
+	auto Map4 = p.BeatmapFromFile("4.osu");
+	auto Map5 = p.BeatmapFromFile("5.osu");
+	auto Map6 = p.BeatmapFromFile("6.osu");
+	auto Map7 = p.BeatmapFromFile("7.osu");
+		
+
+	Sleep(1000);
+	Sleep(1000);
+	Sleep(1000);
+	Sleep(1000);
+	Sleep(1000);
+
+	delete Map1;
+	delete Map2;
+	delete Map3;
+	delete Map4;
+	delete Map5;
+	delete Map6;
+	delete Map7;
+
+	Sleep(1000);
+	Sleep(1000);
+	Sleep(1000);
+	Sleep(1000);
+	Sleep(1000);
+
 
 	return 0xDEAD;
 }

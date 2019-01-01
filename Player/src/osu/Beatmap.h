@@ -1,4 +1,6 @@
 #pragma once
+#include <utility>
+
 #include "pch.h"
 #include "Logger.h"
 #include "Hitobject.h"
@@ -14,16 +16,16 @@ namespace Parser {
 		std::string m_FileFormatVersion;
 		std::string m_AudioFilename;
 		std::string m_SampleSet;
-		int      m_Mode;
+		int      m_Mode{-1};
 
 		General()
-			: m_Mode(-1)
+			 
 		{
 			LOGGER_WARN("General cant be set!");
 		}
 
 		General(std::string FileFormatVersion, std::string AudioFilename, std::string SampleSet, int Mode)
-			: m_FileFormatVersion(FileFormatVersion), m_AudioFilename(AudioFilename), m_SampleSet(SampleSet), m_Mode(Mode)
+			: m_FileFormatVersion(std::move(FileFormatVersion)), m_AudioFilename(std::move(AudioFilename)), m_SampleSet(std::move(SampleSet)), m_Mode(Mode)
 		{
 			LOGGER_TRACE("{}", ToString());
 		}
@@ -55,7 +57,7 @@ namespace Parser {
 		}
 
 		Metadata(std::string Artist, std::string ArtistUnicode, std::string Title, std::string TitleUnicode, std::string Creator, std::string Version)
-			: m_Artist(Artist), m_ArtistUnicode(ArtistUnicode), m_Title(Title), m_TitleUnicode(TitleUnicode), m_Creator(Creator), m_Version(Version)
+			: m_Artist(std::move(Artist)), m_ArtistUnicode(std::move(ArtistUnicode)), m_Title(std::move(Title)), m_TitleUnicode(std::move(TitleUnicode)), m_Creator(std::move(Creator)), m_Version(std::move(Version))
 		{
 			LOGGER_TRACE("{}", ToString());
 		}
@@ -79,17 +81,17 @@ namespace Parser {
 	{
 		std::string m_Source;
 		std::string m_Tags;
-		int         m_BeatmapID;
-		int         m_BeatmapSetID;
+		int         m_BeatmapID{-1};
+		int         m_BeatmapSetID{-1};
 
 		SearchBy()
-			: m_BeatmapSetID(-1), m_BeatmapID(-1)
+			 
 		{
 			LOGGER_WARN("SearchBy cant be set!");
 		}
 
 		SearchBy(std::string Source, std::string Tags, int BeatmapID, int BeatmapSetID)
-			: m_Source(Source), m_Tags(Tags), m_BeatmapID(BeatmapID), m_BeatmapSetID(BeatmapSetID)
+			: m_Source(std::move(Source)), m_Tags(std::move(Tags)), m_BeatmapID(BeatmapID), m_BeatmapSetID(BeatmapSetID)
 		{
 			LOGGER_TRACE("{}", ToString());
 		}
@@ -115,15 +117,15 @@ namespace Parser {
 	/// </summary>
 	struct Difficulty
 	{
-		unsigned short m_HPDrainRate;
-		unsigned short m_CircleSize;
-		unsigned short m_OverallDifficulty;
-		unsigned short m_ApproachRate;
-		float m_SliderMultiplier;
-		unsigned short m_SliderTickRate;
+		unsigned short m_HPDrainRate{255};
+		unsigned short m_CircleSize{255};
+		unsigned short m_OverallDifficulty{255};
+		unsigned short m_ApproachRate{255};
+		float m_SliderMultiplier{-1.0f};
+		unsigned short m_SliderTickRate{255};
 
 		Difficulty()
-			: m_ApproachRate(255), m_CircleSize(255), m_HPDrainRate(255), m_OverallDifficulty(255), m_SliderMultiplier(-1.0f), m_SliderTickRate(255)
+			 
 		{
 			LOGGER_WARN("Difficulty cant be set!");
 		}
@@ -148,16 +150,16 @@ namespace Parser {
 	public:
 		Beatmap();
 
-		Beatmap(const std::string & FilePath, const std::string & BackgroundImage, std::vector<Hitobject> Hitobjects, std::vector<TimingPoint> Timingpoints, General& g, Metadata& m, SearchBy& s, Difficulty& d);
+		Beatmap(const std::string & FilePath, const std::string & BackgroundImage, std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint*> Timingpoints, General& g, Metadata& m, SearchBy& s, Difficulty& d);
 		~Beatmap();
 
 		std::string ToString() const;
 		
 	private:
-		std::string              m_FilePath;
-		std::vector<Hitobject>   m_HitObjects;
-		std::vector<TimingPoint> m_TimingPoints;
-		std::string              m_BackgroundImage;
+		std::string                               m_FilePath;
+		std::vector<Hitobject*>   m_HitObjects;
+		std::vector<TimingPoint*> m_TimingPoints;
+		std::string                               m_BackgroundImage;
 		
 		General    m_General;
 		Metadata   m_Metadata;
@@ -189,8 +191,8 @@ namespace Parser {
 		return os << d.ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Beatmap & b)
+	inline std::ostream& operator<<(std::ostream& os, const Beatmap* b)
 	{
-		return os << b.ToString();
+		return os << b->ToString();
 	}
-}
+}  // namespace Parser

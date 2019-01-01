@@ -20,7 +20,7 @@ namespace Parser {
 		static std::shared_ptr<spdlog::logger> s_CoreLogger;
 	};
 
-}
+}  // namespace Parser
 
 // Logging Macros
 #define LOGGER_TRACE(...)			::Parser::Logger::GetCoreLogger()->trace(__VA_ARGS__)

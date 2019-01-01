@@ -25,4 +25,4 @@ namespace Parser
 		bool m_Inherited;
 
 	};
-}
+}  // namespace Parser

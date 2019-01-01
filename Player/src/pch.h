@@ -1,6 +1,6 @@
 #pragma once
-#include <stdio.h>
-#include <math.h>
+#include <cstdio>
+#include <cmath>
 #include <Windows.h>
 #include <string>
 #include <vector>
@@ -10,4 +10,4 @@
 #include <fstream>
 #include <map>
 #include <algorithm>
-#include <time.h>
+#include <ctime>
