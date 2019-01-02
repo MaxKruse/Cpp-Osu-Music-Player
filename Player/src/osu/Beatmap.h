@@ -11,13 +11,13 @@ namespace Parser {
 	/// <summary>
 	/// General data, otherwise not categorized
 	/// </summary>
-	struct General
+	class General
 	{
 		std::string m_FileFormatVersion;
 		std::string m_AudioFilename;
 		std::string m_SampleSet;
 		int      m_Mode{-1};
-
+	public:
 		General() 
 		{
 			LOGGER_WARN("General cant be set!");
@@ -51,7 +51,7 @@ namespace Parser {
 	/// <summary>
 	/// Metadata Stored for the individual .osu file
 	/// </summary>
-	struct Metadata
+	class Metadata
 	{
 		std::string m_Artist;
 		std::string m_ArtistUnicode;
@@ -59,7 +59,7 @@ namespace Parser {
 		std::string m_TitleUnicode;
 		std::string m_Creator;
 		std::string m_Version;
-
+	public:
 		Metadata()
 		{
 			LOGGER_WARN("Metadata cant be set!");
@@ -94,13 +94,13 @@ namespace Parser {
 	/// <summary>
 	/// These attributes can be used for search algorithms
 	/// </summary>
-	struct SearchBy
+	class SearchBy
 	{
 		std::string m_Source;
 		std::string m_Tags;
 		int         m_BeatmapID{-1};
 		int         m_BeatmapSetID{-1};
-
+	public:
 		SearchBy()
 		{
 			LOGGER_WARN("SearchBy cant be set!");
@@ -140,7 +140,7 @@ namespace Parser {
 	/// float TrueCircleSize = m_CircleSize / 10.0f;
 	/// 
 	/// </summary>
-	struct Difficulty
+	class Difficulty
 	{
 		unsigned short m_HPDrainRate{255};
 		unsigned short m_CircleSize{255};
@@ -148,7 +148,7 @@ namespace Parser {
 		unsigned short m_ApproachRate{255};
 		float m_SliderMultiplier{-1.0f};
 		unsigned short m_SliderTickRate{255};
-
+	public:
 		Difficulty()
 		{
 			LOGGER_WARN("Difficulty cant be set!");
@@ -183,11 +183,12 @@ namespace Parser {
 	public:
 		Beatmap();
 
-		Beatmap(const std::string & FilePath, const std::string & BackgroundImage, std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint*> Timingpoints, General& g, Metadata& m, SearchBy& s, Difficulty& d);
+		Beatmap(const std::string FilePath, const std::string BackgroundImage, std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint*> Timingpoints, General* g, Metadata* m, SearchBy* s, Difficulty* d);
 		~Beatmap();
 
 		inline const std::map<long, std::vector<std::string>> GetHitsoundsOfTimings() const { return m_HitsoundsOnTiming; }
 		inline const long GetLastOffset() const { return m_HitObjects[m_HitObjects.size() - 1]->GetOffset(); }
+		inline const std::vector<long> GetOffsets() const { return m_Offsets; }
 
 		std::string ToString() const;
 		
@@ -196,37 +197,38 @@ namespace Parser {
 		std::vector<Hitobject*>   m_HitObjects;
 		std::vector<TimingPoint*> m_TimingPoints;
 		std::string               m_BackgroundImage;
+		std::vector<long>		  m_Offsets;
 
 		std::map<long, std::vector<std::string>> m_HitsoundsOnTiming;
 		
-		General    m_General;
-		Metadata   m_Metadata;
-		SearchBy   m_SearchBy;
-		Difficulty m_Difficulty;
+		General*    m_General;
+		Metadata*   m_Metadata;
+		SearchBy*   m_SearchBy;
+		Difficulty* m_Difficulty;
 
 
 	};
 
 	
 
-	inline std::ostream& operator<<(std::ostream& os, const General & e)
+	inline std::ostream& operator<<(std::ostream& os, const General* e)
 	{
-		return os << e.ToString();
+		return os << e->ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Metadata & m)
+	inline std::ostream& operator<<(std::ostream& os, const Metadata* m)
 	{
-		return os << m.ToString();
+		return os << m->ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const SearchBy & s)
+	inline std::ostream& operator<<(std::ostream& os, const SearchBy* s)
 	{
-		return os << s.ToString();
+		return os << s->ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Difficulty & d)
+	inline std::ostream& operator<<(std::ostream& os, const Difficulty* d)
 	{
-		return os << d.ToString();
+		return os << d->ToString();
 	}
 
 	inline std::ostream& operator<<(std::ostream& os, const Beatmap* b)

@@ -20,10 +20,10 @@ namespace Parser {
 	/// <param name="s">Data thats used to Search for a specific object later on</param>
 	/// <param name="d">Object-specific difficulty settings</param>
 	Beatmap::Beatmap(
-		const std::string & FilePath, const std::string & BackgroundImage , std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint*> Timingpoints,
-		General& g, Metadata& m, SearchBy& s, Difficulty& d
+		const std::string FilePath, const std::string BackgroundImage , std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint*> Timingpoints,
+		General* g, Metadata* m, SearchBy* s, Difficulty* d
 	)
-		: m_FilePath(FilePath), m_BackgroundImage(BackgroundImage) , m_TimingPoints(std::move(Timingpoints)), m_HitObjects(std::move(Hitobjects)), m_General(g), m_Metadata(m), m_SearchBy(s), m_Difficulty(d)
+		: m_FilePath(std::move(FilePath)), m_BackgroundImage(std::move(BackgroundImage)), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(std::move(d))
 	{
 		LOGGER_INFO("Creating Beatmap From File => {}", FilePath);
 
@@ -61,12 +61,12 @@ namespace Parser {
 				temp.push_back("normal-hitnormal.wav");
 
 				m_HitsoundsOnTiming.emplace(std::pair<long, std::vector<std::string>>(object->GetOffset(), temp));
-
+				m_Offsets.emplace_back(object->GetOffset());
 				continue;
 			}
 
 			m_HitsoundsOnTiming.emplace(std::pair<long, std::vector<std::string>>(object->GetOffset(), object->GetHitsounds(timingpoint_to_use)));
-
+			m_Offsets.emplace_back(object->GetOffset());
 		}
 	}
 
@@ -83,6 +83,11 @@ namespace Parser {
 		{
 			delete a;
 		}
+
+		delete m_Difficulty;
+		delete m_General;
+		delete m_Metadata;
+		delete m_SearchBy;
 
 	}
 
