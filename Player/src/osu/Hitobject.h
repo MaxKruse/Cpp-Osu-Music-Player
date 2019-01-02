@@ -23,7 +23,7 @@ namespace Parser {
 			: m_Position(x, y), m_Offset(offset), m_Type(type)
 		{
 		}	// TODO(Max): x, y, time, type, >> hitSound..., extras <<
-		~Hitobject() {}
+		~Hitobject() = default;
 
 		virtual std::vector<std::string> GetHitsounds(TimingPoint* t) = 0;
 		
