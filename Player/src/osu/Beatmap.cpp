@@ -23,12 +23,51 @@ namespace Parser {
 		const std::string & FilePath, const std::string & BackgroundImage , std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint*> Timingpoints,
 		General& g, Metadata& m, SearchBy& s, Difficulty& d
 	)
-		: m_FilePath(FilePath), m_BackgroundImage(BackgroundImage) , m_TimingPoints(Timingpoints), m_HitObjects(Hitobjects), m_General(g), m_Metadata(m), m_SearchBy(s), m_Difficulty(d)
+		: m_FilePath(FilePath), m_BackgroundImage(BackgroundImage) , m_TimingPoints(std::move(Timingpoints)), m_HitObjects(std::move(Hitobjects)), m_General(g), m_Metadata(m), m_SearchBy(s), m_Difficulty(d)
 	{
 		LOGGER_INFO("Creating Beatmap From File => {}", FilePath);
 
-		auto sounds = Hitobjects[0]->GetHitsounds(*Timingpoints[0]);
+		m_HitsoundsOnTiming = std::map<long, std::vector<std::string>>();
 
+		for (auto& object : m_HitObjects)
+		{
+			TimingPoint* timingpoint_to_use = nullptr;
+			bool found = false;
+
+			for (auto timingpoint : m_TimingPoints)
+			{
+				if (found)
+				{
+					break;
+				}
+
+				if (object->GetOffset() < timingpoint->GetOffset() && found == false)
+				{
+					timingpoint_to_use = timingpoint;
+					found = true;
+				}
+				else if (object->GetOffset() > timingpoint->GetOffset())
+				{
+					timingpoint_to_use = timingpoint;
+					found = true;
+				}
+			}
+
+			if (!found)
+			{
+				LOGGER_WARN("Hitobject at {} doesnt seem to have a Timingpoint that affects it.", object->GetOffset());
+				LOGGER_WARN("Giving it default hitsounds...");
+				std::vector<std::string> temp = std::vector<std::string>();
+				temp.push_back("normal-hitnormal.wav");
+
+				m_HitsoundsOnTiming.emplace(std::pair<long, std::vector<std::string>>(object->GetOffset(), temp));
+
+				continue;
+			}
+
+			m_HitsoundsOnTiming.emplace(std::pair<long, std::vector<std::string>>(object->GetOffset(), object->GetHitsounds(timingpoint_to_use)));
+
+		}
 	}
 
 	Beatmap::~Beatmap()

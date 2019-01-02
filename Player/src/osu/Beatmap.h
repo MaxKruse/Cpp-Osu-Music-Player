@@ -18,8 +18,7 @@ namespace Parser {
 		std::string m_SampleSet;
 		int      m_Mode{-1};
 
-		General()
-			 
+		General() 
 		{
 			LOGGER_WARN("General cant be set!");
 		}
@@ -37,6 +36,16 @@ namespace Parser {
 			<< ", SampleSet = " << m_SampleSet << ", Mode = " << m_Mode << "]";
 			return ss.str();
 		}
+
+		bool HasDefaults()
+		{
+			if (m_FileFormatVersion.empty() || m_AudioFilename.empty() || m_SampleSet.empty() || m_Mode == -1)
+			{
+				return true;
+			}
+			return false;
+		}
+
 	};
 
 	/// <summary>
@@ -71,6 +80,14 @@ namespace Parser {
 			return ss.str();
 		}
 
+		bool HasDefaults()
+		{
+			if (m_Artist.empty() || m_ArtistUnicode.empty() || m_Title.empty() || m_TitleUnicode.empty() || m_Creator.empty() || m_Version.empty())
+			{
+				return true;
+			}
+			return false;
+		}
 
 	};
 
@@ -85,7 +102,6 @@ namespace Parser {
 		int         m_BeatmapSetID{-1};
 
 		SearchBy()
-			 
 		{
 			LOGGER_WARN("SearchBy cant be set!");
 		}
@@ -102,6 +118,15 @@ namespace Parser {
 			ss << "SearchBy => [Source = " << m_Source << ", Tags = " << m_Tags
 			<< ", BeatmapID = " << m_BeatmapID << ", BeatmapSetID = " << m_BeatmapSetID << "]";
 			return ss.str();
+		}
+
+		bool HasDefaults()
+		{
+			if (m_Source.empty() || m_Tags.empty() || m_BeatmapID == -1 || m_BeatmapSetID == -1)
+			{
+				return true;
+			}
+			return false;
 		}
 	};
 
@@ -125,7 +150,6 @@ namespace Parser {
 		unsigned short m_SliderTickRate{255};
 
 		Difficulty()
-			 
 		{
 			LOGGER_WARN("Difficulty cant be set!");
 		}
@@ -143,6 +167,15 @@ namespace Parser {
 			<< ", OD = " << m_OverallDifficulty / 10.0 << ", AR = " << m_ApproachRate / 10.0 << "]";
 			return ss.str();
 		}
+
+		bool HasDefaults()
+		{
+			if (m_HPDrainRate == 255 || m_ApproachRate == 255 || m_CircleSize == 255 || m_OverallDifficulty == 255 || m_SliderMultiplier == -1.0f || m_SliderTickRate == 255)
+			{
+				return true;
+			}
+			return false;
+		}
 	};
 
 	class Beatmap
@@ -153,13 +186,18 @@ namespace Parser {
 		Beatmap(const std::string & FilePath, const std::string & BackgroundImage, std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint*> Timingpoints, General& g, Metadata& m, SearchBy& s, Difficulty& d);
 		~Beatmap();
 
+		inline const std::map<long, std::vector<std::string>> GetHitsoundsOfTimings() const { return m_HitsoundsOnTiming; }
+		inline const long GetLastOffset() const { return m_HitObjects[m_HitObjects.size() - 1]->GetOffset(); }
+
 		std::string ToString() const;
 		
 	private:
-		std::string                               m_FilePath;
+		std::string               m_FilePath;
 		std::vector<Hitobject*>   m_HitObjects;
 		std::vector<TimingPoint*> m_TimingPoints;
-		std::string                               m_BackgroundImage;
+		std::string               m_BackgroundImage;
+
+		std::map<long, std::vector<std::string>> m_HitsoundsOnTiming;
 		
 		General    m_General;
 		Metadata   m_Metadata;

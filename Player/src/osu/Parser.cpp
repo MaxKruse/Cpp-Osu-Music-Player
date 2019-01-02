@@ -33,14 +33,17 @@ namespace Parser {
 		SearchBy search = ParseSearchBy();
 		LOGGER_INFO("Parsing Difficulty from file => {}", m_FullFilePath);
 		Difficulty diff = ParseDifficulty();
+		// TODO: If any of the above contains default values (-1 for everything except Difficulty diff), throw an error @done(2019-01-02 18:46 UTC+01)
+		if (general.HasDefaults() || meta.HasDefaults() || search.HasDefaults() || diff.HasDefaults())
+		{
+			LOGGER_ERROR("Headerinformation (General, Metadata, SearchBy, Difficulty) incomplete, make sure your files have the correct format.");
+		}
 
-		// TODO: If any of the above contains default values (-1 for everything except Difficulty diff), throw an error
-
-		// TODO: Parsing TimingsPoints, Then Hitobjects
+		// TODO: Parsing TimingsPoints, Then Hitobjects @done(2019-01-02 18:22 UTC+01)
 		LOGGER_INFO("Parsing TimingsPoints from file => {}", m_FullFilePath);
-		std::vector<TimingPoint*> timings = ParseTimingPoints();
+		timings = ParseTimingPoints();
 		LOGGER_INFO("Parsing Hitobjects from file => {}", m_FullFilePath);
-		std::vector<Hitobject*> hitobjects = ParseHitobjects();
+		hitobjects = ParseHitobjects();
 
 		m_Text = std::vector<std::string>();
 

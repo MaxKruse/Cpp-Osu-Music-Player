@@ -23,10 +23,9 @@ namespace Parser {
 			: m_Position(x, y), m_Offset(offset), m_Type(type)
 		{
 		}	// TODO(Max): x, y, time, type, >> hitSound..., extras <<
-		~Hitobject()
-		= default;
+		~Hitobject() {}
 
-		virtual std::vector<std::string> GetHitsounds(TimingPoint t) { return std::vector<std::string>(); }
+		virtual std::vector<std::string> GetHitsounds(TimingPoint* t) = 0;
 		
 		inline const unsigned short GetX() const { return m_Position.X; }
 		inline const unsigned short GetY() const { return m_Position.Y; }
