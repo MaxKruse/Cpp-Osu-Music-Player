@@ -7,7 +7,7 @@ int main(int argc, const char * argv[])
 	// Init the Logger for the whole Program
 	Parser::Logger::Init();
 
-	printf("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
+	puts("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
 	
 	if (argc > 1)
 	{
@@ -21,26 +21,14 @@ int main(int argc, const char * argv[])
 
 	Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
 	
-	auto Map1 = p.BeatmapFromFile("1.osu");
-	
-	auto HitsoundsOfTimings = Map1->GetHitsoundsOfTimings();
-	
-	auto last = Map1->GetLastOffset();
-
-	for (long i = 0; i < last; i++)
 	{
-		if (!HitsoundsOfTimings[i].empty())
+		for (size_t i = 0; i < 5; i++)
 		{
-			LOGGER_INFO("Hitsounds to play at OFFSET => {}", i);
-
-			for (auto& sound : HitsoundsOfTimings[i])
-			{
-				LOGGER_INFO("=> {}", sound);
-			}
+			std::unique_ptr<Parser::Beatmap> Map = p.BeatmapFromFile("1.osu");
 		}
 	}
-
-	delete Map1;
 	
+
+	Sleep(5000);
 	return 0xDEAD;
 }

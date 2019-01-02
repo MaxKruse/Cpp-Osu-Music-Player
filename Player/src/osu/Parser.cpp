@@ -13,7 +13,7 @@ namespace Parser {
 	{
 	}
 
-	Beatmap* Parser::BeatmapFromFile(const std::string & FilePath)
+	std::unique_ptr<Beatmap> Parser::BeatmapFromFile(const std::string & FilePath)
 	{
 		LOGGER_INFO("Parsing from file => {}", FilePath);
 		auto Fullpath = std::string(m_SongsFolder + FilePath);
@@ -26,15 +26,15 @@ namespace Parser {
 		LOGGER_INFO("Parsing Background Image from file => {}", m_FullFilePath);
 		auto image = ParseBackgroundImage();
 		LOGGER_INFO("Parsing General from file => {}", m_FullFilePath);
-		General general = ParseGeneral();
+		General* general = ParseGeneral();
 		LOGGER_INFO("Parsing Metadata from file => {}", m_FullFilePath);
-		Metadata meta = ParseMetadata();
+		Metadata* meta = ParseMetadata();
 		LOGGER_INFO("Parsing SearchBy from file => {}", m_FullFilePath);
-		SearchBy search = ParseSearchBy();
+		SearchBy* search = ParseSearchBy();
 		LOGGER_INFO("Parsing Difficulty from file => {}", m_FullFilePath);
-		Difficulty diff = ParseDifficulty();
+		Difficulty* diff = ParseDifficulty();
 		// TODO: If any of the above contains default values (-1 for everything except Difficulty diff), throw an error @done(2019-01-02 18:46 UTC+01)
-		if (general.HasDefaults() || meta.HasDefaults() || search.HasDefaults() || diff.HasDefaults())
+		if (general->HasDefaults() || meta->HasDefaults() || search->HasDefaults() || diff->HasDefaults())
 		{
 			LOGGER_ERROR("Headerinformation (General, Metadata, SearchBy, Difficulty) incomplete, make sure your files have the correct format.");
 		}
@@ -47,16 +47,16 @@ namespace Parser {
 
 		m_Text = std::vector<std::string>();
 
-		return new Beatmap(m_FullFilePath, image, hitobjects, timings, general, meta, search, diff);
+		return std::make_unique<Beatmap>(m_FullFilePath, image, hitobjects, timings, general, meta, search, diff);
 	}
 
-	Beatmap* Parser::BeatmapFromString(const std::vector<std::string> & Text)
+	std::unique_ptr<Beatmap> Parser::BeatmapFromString(const std::vector<std::string> & Text)
 	{
 		LOGGER_INFO("Parsing from StringVector");
 		m_Text = Text;
 		m_FullFilePath = "NO PATH GIVEN";
 		m_FileName = "NO FILE GIVEN";
-		return new Beatmap();
+		return std::make_unique<Beatmap>();
 	}
 
 	std::string Parser::ParseBackgroundImage()
@@ -226,7 +226,7 @@ namespace Parser {
 		return hitobjects;
 	}
 
-	General Parser::ParseGeneral()
+	General* Parser::ParseGeneral()
 	{
 		std::string FileFormatVersion = "-1";
 		std::string AudioFilename = "-1";
@@ -270,10 +270,10 @@ namespace Parser {
 			}
 		}
 
-		return General(FileFormatVersion, AudioFilename, SampleSet, Mode);
+		return new General(FileFormatVersion, AudioFilename, SampleSet, Mode);
 	}
 
-	Metadata Parser::ParseMetadata()
+	Metadata* Parser::ParseMetadata()
 	{
 		std::string Artist = "-1";
 		std::string ArtistUnicode = "-1";
@@ -333,10 +333,10 @@ namespace Parser {
 			}
 		}
 
-		return Metadata(Artist, ArtistUnicode, Title, TitleUnicode, Creator, Version);
+		return new Metadata(Artist, ArtistUnicode, Title, TitleUnicode, Creator, Version);
 	}
 
-	SearchBy Parser::ParseSearchBy()
+	SearchBy* Parser::ParseSearchBy()
 	{
 		std::string Source = "-1";
 		std::string Tags = "-1";
@@ -380,10 +380,10 @@ namespace Parser {
 			}
 		}
 
-		return SearchBy(Source, Tags, BeatmapID, BeatmapSetID);
+		return new SearchBy(Source, Tags, BeatmapID, BeatmapSetID);
 	}
 
-	Difficulty Parser::ParseDifficulty()
+	Difficulty* Parser::ParseDifficulty()
 	{
 		unsigned short HPDrainRate = 255;
 		unsigned short CircleSize = 255;
@@ -443,7 +443,7 @@ namespace Parser {
 			}
 		}
 
-		return Difficulty(HPDrainRate, CircleSize, OverallDifficulty, ApproachRate, SliderMultiplier, SliderTickRate);
+		return new Difficulty(HPDrainRate, CircleSize, OverallDifficulty, ApproachRate, SliderMultiplier, SliderTickRate);
 	}
 
 	std::vector<std::string> Parser::FileToStringVector(std::string filename)

@@ -11,8 +11,8 @@ namespace Parser {
 		Parser(const std::string & SongsFolderPath);
 		~Parser();
 
-		Beatmap* BeatmapFromFile(const std::string & FilePath);
-		Beatmap* BeatmapFromString(const std::vector<std::string> & Text);
+		std::unique_ptr<Beatmap> BeatmapFromFile(const std::string & FilePath);
+		std::unique_ptr<Beatmap> BeatmapFromString(const std::vector<std::string> & Text);
 
 		inline std::string const GetFilePath() const { return m_FullFilePath; }
 		inline std::string const GetFileName() const { return m_FileName; }
@@ -33,10 +33,10 @@ namespace Parser {
 		std::vector<Hitobject*> ParseHitobjects();
 		std::vector<TimingPoint*> ParseTimingPoints();
 
-		General    ParseGeneral();
-		Metadata   ParseMetadata();
-		SearchBy   ParseSearchBy();
-		Difficulty ParseDifficulty();
+		General*    ParseGeneral();
+		Metadata*   ParseMetadata();
+		SearchBy*   ParseSearchBy();
+		Difficulty* ParseDifficulty();
 
 		std::vector<std::string> FileToStringVector(std::string filename);
 		std::vector<std::string> split(const std::string & s, const char & delim);
