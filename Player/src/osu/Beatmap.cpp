@@ -20,10 +20,10 @@ namespace Parser {
 	/// <param name="s">Data thats used to Search for a specific object later on</param>
 	/// <param name="d">Object-specific difficulty settings</param>
 	Beatmap::Beatmap(
-		const std::string FilePath, const std::string BackgroundImage , std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint*> Timingpoints,
-		General* g, Metadata* m, SearchBy* s, Difficulty* d
+		const std::string & FilePath, const std::string & BackgroundImage , std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint> Timingpoints,
+		General g, Metadata m, SearchBy s, Difficulty d
 	)
-		: m_FilePath(std::move(FilePath)), m_BackgroundImage(std::move(BackgroundImage)), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(std::move(d))
+		: m_FilePath(FilePath), m_BackgroundImage(BackgroundImage), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d)
 	{
 		LOGGER_INFO("Creating Beatmap From File => {}", FilePath);
 
@@ -31,22 +31,22 @@ namespace Parser {
 
 		for (auto& object : m_HitObjects)
 		{
-			TimingPoint* timingpoint_to_use = nullptr;
+			TimingPoint timingpoint_to_use = TimingPoint(1,2,3,4,5,true);
 			bool found = false;
 
-			for (auto timingpoint : m_TimingPoints)
+			for (auto& timingpoint : m_TimingPoints)
 			{
 				if (found)
 				{
 					break;
 				}
 
-				if (object->GetOffset() < timingpoint->GetOffset() && found == false)
+				if (object->GetOffset() < timingpoint.GetOffset() && found == false)
 				{
 					timingpoint_to_use = timingpoint;
 					found = true;
 				}
-				else if (object->GetOffset() > timingpoint->GetOffset())
+				else if (object->GetOffset() > timingpoint.GetOffset())
 				{
 					timingpoint_to_use = timingpoint;
 					found = true;
@@ -58,7 +58,7 @@ namespace Parser {
 				LOGGER_WARN("Hitobject at {} doesnt seem to have a Timingpoint that affects it.", object->GetOffset());
 				LOGGER_WARN("Giving it default hitsounds...");
 				std::vector<std::string> temp = std::vector<std::string>();
-				temp.push_back("normal-hitnormal.wav");
+				temp.emplace_back("normal-hitnormal.wav");
 
 				m_HitsoundsOnTiming.emplace(std::pair<long, std::vector<std::string>>(object->GetOffset(), temp));
 				m_Offsets.emplace_back(object->GetOffset());
@@ -73,16 +73,16 @@ namespace Parser {
 	Beatmap::~Beatmap()
 	{
 		LOGGER_INFO("Deleting Hitobjects From Beatmap => {}", m_FilePath);
+		for (auto& object : m_HitObjects)
+		{
+			delete object;
+		}
+
 		m_HitObjects.clear();
 
 		LOGGER_INFO("Deleting TimingPoints From Beatmap => {}", m_FilePath);
 		m_TimingPoints.clear();
-
-		delete m_Difficulty;
-		delete m_General;
-		delete m_Metadata;
-		delete m_SearchBy;
-
+		
 	}
 
 	std::string Beatmap::ToString() const

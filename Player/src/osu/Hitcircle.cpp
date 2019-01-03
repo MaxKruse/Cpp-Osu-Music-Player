@@ -12,13 +12,13 @@ namespace Parser {
 	{
 	}
 
-	std::vector<std::string> Hitcircle::GetHitsounds(TimingPoint* t)
+	std::vector<std::string> Hitcircle::GetHitsounds(TimingPoint t)
 	{
 		auto s = std::vector<std::string>();
 		s.reserve(4); // hitnormal + additions (clap, finish, whistle), there is no other possiblity
 
-		auto sampleset = t->GetSampleSet();
-		auto sampleindex = t->GetSampleIndex();
+		auto sampleset = t.GetSampleSet();
+		auto sampleindex = t.GetSampleIndex();
 
 		auto set_extra = stoi(m_Extras[0]);
 		auto addition_extra = stoi(m_Extras[1]);

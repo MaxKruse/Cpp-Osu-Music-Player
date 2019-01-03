@@ -26,15 +26,15 @@ namespace Parser {
 		LOGGER_INFO("Parsing Background Image from file => {}", m_FullFilePath);
 		auto image = ParseBackgroundImage();
 		LOGGER_INFO("Parsing General from file => {}", m_FullFilePath);
-		General* general = ParseGeneral();
+		General general = ParseGeneral();
 		LOGGER_INFO("Parsing Metadata from file => {}", m_FullFilePath);
-		Metadata* meta = ParseMetadata();
+		Metadata meta = ParseMetadata();
 		LOGGER_INFO("Parsing SearchBy from file => {}", m_FullFilePath);
-		SearchBy* search = ParseSearchBy();
+		SearchBy search = ParseSearchBy();
 		LOGGER_INFO("Parsing Difficulty from file => {}", m_FullFilePath);
-		Difficulty* diff = ParseDifficulty();
+		Difficulty diff = ParseDifficulty();
 		// TODO: If any of the above contains default values (-1 for everything except Difficulty diff), throw an error @done(2019-01-02 18:46 UTC+01)
-		if (general->HasDefaults() || meta->HasDefaults() || search->HasDefaults() || diff->HasDefaults())
+		if (general.HasDefaults() || meta.HasDefaults() || search.HasDefaults() || diff.HasDefaults())
 		{
 			LOGGER_ERROR("Headerinformation (General, Metadata, SearchBy, Difficulty) incomplete, make sure your files have the correct format.");
 		}
@@ -83,9 +83,9 @@ namespace Parser {
 		return image;
 	}
 
-	std::vector<TimingPoint*> Parser::ParseTimingPoints()
+	std::vector<TimingPoint> Parser::ParseTimingPoints()
 	{
-		std::vector<TimingPoint*> timingpoints;
+		std::vector<TimingPoint> timingpoints;
 
 		bool timingpoints_start = false;
 		size_t counter = 0;
@@ -147,7 +147,7 @@ namespace Parser {
 				if (stoi(parts[6]) == 1)
 					inherited = true;
 
-				timingpoints.push_back(new TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
+				timingpoints.push_back(TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
 			}
 
 		}
@@ -202,7 +202,7 @@ namespace Parser {
 				if (stoi(parts[3]) & 1) // Circle
 				{
 					std::vector<std::string> extras = split(parts[5], ':');
-					hitobjects.push_back(new Hitcircle(stoi(parts[0]), stoi(parts[1]), stol(parts[2]), stoi(parts[3]), stoi(parts[4]), extras));
+					hitobjects.emplace_back(new Hitcircle(stoi(parts[0]), stoi(parts[1]), stol(parts[2]), stoi(parts[3]), stoi(parts[4]), extras));
 					
 				}
 				else if (stoi(parts[3]) & 2) // Slider
@@ -226,7 +226,7 @@ namespace Parser {
 		return hitobjects;
 	}
 
-	General* Parser::ParseGeneral()
+	General Parser::ParseGeneral()
 	{
 		std::string FileFormatVersion = "-1";
 		std::string AudioFilename = "-1";
@@ -270,10 +270,10 @@ namespace Parser {
 			}
 		}
 
-		return new General(FileFormatVersion, AudioFilename, SampleSet, Mode);
+		return General(FileFormatVersion, AudioFilename, SampleSet, Mode);
 	}
 
-	Metadata* Parser::ParseMetadata()
+	Metadata Parser::ParseMetadata()
 	{
 		std::string Artist = "-1";
 		std::string ArtistUnicode = "-1";
@@ -333,10 +333,10 @@ namespace Parser {
 			}
 		}
 
-		return new Metadata(Artist, ArtistUnicode, Title, TitleUnicode, Creator, Version);
+		return Metadata(Artist, ArtistUnicode, Title, TitleUnicode, Creator, Version);
 	}
 
-	SearchBy* Parser::ParseSearchBy()
+	SearchBy Parser::ParseSearchBy()
 	{
 		std::string Source = "-1";
 		std::string Tags = "-1";
@@ -380,10 +380,10 @@ namespace Parser {
 			}
 		}
 
-		return new SearchBy(Source, Tags, BeatmapID, BeatmapSetID);
+		return SearchBy(Source, Tags, BeatmapID, BeatmapSetID);
 	}
 
-	Difficulty* Parser::ParseDifficulty()
+	Difficulty Parser::ParseDifficulty()
 	{
 		unsigned short HPDrainRate = 255;
 		unsigned short CircleSize = 255;
@@ -443,7 +443,7 @@ namespace Parser {
 			}
 		}
 
-		return new Difficulty(HPDrainRate, CircleSize, OverallDifficulty, ApproachRate, SliderMultiplier, SliderTickRate);
+		return Difficulty(HPDrainRate, CircleSize, OverallDifficulty, ApproachRate, SliderMultiplier, SliderTickRate);
 	}
 
 	std::vector<std::string> Parser::FileToStringVector(std::string filename)

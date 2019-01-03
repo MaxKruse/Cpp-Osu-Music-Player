@@ -25,18 +25,18 @@ namespace Parser {
 
 		std::ifstream m_FileHandle;
 		
-		std::vector<TimingPoint*> timings;
+		std::vector<TimingPoint> timings;
 		std::vector<Hitobject*> hitobjects;
 
 	private:
 		std::string ParseBackgroundImage();
 		std::vector<Hitobject*> ParseHitobjects();
-		std::vector<TimingPoint*> ParseTimingPoints();
+		std::vector<TimingPoint> ParseTimingPoints();
 
-		General*    ParseGeneral();
-		Metadata*   ParseMetadata();
-		SearchBy*   ParseSearchBy();
-		Difficulty* ParseDifficulty();
+		General    ParseGeneral();
+		Metadata   ParseMetadata();
+		SearchBy   ParseSearchBy();
+		Difficulty ParseDifficulty();
 
 		std::vector<std::string> FileToStringVector(std::string filename);
 		std::vector<std::string> split(const std::string & s, const char & delim);

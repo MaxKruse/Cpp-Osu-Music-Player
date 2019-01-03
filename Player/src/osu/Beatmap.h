@@ -183,7 +183,7 @@ namespace Parser {
 	public:
 		Beatmap();
 
-		Beatmap(const std::string FilePath, const std::string BackgroundImage, std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint*> Timingpoints, General* g, Metadata* m, SearchBy* s, Difficulty* d);
+		Beatmap(const std::string & FilePath, const std::string & BackgroundImage, std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint> Timingpoints, General g, Metadata m, SearchBy s, Difficulty d);
 		~Beatmap();
 
 		inline const std::map<long, std::vector<std::string>> GetHitsoundsOfTimings() const { return m_HitsoundsOnTiming; }
@@ -194,45 +194,45 @@ namespace Parser {
 		
 	private:
 		std::string               m_FilePath;
-		std::vector<Hitobject*>   m_HitObjects;
-		std::vector<TimingPoint*> m_TimingPoints;
 		std::string               m_BackgroundImage;
+		std::vector<Hitobject*>   m_HitObjects;
+		std::vector<TimingPoint>  m_TimingPoints;
 		std::vector<long>		  m_Offsets;
 
 		std::map<long, std::vector<std::string>> m_HitsoundsOnTiming;
 		
-		General*    m_General;
-		Metadata*   m_Metadata;
-		SearchBy*   m_SearchBy;
-		Difficulty* m_Difficulty;
+		General    m_General;
+		Metadata   m_Metadata;
+		SearchBy   m_SearchBy;
+		Difficulty m_Difficulty;
 
 
 	};
 
 	
 
-	inline std::ostream& operator<<(std::ostream& os, const General* e)
+	inline std::ostream& operator<<(std::ostream& os, const General& e)
 	{
-		return os << e->ToString();
+		return os << e.ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Metadata* m)
+	inline std::ostream& operator<<(std::ostream& os, const Metadata& m)
 	{
-		return os << m->ToString();
+		return os << m.ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const SearchBy* s)
+	inline std::ostream& operator<<(std::ostream& os, const SearchBy& s)
 	{
-		return os << s->ToString();
+		return os << s.ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Difficulty* d)
+	inline std::ostream& operator<<(std::ostream& os, const Difficulty& d)
 	{
-		return os << d->ToString();
+		return os << d.ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Beatmap* b)
+	inline std::ostream& operator<<(std::ostream& os, const Beatmap& b)
 	{
-		return os << b->ToString();
+		return os << b.ToString();
 	}
 }  // namespace Parser
