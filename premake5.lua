@@ -35,7 +35,8 @@ project "Player"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{prj.name}/vendor/cxxtimer"
 	}
 
 	filter "system:windows"

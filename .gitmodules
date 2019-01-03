@@ -1,6 +1,6 @@
 [submodule "Player/vendor/spdlog"]
 	path = Player/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
-[submodule "src/vendor/cxxtimer"]
-	path = src/vendor/cxxtimer
+[submodule "Player/vendor/cxxtimer"]
+	path = Player/vendor/cxxtimer
 	url = https://github.com/andremaravilha/cxxtimer.git
