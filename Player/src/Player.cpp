@@ -2,16 +2,56 @@
 #include "Logger.h"
 #include "osu/Parser.h"
 
+cxxtimer::Timer timer;
+
+static void ShowAllOffsetsOfMap(std::unique_ptr<Parser::Beatmap>& map)
+{
+	auto hitsoundsOfObjects = map->GetHitsoundsOfTimings();
+	auto offsets = map->GetOffsets();
+	for (auto& offset : offsets)
+	{
+		if (hitsoundsOfObjects.find(offset) != hitsoundsOfObjects.end())
+		{
+			// Hitsound found 
+			LOGGER_INFO("HITSOUNDS FOR OFFEST {} FOUND =>", offset);
+			for (auto& hitsound : hitsoundsOfObjects[offset])
+			{
+				LOGGER_INFO("{}", hitsound);
+			}
+		}
+	}
+}
+
 static void Benchmark()
 {
 	Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
 
-	std::unique_ptr<Parser::Beatmap> Map1 = p.BeatmapFromFile("1.osu");
-	std::unique_ptr<Parser::Beatmap> Map2 = p.BeatmapFromFile("1.osu");
-	std::unique_ptr<Parser::Beatmap> Map3 = p.BeatmapFromFile("1.osu");
-	std::unique_ptr<Parser::Beatmap> Map4 = p.BeatmapFromFile("1.osu");
-	std::unique_ptr<Parser::Beatmap> Map5 = p.BeatmapFromFile("1.osu");
-	std::unique_ptr<Parser::Beatmap> Map6 = p.BeatmapFromFile("1.osu");
+	Sleep(5000);
+
+	std::vector<std::unique_ptr<Parser::Beatmap>> Beatmaps;
+	timer.start();
+	for (size_t i = 0; i < 5; i++)
+	{
+		Beatmaps.emplace_back(p.BeatmapFromFile("1.osu"));
+		LOGGER_INFO("Time to Parse one map => {}ms", timer.count());
+		timer.reset();
+		timer.start();
+	}
+	timer.stop();
+
+	Sleep(5000);
+
+	timer.start();
+	for (auto& map : Beatmaps)
+	{
+		ShowAllOffsetsOfMap(map);	
+		LOGGER_INFO("Time to Parse all hitsounds of a map => {}ms", timer.count());
+		timer.reset();
+		timer.start();
+	}
+	timer.stop();
+	
+	Sleep(5000);
 }
 
 int main(int argc, const char * argv[])
@@ -34,5 +74,6 @@ int main(int argc, const char * argv[])
 	Benchmark();
 
 	Sleep(5000);
+
 	return 0xDEAD;
 }
