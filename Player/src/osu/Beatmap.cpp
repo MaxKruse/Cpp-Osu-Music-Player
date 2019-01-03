@@ -73,16 +73,10 @@ namespace Parser {
 	Beatmap::~Beatmap()
 	{
 		LOGGER_INFO("Deleting Hitobjects From Beatmap => {}", m_FilePath);
-		for (auto a : m_HitObjects)
-		{
-			delete a;
-		}
+		m_HitObjects.clear();
 
 		LOGGER_INFO("Deleting TimingPoints From Beatmap => {}", m_FilePath);
-		for (auto a : m_TimingPoints)
-		{
-			delete a;
-		}
+		m_TimingPoints.clear();
 
 		delete m_Difficulty;
 		delete m_General;
