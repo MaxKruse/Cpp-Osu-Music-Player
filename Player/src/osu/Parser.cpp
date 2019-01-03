@@ -9,10 +9,6 @@ namespace Parser {
 		LOGGER_INFO("Songs folder set => {}", m_SongsFolder);
 	}
 
-	Parser::~Parser()
-	{
-	}
-
 	std::unique_ptr<Beatmap> Parser::BeatmapFromFile(const std::string & FilePath)
 	{
 		LOGGER_INFO("Parsing from file => {}", FilePath);

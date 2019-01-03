@@ -9,9 +9,4 @@ namespace Parser
 	{
 	}
 
-
-	TimingPoint::~TimingPoint()
-	{
-	}
-
 }

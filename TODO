@@ -19,3 +19,8 @@
         ☐ SliderEnd @low
 
 ☐ Support Custom Hitsound Files + Indicies @low 
+✔ Figure out why deleting a Beatmap doesnt give back all the memory @high @started(19-01-03 23:21) @done(19-01-03 23:23) @lasted(2m25s)
+    See commit.
+    Basically, I deleted all my deconstructors and let the compiler handle things for me. we now have no memory leaks when (potentially) reading maps as needed and deleting them when we are done with them
+
+☐ Refactor into a DLL and publish seperatly on Github under MIT License

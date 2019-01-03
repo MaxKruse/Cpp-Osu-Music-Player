@@ -8,10 +8,6 @@ namespace Parser {
 	{
 	}
 
-	Hitcircle::~Hitcircle()
-	{
-	}
-
 	std::vector<std::string> Hitcircle::GetHitsounds(TimingPoint t)
 	{
 		auto s = std::vector<std::string>();
