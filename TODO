@@ -1,0 +1,21 @@
+☐ Get a list of all .osu files in the folder of the parser @high 
+☐ Make GUI @high
+☐ Add sound lib @high
+
+☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high 
+    ☐ 1. Review/Cleanup
+    ☐ 2. Review/Cleanup
+    ☐ 3. Review/Cleanup
+    ☐ 4. Review/Cleanup
+    ☐ 5. Review/Cleanup
+    ☐ 6. Review/Cleanup
+
+☐ Implement Spinners @low
+    ☐ Spinner Hitsounds
+☐ Implement Sliders @low
+    ☐ Slider Hitsound @low
+        ☐ SliderHead @low
+        ☐ SliderTick @low
+        ☐ SliderEnd @low
+
+☐ Support Custom Hitsound Files + Indicies @low 
