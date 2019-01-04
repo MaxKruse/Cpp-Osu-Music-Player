@@ -20,6 +20,8 @@ project "Player"
 	language "C++"
 	characterset "Unicode"
 
+	floatingpoint "Fast"
+
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
 

@@ -1,6 +1,18 @@
 ☐ Get a list of all .osu files in the folder of the parser @high 
 ☐ Make GUI @high
+    ☐ .NET for GUI
+    ✔ Win32 @done(19-01-04 15:48)
+        I will use this, as i dont plan on multi-platform just yet. Might switch to OpenGL and some sort of Custom GUI inside of that to make all happen
+        ☐ Implement Basic Window
+            See: http://www.winprog.org/tutorial/start.html
 ☐ Add sound lib @high
+    ☐ Un4Seen Bass
+        ☐ Bass_FX
+        ☐ Testing
+    Possible Options that i scouted:
+        - MMSystem.h (Windows Driver)
+        ✔ Un4Seen Bass + Bass_FX (High Pitch, "Nightcore Mode") @done(19-01-04 15:15)
+            This seems likely, documentation is provided in the download.
 
 ☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high 
     ☐ 1. Review/Cleanup
@@ -21,6 +33,6 @@
 ☐ Support Custom Hitsound Files + Indicies @low 
 ✔ Figure out why deleting a Beatmap doesnt give back all the memory @high @started(19-01-03 23:21) @done(19-01-03 23:23) @lasted(2m25s)
     See commit.
-    Basically, I deleted all my deconstructors and let the compiler handle things for me. we now have no memory leaks when (potentially) reading maps as needed and deleting them when we are done with them
-
+    Basically, I deleted all my deconstructors and let the compiler handle things for me. Smart pointers delete themselves when out of scope. We now have no memory leaks when (potentially) reading maps as needed and deleting them when we are done with them
+ 
 ☐ Refactor into a DLL and publish seperatly on Github under MIT License
