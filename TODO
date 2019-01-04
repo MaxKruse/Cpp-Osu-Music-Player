@@ -1,20 +1,38 @@
 ☐ Get a list of all .osu files in the folder of the parser @high 
 ☐ Make GUI @high
     ☐ .NET for GUI
-    ✔ Win32 @done(19-01-04 15:48)
+    ☐ Win32 @high @started(19-01-04 19:43)
         I will use this, as i dont plan on multi-platform just yet. Might switch to OpenGL and some sort of Custom GUI inside of that to make all happen
         ☐ Implement Basic Window
             See: http://www.winprog.org/tutorial/start.html
+            ☐ Window Base Class
+            ☐ Subclasses for Elements
+                ☐ Buttons
+                ☐ Slider
+                ☐ List of Strings
+                ☐ Menu Bar
+    ☐ OpenGL/DirectX Interface @low
+
 ☐ Add sound lib @high
-    ☐ Un4Seen Bass
-        ☐ Bass_FX
-        ☐ Testing
+    ☐ Un4Seen Bass @high 
+        ☐ Bass_FX @low
+        ☐ Testing @critical 
     Possible Options that i scouted:
-        - MMSystem.h (Windows Driver)
+        ✘ MMSystem.h (Windows Driver) @cancelled(19-01-04 19:42)
         ✔ Un4Seen Bass + Bass_FX (High Pitch, "Nightcore Mode") @done(19-01-04 15:15)
             This seems likely, documentation is provided in the download.
 
-☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high 
+☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high
+    This is planned to be a Weekly thing, below are the occurances.
+    Dates are as followed:
+        - 10.01.2019
+        - 20.01.2019
+        - 30.01.2019
+        - 10.02.2019
+        - 20.02.2019
+        - 01.03.2019
+    People that checked the code will be noted as well, for later reference.
+        
     ☐ 1. Review/Cleanup
     ☐ 2. Review/Cleanup
     ☐ 3. Review/Cleanup
