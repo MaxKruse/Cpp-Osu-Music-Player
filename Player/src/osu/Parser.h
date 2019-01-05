@@ -8,10 +8,12 @@ namespace Parser {
 	class Parser
 	{
 	public:
-		Parser(const std::string & SongsFolderPath);
+		Parser(const std::string & SongsFolderPath, bool GetListOfFiles = true);
 
 		std::unique_ptr<Beatmap> BeatmapFromFile(const std::string & FilePath);
 		std::unique_ptr<Beatmap> BeatmapFromString(const std::vector<std::string> & Text);
+
+		void GetAllFiles();
 
 		inline std::string const GetFilePath() const { return m_FullFilePath; }
 		inline std::string const GetFileName() const { return m_FileName; }
@@ -21,6 +23,8 @@ namespace Parser {
 		std::string m_FullFilePath;
 		std::string m_FileName;
 		std::vector<std::string> m_Text;
+
+		std::vector<std::string> m_ListOfFiles;
 
 		std::ifstream m_FileHandle;
 		

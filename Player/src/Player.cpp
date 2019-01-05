@@ -26,32 +26,33 @@ static void Benchmark()
 {
 	Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
 
-	Sleep(5000);
+	MessageBox(NULL, L"Start Parsing", L"Benchmark", MB_OK);
 
 	std::vector<std::unique_ptr<Parser::Beatmap>> Beatmaps;
 	timer.start();
 	for (size_t i = 0; i < 5; i++)
 	{
 		Beatmaps.emplace_back(p.BeatmapFromFile("1.osu"));
-		LOGGER_INFO("Time to Parse one map => {}ms", timer.count());
+		LOGGER_INFO("Time to parse map => {}ms", timer.count());
 		timer.reset();
 		timer.start();
 	}
 	timer.stop();
 
-	Sleep(5000);
+	MessageBox(NULL, L"Show Hitsounds", L"Benchmark", MB_OK);
 
 	timer.start();
 	for (auto& map : Beatmaps)
 	{
 		ShowAllOffsetsOfMap(map);	
-		LOGGER_INFO("Time to Parse all hitsounds of a map => {}ms", timer.count());
+		LOGGER_INFO("Time to parse all hitsounds of map => {}ms", timer.count());
 		timer.reset();
 		timer.start();
 	}
 	timer.stop();
 	
-	Sleep(5000);
+	MessageBox(NULL, L"Benchmark Done", L"Benchmark", MB_OK);
+
 }
 
 int main(int argc, const char * argv[])
@@ -72,8 +73,6 @@ int main(int argc, const char * argv[])
 	}
 
 	Benchmark();
-
-	Sleep(5000);
 
 	return 0xDEAD;
 }

@@ -3,10 +3,16 @@
 
 namespace Parser {
 
-	Parser::Parser(const std::string & SongsFolderPath)
+	Parser::Parser(const std::string & SongsFolderPath, bool GetListOfFiles)
 		: m_SongsFolder(SongsFolderPath)
 	{
 		LOGGER_INFO("Songs folder set => {}", m_SongsFolder);
+
+
+		if (GetListOfFiles)
+		{
+			GetAllFiles();
+		}
 	}
 
 	std::unique_ptr<Beatmap> Parser::BeatmapFromFile(const std::string & FilePath)
@@ -16,7 +22,7 @@ namespace Parser {
 		m_FullFilePath = Fullpath;
 
 		m_FileName = FilePath;
-		
+				
 		m_Text = FileToStringVector(m_FullFilePath);
 
 		LOGGER_INFO("Parsing Background Image from file => {}", m_FullFilePath);
@@ -53,6 +59,22 @@ namespace Parser {
 		m_FullFilePath = "NO PATH GIVEN";
 		m_FileName = "NO FILE GIVEN";
 		return std::make_unique<Beatmap>();
+	}
+
+	void Parser::GetAllFiles()
+	{
+		for (std::filesystem::recursive_directory_iterator i(m_SongsFolder), end; i != end; ++i)
+		{
+			if (!is_directory(i->path()))
+			{
+				// See: https://stackoverflow.com/a/23658737
+				if (i->path().extension() == ".osu")
+				{
+					LOGGER_TRACE("Found File => {}", i->path().string());
+					m_ListOfFiles.emplace_back(i->path().string());
+				}
+			}
+		}
 	}
 
 	std::string Parser::ParseBackgroundImage()

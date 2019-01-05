@@ -1,7 +1,7 @@
 ☐ Get a list of all .osu files in the folder of the parser @high 
 ☐ Make GUI @high
     ☐ .NET for GUI
-    ☐ Win32 @high @started(19-01-04 19:43)
+    ☐ Win32 @high
         I will use this, as i dont plan on multi-platform just yet. Might switch to OpenGL and some sort of Custom GUI inside of that to make all happen
         ☐ Implement Basic Window
             See: http://www.winprog.org/tutorial/start.html
@@ -12,6 +12,8 @@
                 ☐ List of Strings
                 ☐ Menu Bar
     ☐ OpenGL/DirectX Interface @low
+        ☐ NanoGUI
+            See: https://github.com/wjakob/nanogui
 
 ☐ Add sound lib @high
     ☐ Un4Seen Bass @high 
@@ -24,6 +26,12 @@
 
 ☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high
     This is planned to be a Weekly thing, below are the occurances.
+    Sources for this include:
+        - https://www.reddit.com/r/reviewmycode/
+        - https://www.reddit.com/r/codereview/
+        - https://www.reddit.com/r/cpp/
+        - https://codereview.stackexchange.com/questions/tagged/c++
+
     Dates are as followed:
         - 10.01.2019
         - 20.01.2019
@@ -47,6 +55,8 @@
         ☐ SliderHead @low
         ☐ SliderTick @low
         ☐ SliderEnd @low
+
+✔ Implement Vector of All .osu files @started(19-01-05 14:43) @done(19-01-05 14:55) @lasted(12m25s)
 
 ☐ Support Custom Hitsound Files + Indicies @low 
 ✔ Figure out why deleting a Beatmap doesnt give back all the memory @high @started(19-01-03 23:21) @done(19-01-03 23:23) @lasted(2m25s)
