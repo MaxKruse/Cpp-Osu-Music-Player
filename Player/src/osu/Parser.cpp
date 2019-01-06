@@ -38,7 +38,7 @@ namespace Parser {
 		// TODO: If any of the above contains default values (-1 for everything except Difficulty diff), throw an error @done(2019-01-02 18:46 UTC+01)
 		if (general.HasDefaults() || meta.HasDefaults() || search.HasDefaults() || diff.HasDefaults())
 		{
-			LOGGER_ERROR("Headerinformation (General, Metadata, SearchBy, Difficulty) incomplete, make sure your files have the correct format.");
+			LOGGER_ERROR("Headerinformation (General, Metadata, SearchBy, Difficulty) incomplete, make sure your files have the correct format. File => {}", FilePath);
 		}
 
 		// TODO: Parsing TimingsPoints, Then Hitobjects @done(2019-01-02 18:22 UTC+01)
@@ -67,14 +67,14 @@ namespace Parser {
 		{
 			if (!is_directory(i->path()))
 			{
-				LOGGER_TRACE("Element => {}", i->path().generic_string());
+				LOGGER_TRACE("Element => {}", i->path().string());
 				// See: https://stackoverflow.com/a/23658737
 				if (i->path().extension() == ".osu")
 				{
 					LOGGER_TRACE("Found File => {}", i->path().string());
-					std::vector<std::string> a;
-					a.emplace_back(i->path().parent_path().string());
-					a.emplace_back(i->path().string());
+					std::vector<std::wstring> a;
+					a.emplace_back(i->path().parent_path().wstring());
+					a.emplace_back(i->path().wstring());
 					m_ListOfFiles.emplace_back(a);
 					a.clear();
 				}
