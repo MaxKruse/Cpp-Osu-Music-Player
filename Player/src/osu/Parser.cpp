@@ -71,7 +71,11 @@ namespace Parser {
 				if (i->path().extension() == ".osu")
 				{
 					LOGGER_TRACE("Found File => {}", i->path().string());
-					m_ListOfFiles.emplace_back(i->path().string());
+					std::vector<std::string> a;
+					a.emplace_back(i->path().parent_path().string());
+					a.emplace_back(i->path().string());
+					m_ListOfFiles.emplace_back(a);
+					a.clear();
 				}
 			}
 		}

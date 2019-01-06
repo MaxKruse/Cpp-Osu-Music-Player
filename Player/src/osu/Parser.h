@@ -24,7 +24,7 @@ namespace Parser {
 		std::string m_FileName;
 		std::vector<std::string> m_Text;
 
-		std::vector<std::string> m_ListOfFiles;
+		std::vector<std::vector<std::string>> m_ListOfFiles;
 
 		std::ifstream m_FileHandle;
 		
