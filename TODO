@@ -1,4 +1,6 @@
 ☐ Get a list of all .osu files in the folder of the parser @high 
+☐ Add Option Parser
+    See: https://github.com/jarro2783/cxxopts
 ☐ Make GUI @high
     ☐ .NET for GUI
     ☐ Win32 @high
