@@ -29,17 +29,17 @@ namespace Parser {
 }  // namespace Parser
 
 // Logging Macros
-#define LOGGER_TRACE(...)			::Parser::Logger::GetConsoleLogger()->trace(__VA_ARGS__)\
+#define LOGGER_TRACE(...)			::Parser::Logger::GetConsoleLogger()->trace(__VA_ARGS__);\
 									::Parser::Logger::GetFileLogger()->trace(__VA_ARGS__)
 
-#define LOGGER_INFO(...)			::Parser::Logger::GetConsoleLogger()->info(__VA_ARGS__)\
+#define LOGGER_INFO(...)			::Parser::Logger::GetConsoleLogger()->info(__VA_ARGS__);\
 									::Parser::Logger::GetFileLogger()->info(__VA_ARGS__)
 
-#define LOGGER_WARN(...)			::Parser::Logger::GetConsoleLogger()->warn(__VA_ARGS__)\
+#define LOGGER_WARN(...)			::Parser::Logger::GetConsoleLogger()->warn(__VA_ARGS__);\
 									::Parser::Logger::GetFileLogger()->warn(__VA_ARGS__)
 
-#define LOGGER_ERROR(...)			::Parser::Logger::GetConsoleLogger()->error(__VA_ARGS__)\
+#define LOGGER_ERROR(...)			::Parser::Logger::GetConsoleLogger()->error(__VA_ARGS__);\
 									::Parser::Logger::GetFileLogger()->error(__VA_ARGS__)
 
-#define LOGGER_CRITICAL(...)		::Parser::Logger::GetConsoleLogger()->critical(__VA_ARGS__)\
+#define LOGGER_CRITICAL(...)		::Parser::Logger::GetConsoleLogger()->critical(__VA_ARGS__);\
 									::Parser::Logger::GetFileLogger()->critical(__VA_ARGS__)

@@ -67,6 +67,7 @@ namespace Parser {
 		{
 			if (!is_directory(i->path()))
 			{
+				LOGGER_TRACE("Element => {}", i->path().generic_string());
 				// See: https://stackoverflow.com/a/23658737
 				if (i->path().extension() == ".osu")
 				{

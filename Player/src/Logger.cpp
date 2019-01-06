@@ -31,7 +31,7 @@ namespace Parser {
 
 		s_FileLogger = spdlog::rotating_logger_mt("FILE", str, 1024 * 1024 * 256, 4);
 		s_FileLogger->set_level(spdlog::level::trace);
-		spdlog::flush_every(std::chrono::seconds(10));
+		spdlog::flush_every(std::chrono::seconds(1));
 
 		s_ConsoleLogger = spdlog::stdout_color_mt("CONSOLE");
 #ifdef _DEBUG
