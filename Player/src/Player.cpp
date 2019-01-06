@@ -24,7 +24,7 @@ static void ShowAllOffsetsOfMap(std::unique_ptr<Parser::Beatmap>& map)
 
 static void Benchmark()
 {
-	Parser::Parser p("D:\\osu\\Songs\\");
+	Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
 
 	MessageBox(NULL, L"Start Parsing", L"Benchmark", MB_OK);
 
