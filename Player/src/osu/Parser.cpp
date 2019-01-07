@@ -38,7 +38,7 @@ namespace Parser {
 		// TODO: If any of the above contains default values (-1 for everything except Difficulty diff), throw an error @done(2019-01-02 18:46 UTC+01)
 		if (general.HasDefaults() || meta.HasDefaults() || search.HasDefaults() || diff.HasDefaults())
 		{
-			LOGGER_ERROR("Headerinformation (General, Metadata, SearchBy, Difficulty) incomplete, make sure your files have the correct format. File => {}", FilePath);
+			LOGGER_WARN("Headerinformation (General, Metadata, SearchBy, Difficulty) incomplete, make sure your files have the correct format. File => {}", FilePath);
 		}
 
 		// TODO: Parsing TimingsPoints, Then Hitobjects @done(2019-01-02 18:22 UTC+01)
@@ -47,7 +47,7 @@ namespace Parser {
 		LOGGER_INFO("Parsing Hitobjects from file => {}", m_FullFilePath);
 		hitobjects = ParseHitobjects();
 
-		m_Text = std::vector<std::string>();
+		m_Text = std::vector<std::string>(500);
 
 		return std::make_unique<Beatmap>(m_FullFilePath, image, hitobjects, timings, general, meta, search, diff);
 	}
@@ -63,7 +63,7 @@ namespace Parser {
 
 	void Parser::GetAllFiles()
 	{
-		for (std::filesystem::recursive_directory_iterator i(m_SongsFolder), end; i != end; ++i)
+		for (std::experimental::filesystem::recursive_directory_iterator i(m_SongsFolder), end; i != end; ++i)
 		{
 			if (!is_directory(i->path()))
 			{

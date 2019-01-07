@@ -50,9 +50,6 @@ static void Benchmark()
 		timer.start();
 	}
 	timer.stop();
-	
-	MessageBox(NULL, L"Benchmark Done", L"Benchmark", MB_OK);
-
 }
 
 int main(int argc, const char * argv[])
@@ -73,6 +70,8 @@ int main(int argc, const char * argv[])
 	}
 
 	Benchmark();
+
+	MessageBox(NULL, L"Benchmark Done", L"Benchmark", MB_OK);
 
 	return 0xDEAD;
 }
