@@ -19,10 +19,12 @@ You will need the following:
 
 Installing is simply extracting the `.exe`, as well as the `.dll`s into their own folder. Make sure its somewhere in its own folder, as this program will create a folder `logs` to save all logs in These Logs will be rather big, so make sure you have enough space.
 
-## Deployment
+## Development
 
 This is build and tested with Visual Studio 2017 Enterprise on Windows 10, Build 1809.
 This is x64 Only, no support for non-Windows systems.
+
+Also using [Visual Studio Code](https://code.visualstudio.com/) together with [Todo+](https://github.com/fabiospampinato/vscode-todo-plus) for keeping track of my [TODO](TODO).
 
 ## Built With
 
