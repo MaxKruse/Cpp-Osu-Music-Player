@@ -18,13 +18,13 @@
             See: https://github.com/wjakob/nanogui
 
 ☐ Add sound lib @high
-    ☐ Un4Seen Bass @high 
-        ☐ Bass_FX @low
-        ☐ Testing @critical 
+    ✘ Un4Seen Bass @high @cancelled(19-01-09 13:31)
     Possible Options that i scouted:
         ✘ MMSystem.h (Windows Driver) @cancelled(19-01-04 19:42)
-        ✔ Un4Seen Bass + Bass_FX (High Pitch, "Nightcore Mode") @done(19-01-04 15:15)
+        ✘ Un4Seen Bass + Bass_FX (High Pitch, "Nightcore Mode") @cancelled(19-01-09 13:31)
             This seems likely, documentation is provided in the download.
+        ✔ PortAudio @done(19-01-09 13:32)
+            See: https://git.assembla.com/portaudio.git
 
 ☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high
     This is planned to be a Weekly thing, below are the occurances.
@@ -65,4 +65,5 @@
     See commit.
     Basically, I deleted all my deconstructors and let the compiler handle things for me. Smart pointers delete themselves when out of scope. We now have no memory leaks when (potentially) reading maps as needed and deleting them when we are done with them
  
-☐ Refactor into a DLL and publish seperatly on Github under MIT License
+☐ Refactor into a DLL 
+✔ publish seperatly on Github under GNU License @done(19-01-09 13:32)
