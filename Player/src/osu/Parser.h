@@ -18,13 +18,14 @@ namespace Parser {
 		inline std::string const GetFilePath() const { return m_FullFilePath; }
 		inline std::string const GetFileName() const { return m_FileName; }
 		std::vector<std::string> const GetText() const { return m_Text; }
+		std::vector<std::string> const GetListOfFiles() const { return m_ListOfFiles; };
 	private:
 		std::string m_SongsFolder;
 		std::string m_FullFilePath;
 		std::string m_FileName;
 		std::vector<std::string> m_Text;
 
-		std::vector<std::vector<std::wstring>> m_ListOfFiles;
+		std::vector<std::string> m_ListOfFiles;
 
 		std::ifstream m_FileHandle;
 		
@@ -35,6 +36,8 @@ namespace Parser {
 		std::string ParseBackgroundImage();
 		std::vector<Hitobject*> ParseHitobjects();
 		std::vector<TimingPoint> ParseTimingPoints();
+
+		std::string m_TempVersion;
 
 		General    ParseGeneral();
 		Metadata   ParseMetadata();

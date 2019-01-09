@@ -72,11 +72,8 @@ namespace Parser {
 				if (i->path().extension() == ".osu")
 				{
 					LOGGER_TRACE("Found File => {}", i->path().string());
-					std::vector<std::wstring> a;
-					a.emplace_back(i->path().parent_path().wstring());
-					a.emplace_back(i->path().wstring());
-					m_ListOfFiles.emplace_back(a);
-					a.clear();
+					std::string RelativeFilePath(i->path().string().erase(0, m_SongsFolder.size()));
+					m_ListOfFiles.emplace_back(RelativeFilePath);
 				}
 			}
 		}
@@ -109,6 +106,11 @@ namespace Parser {
 	std::vector<TimingPoint> Parser::ParseTimingPoints()
 	{
 		std::vector<TimingPoint> timingpoints;
+
+		if (m_TempVersion != "v14" && m_TempVersion != "v13" && m_TempVersion != "v12")
+		{
+			return timingpoints;
+		}
 
 		bool timingpoints_start = false;
 		size_t counter = 0;
@@ -181,6 +183,11 @@ namespace Parser {
 	std::vector<Hitobject*> Parser::ParseHitobjects()
 	{
 		std::vector<Hitobject*> hitobjects;
+
+		if (m_TempVersion != "v14" && m_TempVersion != "v13" && m_TempVersion != "v12")
+		{
+			return hitobjects;
+		}
 
 		bool hitobjects_start = false;
 		size_t counter = 0;
@@ -268,6 +275,8 @@ namespace Parser {
 			{
 				FileFormatVersion = line.erase(0, 16);
 				LOGGER_TRACE("FOUND FILE FORMAT => {}", FileFormatVersion);
+				m_TempVersion = FileFormatVersion;
+				LOGGER_WARN("File Version too old. cant parse timings and Hitobjects.");
 				found++;
 			}
 
