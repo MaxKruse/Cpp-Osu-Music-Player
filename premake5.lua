@@ -38,8 +38,7 @@ project "Player"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/vendor/cxxtimer",
-		"%{prj.name}/vendor/PortAudio/include"
+		"%{prj.name}/vendor/cxxtimer"
 	}
 
 	filter "system:windows"

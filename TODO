@@ -23,8 +23,10 @@
         ✘ MMSystem.h (Windows Driver) @cancelled(19-01-04 19:42)
         ✘ Un4Seen Bass + Bass_FX (High Pitch, "Nightcore Mode") @cancelled(19-01-09 13:31)
             This seems likely, documentation is provided in the download.
-        ✔ PortAudio @done(19-01-09 13:32)
+        ✘ PortAudio @cancelled(19-01-09 20:14)
             See: https://git.assembla.com/portaudio.git
+        ☐ SoLoud
+            See: https://github.com/jarikomppa/soloud
 
 ☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high
     This is planned to be a Weekly thing, below are the occurances.

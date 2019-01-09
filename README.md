@@ -30,7 +30,7 @@ Also using [Visual Studio Code](https://code.visualstudio.com/) together with [T
 
 * [CxxTimer](http://www.dropwizard.io/1.0.2/docs/) - Timer used for benchmarking and debugging
 * [spdlog](https://maven.apache.org/) - Logging purposes
-* [PortAudio](https://git.assembla.com/portaudio.git) - Audio Processing and playback
+* [SoLoud](https://github.com/jarikomppa/soloud) - Audio Processing and playback
 
 ## Contributing
 
