@@ -1,9 +1,9 @@
 ☐ Get a list of all .osu files in the folder of the parser @high 
 ☐ Add Option Parser
     See: https://github.com/jarro2783/cxxopts
-☐ Make GUI @high
-    ☐ .NET for GUI
-    ☐ Win32 @high
+☐ Make GUI @low
+    ☐ .NET/WPF
+    ☐ Win32 @low
         I will use this, as i dont plan on multi-platform just yet. Might switch to OpenGL and some sort of Custom GUI inside of that to make all happen
         ☐ Implement Basic Window
             See: http://www.winprog.org/tutorial/start.html
@@ -25,7 +25,7 @@
             This seems likely, documentation is provided in the download.
         ✘ PortAudio @cancelled(19-01-09 20:14)
             See: https://git.assembla.com/portaudio.git
-        ☐ SoLoud
+        ✔ SoLoud @done(19-01-09 20:23)
             See: https://github.com/jarikomppa/soloud
 
 ☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high
@@ -61,6 +61,10 @@
         ☐ SliderEnd @low
 
 ✔ Implement Vector of All .osu files @started(19-01-05 14:43) @done(19-01-05 14:55) @lasted(12m25s)
+
+☐ Improve Parsing of files @high
+        Currently, im parsing over the same array of strings (the file) for different things. combining this would probably reduce cpu usage
+☐ Parse files multi-threaded @low
 
 ☐ Support Custom Hitsound Files + Indicies @low 
 ✔ Figure out why deleting a Beatmap doesnt give back all the memory @high @started(19-01-03 23:21) @done(19-01-03 23:23) @lasted(2m25s)
