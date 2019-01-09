@@ -4,3 +4,6 @@
 [submodule "Player/vendor/cxxtimer"]
 	path = Player/vendor/cxxtimer
 	url = https://github.com/andremaravilha/cxxtimer.git
+[submodule "Player/vendor/SoLoud"]
+	path = Player/vendor/SoLoud
+	url = https://github.com/jarikomppa/soloud
