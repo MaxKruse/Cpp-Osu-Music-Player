@@ -32,6 +32,9 @@ namespace Parser {
 #define LOGGER_TRACE(...)			::Parser::Logger::GetConsoleLogger()->trace(__VA_ARGS__);\
 									::Parser::Logger::GetFileLogger()->trace(__VA_ARGS__)
 
+#define LOGGER_DEBUG(...)			::Parser::Logger::GetConsoleLogger()->debug(__VA_ARGS__);\
+									::Parser::Logger::GetFileLogger()->debug(__VA_ARGS__)
+
 #define LOGGER_INFO(...)			::Parser::Logger::GetConsoleLogger()->info(__VA_ARGS__);\
 									::Parser::Logger::GetFileLogger()->info(__VA_ARGS__)
 
