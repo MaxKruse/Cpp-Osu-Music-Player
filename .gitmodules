@@ -4,6 +4,3 @@
 [submodule "Player/vendor/cxxtimer"]
 	path = Player/vendor/cxxtimer
 	url = https://github.com/andremaravilha/cxxtimer.git
-[submodule "Player/vendor/PortAudio"]
-	path = Player/vendor/PortAudio
-	url = https://git.assembla.com/portaudio.git
