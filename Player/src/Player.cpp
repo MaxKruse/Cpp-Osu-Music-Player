@@ -40,7 +40,7 @@ static void Benchmark()
 		timer.reset();
 		timer.start();
 	}
-	timer.stop();
+	timer.reset();
 
 	MessageBox(nullptr, L"Show Hitsounds", L"Benchmark", MB_OK);
 
