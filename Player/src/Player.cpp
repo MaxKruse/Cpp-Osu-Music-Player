@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
+#include "Core.h"
 #include "Logger.h"
 #include "osu/Parser.h"
+#include "cxxtimer.hpp"
 
 static void ShowAllOffsetsOfMap(std::unique_ptr<Parser::Beatmap>& map)
 {
@@ -22,7 +24,7 @@ static void ShowAllOffsetsOfMap(std::unique_ptr<Parser::Beatmap>& map)
 
 static void Benchmark()
 {
-	cxxtimer::Timer timer;
+	 cxxtimer::Timer timer;
 
 	//Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
 	Parser::Parser p("D:/osu/Songs/");
