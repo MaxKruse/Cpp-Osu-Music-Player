@@ -1,5 +1,5 @@
 #pragma once
-#include "pch.h"
+#include "Core.h"
 
 #include "cxxtimer.hpp"
 
@@ -11,7 +11,7 @@
 
 namespace Parser {
 
-	class Logger
+	class API Logger
 	{
 
 	public:

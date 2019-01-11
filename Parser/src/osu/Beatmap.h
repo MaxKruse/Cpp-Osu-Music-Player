@@ -1,7 +1,5 @@
 #pragma once
-#include <utility>
-
-#include "pch.h"
+#include "Core.h"
 #include "Logger.h"
 #include "Hitobject.h"
 #include "TimingPoint.h"
@@ -11,7 +9,7 @@ namespace Parser {
 	/// <summary>
 	/// General data, otherwise not categorized
 	/// </summary>
-	class General
+	class API General
 	{
 		std::string m_FileFormatVersion;
 		std::string m_AudioFilename;
@@ -51,7 +49,7 @@ namespace Parser {
 	/// <summary>
 	/// Metadata Stored for the individual .osu file
 	/// </summary>
-	class Metadata
+	class API Metadata
 	{
 		std::string m_Artist;
 		std::string m_ArtistUnicode;
@@ -94,7 +92,7 @@ namespace Parser {
 	/// <summary>
 	/// These attributes can be used for search algorithms
 	/// </summary>
-	class SearchBy
+	class API SearchBy
 	{
 		std::string m_Source;
 		std::string m_Tags;
@@ -140,7 +138,7 @@ namespace Parser {
 	/// float TrueCircleSize = m_CircleSize / 10.0f;
 	/// 
 	/// </summary>
-	class Difficulty
+	class API Difficulty
 	{
 		unsigned short m_HPDrainRate{255};
 		unsigned short m_CircleSize{255};
@@ -178,7 +176,7 @@ namespace Parser {
 		}
 	};
 
-	class Beatmap
+	class API Beatmap
 	{
 	public:
 		Beatmap();

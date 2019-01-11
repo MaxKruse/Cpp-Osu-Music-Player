@@ -1,9 +1,9 @@
 #pragma once
-#include "pch.h"
+#include "Core.h"
 
 namespace Parser
 {
-	class TimingPoint
+	class API TimingPoint
 	{
 	public:
 		TimingPoint(long offset, double milliseconds_per_beat, unsigned short sampleset, unsigned short sampleindex, unsigned short volume, bool inherited);

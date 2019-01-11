@@ -1,11 +1,11 @@
 #pragma once
-#include "pch.h"
+#include "Core.h"
 #include "Beatmap.h"
 #include "Hitcircle.h"
 
 namespace Parser {
 
-	class Parser
+	class API Parser
 	{
 	public:
 		Parser(const std::string & SongsFolderPath, bool GetListOfFiles = true);

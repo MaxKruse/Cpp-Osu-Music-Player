@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "Logger.h"
+#include "Core.h"
 #include "osu/Parser.h"
 
 static void ShowAllOffsetsOfMap(std::unique_ptr<Parser::Beatmap>& map)

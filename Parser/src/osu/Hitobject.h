@@ -1,11 +1,11 @@
 #pragma once
-#include "pch.h"
+#include "Core.h"
 #include "Logger.h"
 #include "TimingPoint.h"
 
 namespace Parser {
 
-	struct Position
+	struct API Position
 	{
 		unsigned short X;
 		unsigned short Y;
@@ -16,7 +16,7 @@ namespace Parser {
 		}
 	};
 
-	class Hitobject
+	class API Hitobject
 	{
 	public:
 		Hitobject(unsigned short x, unsigned short y, long offset, unsigned short type)

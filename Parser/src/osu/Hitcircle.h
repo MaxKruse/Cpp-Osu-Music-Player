@@ -1,10 +1,9 @@
 #pragma once
-#include "pch.h"
 #include "Hitobject.h"
 
 namespace Parser {
 
-	class Hitcircle : public Hitobject
+	class API Hitcircle : public Hitobject
 	{
 	public:
 		Hitcircle(unsigned short x, unsigned short y, long offset, unsigned short type, int hitsound, std::vector<std::string> extras);
