@@ -85,9 +85,6 @@ project "Player"
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
 
-	pchheader "pch.h"
-	pchsource "Parser/src/pch.cpp"
-
 	files
 	{
 		"%{prj.name}/src/**.h",
@@ -98,7 +95,9 @@ project "Player"
 	includedirs
 	{
 		"%{prj.name}/src",
-		"Parser/src"
+		"Parser/src",
+		"Parser/vendor/cxxtimer",
+		"Parser/vendor/spdlog/include"
 	}
 
 	links

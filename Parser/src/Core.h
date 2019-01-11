@@ -1,6 +1,5 @@
 #include "pch.h"
 
-#include "cxxtimer.hpp"
 #include "Logger.h"
 
 #ifdef BUILD_DLL
