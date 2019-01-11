@@ -38,7 +38,8 @@
 
     Dates are as followed:
         - 10.01.2019
-            ☐ 1. Review/Cleanup
+            ✔ 1. Review/Cleanup @started(19-01-11 17:31) @done(19-01-11 17:33) @lasted(2m52s)
+            Clang Tidy - Not Much change
             I was sick, will postpone
         - 20.01.2019
             ☐ 2. Review/Cleanup

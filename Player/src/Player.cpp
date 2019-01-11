@@ -2,8 +2,6 @@
 #include "Logger.h"
 #include "osu/Parser.h"
 
-cxxtimer::Timer timer;
-
 static void ShowAllOffsetsOfMap(std::unique_ptr<Parser::Beatmap>& map)
 {
 	auto hitsoundsOfObjects = map->GetHitsoundsOfTimings();
@@ -24,12 +22,14 @@ static void ShowAllOffsetsOfMap(std::unique_ptr<Parser::Beatmap>& map)
 
 static void Benchmark()
 {
+	cxxtimer::Timer timer;
+
 	//Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
-	Parser::Parser p("D:\\osu\\Songs\\");
+	Parser::Parser p("D:/osu/Songs/");
 	
 	auto ListOfFiles = p.GetListOfFiles();
 
-	MessageBox(NULL, L"Start Parsing", L"Benchmark", MB_OK);
+	MessageBox(nullptr, L"Start Parsing", L"Benchmark", MB_OK);
 
 	std::vector<std::unique_ptr<Parser::Beatmap>> Beatmaps;
 	timer.start();
@@ -42,7 +42,7 @@ static void Benchmark()
 	}
 	timer.stop();
 
-	MessageBox(NULL, L"Show Hitsounds", L"Benchmark", MB_OK);
+	MessageBox(nullptr, L"Show Hitsounds", L"Benchmark", MB_OK);
 
 	timer.start();
 	for (auto& map : Beatmaps)
@@ -74,7 +74,7 @@ int main(int argc, const char * argv[])
 
 	Benchmark();
 
-	MessageBox(NULL, L"Benchmark Done", L"Benchmark", MB_OK);
+	MessageBox(nullptr, L"Benchmark Done", L"Benchmark", MB_OK);
 
 	return 0xDEAD;
 }
