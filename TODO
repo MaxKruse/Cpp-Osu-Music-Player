@@ -68,6 +68,8 @@
         Currently, im parsing over the same array of strings (the file) for different things. combining this would probably reduce cpu usage
 ☐ Parse files multi-threaded @low
 
+☐ For Search purposes, create SortBy-Only objects of Beatmaps @created(19-01-12 15:09)
+
 ☐ Support Custom Hitsound Files + Indicies @low 
 ✔ Figure out why deleting a Beatmap doesnt give back all the memory @high @started(19-01-03 23:21) @done(19-01-03 23:23) @lasted(2m25s)
     See commit.
