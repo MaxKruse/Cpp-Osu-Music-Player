@@ -1,3 +1,6 @@
 [submodule "Parser/vendor/SoLoud"]
 	path = Parser/vendor/SoLoud
 	url = https://github.com/jarikomppa/soloud.git
+[submodule "Parser/vendor/spdlog"]
+	path = Parser/vendor/spdlog
+	url = https://github.com/gabime/spdlog.git
