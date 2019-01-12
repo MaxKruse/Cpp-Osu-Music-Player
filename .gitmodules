@@ -4,6 +4,3 @@
 [submodule "Parser/vendor/cxxtimer"]
 	path = Parser/vendor/cxxtimer
 	url = https://github.com/andremaravilha/cxxtimer.git
-[submodule "Parser/vendor/SoLoud"]
-	path = Parser/vendor/SoLoud
-	url = https://github.com/jarikomppa/soloud.git
