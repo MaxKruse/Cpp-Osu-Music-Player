@@ -72,6 +72,8 @@
 ✔ Figure out why deleting a Beatmap doesnt give back all the memory @high @started(19-01-03 23:21) @done(19-01-03 23:23) @lasted(2m25s)
     See commit.
     Basically, I deleted all my deconstructors and let the compiler handle things for me. Smart pointers delete themselves when out of scope. We now have no memory leaks when (potentially) reading maps as needed and deleting them when we are done with them
+
+☐ Cache beatmap locations instead of parsing through the folder everytime @created(19-01-12 15:07)
  
-☐ Refactor into a DLL 
+✔ Refactor into a DLL @done(19-01-12 15:06)
 ✔ publish seperatly on Github under GNU License @done(19-01-09 13:32)
