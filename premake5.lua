@@ -39,8 +39,7 @@ project "Parser"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/vendor/cxxtimer",
-		"%{prj.name}/vendor/SoLoud/include"
+		"%{prj.name}/vendor/cxxtimer"
 	}
 
 	defines
@@ -50,7 +49,7 @@ project "Parser"
 
 	postbuildcommands
 	{
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputDir .. "/Player")
+		"{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputDir .. "/Player"
 	}
 
 	filter "system:windows"
@@ -95,14 +94,21 @@ project "Player"
 	includedirs
 	{
 		"%{prj.name}/src",
+		"%{prj.name}/vendor/Un4Seen_bass",
 		"Parser/src",
 		"Parser/vendor/cxxtimer",
 		"Parser/vendor/spdlog/include"
 	}
 
+	libdirs
+	{
+		"%{prj.name}/vendor/Un4Seen_bass"
+	}
+
 	links
 	{
-		"Parser"
+		"Parser",
+		"bass.lib"
 	}
 
 	filter "system:windows"

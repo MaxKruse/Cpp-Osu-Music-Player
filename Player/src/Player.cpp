@@ -1,8 +1,9 @@
 ﻿#include "pch.h"
 #include "Core.h"
-#include "Logger.h"
 #include "osu/Parser.h"
 #include "cxxtimer.hpp"
+
+#include "bass.h"
 
 static void ShowAllOffsetsOfMap(std::unique_ptr<Parser::Beatmap>& map)
 {
@@ -72,6 +73,11 @@ int main(int argc, const char * argv[])
 			LOGGER_DEBUG("Arg[{0}] => {1}", i, argv[i]);
 		}
 
+	}
+
+	if (!BASS_Init(-1, 44100, 0, NULL, NULL)) {
+		LOGGER_ERROR("Can't initialize device");
+		return 0;
 	}
 
 	Benchmark();

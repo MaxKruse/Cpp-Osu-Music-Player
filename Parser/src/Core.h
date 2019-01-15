@@ -1,5 +1,4 @@
 #include "pch.h"
-
 #include "Logger.h"
 
 #ifdef BUILD_DLL
