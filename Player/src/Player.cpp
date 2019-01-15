@@ -63,7 +63,7 @@ int main(int argc, const char * argv[])
 	// Init the Logger for the whole Program
 	Parser::Logger::Init();
 
-	puts("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
+	LOGGER_INFO("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
 	
 	if (argc > 1)
 	{
@@ -75,11 +75,13 @@ int main(int argc, const char * argv[])
 
 	}
 
+	LOGGER_INFO("Running Bass => Lib {} | DLL {}", BASS_GetVersion(), BASSVERSION);
+
 	if (!BASS_Init(-1, 44100, 0, NULL, NULL)) {
 		LOGGER_ERROR("Can't initialize device");
 		return 0;
 	}
-
+	
 	Benchmark();
 
 	MessageBox(nullptr, L"Benchmark Done", L"Benchmark", MB_OK);
