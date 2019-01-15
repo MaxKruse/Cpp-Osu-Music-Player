@@ -18,14 +18,14 @@
             See: https://github.com/wjakob/nanogui
 
 ☐ Add sound lib @high
-    ✘ Un4Seen Bass @high @cancelled(19-01-09 13:31)
+    ✔ Un4Seen Bass @high @done(19-01-15 18:50)
     Possible Options that i scouted:
         ✘ MMSystem.h (Windows Driver) @cancelled(19-01-04 19:42)
         ✘ Un4Seen Bass + Bass_FX (High Pitch, "Nightcore Mode") @cancelled(19-01-09 13:31)
             This seems likely, documentation is provided in the download.
         ✘ PortAudio @cancelled(19-01-09 20:14)
             See: https://git.assembla.com/portaudio.git
-        ✔ SoLoud @done(19-01-09 20:23)
+        ✘ SoLoud @cancelled(19-01-15 18:50)
             See: https://github.com/jarikomppa/soloud
 
 ☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high
