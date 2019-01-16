@@ -5,14 +5,18 @@
 
 #include "bass.h"
 
-static void ShowAllOffsetsOfMap(std::unique_ptr<Parser::Beatmap>& map)
+static void ShowAllOffsetsOfMap(const std::shared_ptr<Parser::Beatmap>& map)
 {
+	cxxtimer::Timer timer;
 	auto hitsoundsOfObjects = map->GetHitsoundsOfTimings();
 	auto offsets = map->GetOffsets();
 	for (auto& offset : offsets)
 	{
+		timer.start();
 		if (hitsoundsOfObjects.find(offset) != hitsoundsOfObjects.end())
 		{
+			LOGGER_DEBUG("Time to find offset in map => {}ns", timer.count<std::chrono::nanoseconds>());
+			timer.reset();
 			// Hitsound found 
 			LOGGER_DEBUG("HITSOUNDS FOR OFFEST {} FOUND =>", offset);
 			for (auto& hitsound : hitsoundsOfObjects[offset])
@@ -25,21 +29,21 @@ static void ShowAllOffsetsOfMap(std::unique_ptr<Parser::Beatmap>& map)
 
 static void Benchmark()
 {
-	 cxxtimer::Timer timer;
+	cxxtimer::Timer timer;
 
-	//Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
-	Parser::Parser p("D:/osu/Songs/");
+	Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
+	//Parser::Parser p("D:/osu/Songs/");
 	
 	auto ListOfFiles = p.GetListOfFiles();
 
 	MessageBox(nullptr, L"Start Parsing", L"Benchmark", MB_OK);
 
-	std::vector<std::unique_ptr<Parser::Beatmap>> Beatmaps;
+	std::vector<std::shared_ptr<Parser::Beatmap>> Beatmaps;
 	timer.start();
 	for (auto& file : ListOfFiles)
 	{
 		Beatmaps.emplace_back(p.BeatmapFromFile(file));
-		LOGGER_DEBUG("Time to parse map => {}ms", timer.count());
+		LOGGER_DEBUG("Time to parse map => {}ns", timer.count<std::chrono::nanoseconds>());
 		timer.reset();
 		timer.start();
 	}
@@ -51,7 +55,7 @@ static void Benchmark()
 	for (auto& map : Beatmaps)
 	{
 		ShowAllOffsetsOfMap(map);	
-		LOGGER_DEBUG("Time to parse all hitsounds of map => {}ms", timer.count());
+		LOGGER_DEBUG("Time to parse all hitsounds of map => {}ns", timer.count<std::chrono::nanoseconds>());
 		timer.reset();
 		timer.start();
 	}

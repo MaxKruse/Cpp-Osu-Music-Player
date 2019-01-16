@@ -11,7 +11,7 @@ namespace Parser {
 		GetAllFiles();
 	}
 
-	std::unique_ptr<Beatmap> Parser::BeatmapFromFile(const std::string & FilePath)
+	std::shared_ptr<Beatmap> Parser::BeatmapFromFile(const std::string & FilePath)
 	{
 		LOGGER_DEBUG("Parsing from file => {}", FilePath);
 		auto Fullpath = std::string(m_SongsFolder + FilePath);
@@ -45,16 +45,16 @@ namespace Parser {
 
 		m_Text = std::vector<std::string>(500);
 
-		return std::make_unique<Beatmap>(m_FullFilePath, image, hitobjects, timings, general, meta, search, diff);
+		return std::make_shared<Beatmap>(m_FullFilePath, image, hitobjects, timings, general, meta, search, diff);
 	}
 
-	std::unique_ptr<Beatmap> Parser::BeatmapFromString(const std::vector<std::string> & Text)
+	std::shared_ptr<Beatmap> Parser::BeatmapFromString(const std::vector<std::string> & Text)
 	{
 		LOGGER_DEBUG("Parsing from StringVector");
 		m_Text = Text;
 		m_FullFilePath = "NO PATH GIVEN";
 		m_FileName = "NO FILE GIVEN";
-		return std::make_unique<Beatmap>();
+		return std::make_shared<Beatmap>();
 	}
 
 	void Parser::GetAllFiles()
@@ -87,7 +87,10 @@ namespace Parser {
 		{
 			while (std::getline(readFile, line))
 			{
-				m_ListOfFiles.push_back(line);
+				if (line.length() != 0)
+				{
+					m_ListOfFiles.push_back(line);
+				}
 			}
 
 			return m_ListOfFiles.size();
@@ -151,6 +154,7 @@ namespace Parser {
 
 		if (m_TempVersion != "v14" && m_TempVersion != "v13" && m_TempVersion != "v12")
 		{
+			LOGGER_WARN("File Version too old. Cant parse timings and Hitobjects.");
 			return timingpoints;
 		}
 
@@ -228,6 +232,7 @@ namespace Parser {
 
 		if (m_TempVersion != "v14" && m_TempVersion != "v13" && m_TempVersion != "v12")
 		{
+			LOGGER_WARN("File Version too old. Cant parse timings and Hitobjects.");
 			return hitobjects;
 		}
 
@@ -318,7 +323,6 @@ namespace Parser {
 				FileFormatVersion = line.erase(0, 16);
 				LOGGER_TRACE("FOUND FILE FORMAT => {}", FileFormatVersion);
 				m_TempVersion = FileFormatVersion;
-				LOGGER_WARN("File Version too old. Cant parse timings and Hitobjects.");
 				found++;
 			}
 
@@ -525,7 +529,7 @@ namespace Parser {
 		std::vector<std::string> result = std::vector<std::string>();
 		std::string line;
 
-		LOGGER_INFO("Reading file => {}", filename);
+		LOGGER_DEBUG("Reading file => {}", filename);
 
 		m_FileHandle.open(filename);
 

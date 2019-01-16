@@ -10,8 +10,8 @@ namespace Parser {
 	public:
 		Parser(const std::string & SongsFolderPath, bool GetListOfFiles = true);
 
-		std::unique_ptr<Beatmap> BeatmapFromFile(const std::string & FilePath);
-		std::unique_ptr<Beatmap> BeatmapFromString(const std::vector<std::string> & Text);
+		std::shared_ptr<Beatmap> BeatmapFromFile(const std::string & FilePath);
+		std::shared_ptr<Beatmap> BeatmapFromString(const std::vector<std::string> & Text);
 
 		void GetAllFiles();
 
