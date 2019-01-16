@@ -1,4 +1,4 @@
-☐ Get a list of all .osu files in the folder of the parser @high 
+✔ Get a list of all .osu files @high @done(19-01-17 00:36)
 ☐ Add Option Parser
     See: https://github.com/jarro2783/cxxopts
 ☐ Make GUI @low
@@ -40,7 +40,6 @@
         - 10.01.2019
             ✔ 1. Review/Cleanup @started(19-01-11 17:31) @done(19-01-11 17:33) @lasted(2m52s)
             Clang Tidy - Not Much change
-            I was sick, will postpone
         - 20.01.2019
             ☐ 2. Review/Cleanup
         - 30.01.2019
@@ -75,7 +74,7 @@
     See commit.
     Basically, I deleted all my deconstructors and let the compiler handle things for me. Smart pointers delete themselves when out of scope. We now have no memory leaks when (potentially) reading maps as needed and deleting them when we are done with them
 
-☐ Cache beatmap locations instead of parsing through the folder everytime @created(19-01-12 15:07)
+✔ Cache beatmap locations instead of parsing through the folder everytime @created(19-01-12 15:07) @done(19-01-17 00:36)
  
 ✔ Refactor into a DLL @done(19-01-12 15:06)
 ✔ publish seperatly on Github under GNU License @done(19-01-09 13:32)
