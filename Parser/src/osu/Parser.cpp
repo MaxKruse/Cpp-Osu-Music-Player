@@ -8,16 +8,12 @@ namespace Parser {
 	{
 		LOGGER_INFO("Songs folder set => {}", m_SongsFolder);
 
-
-		if (GetListOfFiles)
-		{
-			GetAllFiles();
-		}
+		GetAllFiles();
 	}
 
 	std::unique_ptr<Beatmap> Parser::BeatmapFromFile(const std::string & FilePath)
 	{
-		LOGGER_INFO("Parsing from file => {}", FilePath);
+		LOGGER_DEBUG("Parsing from file => {}", FilePath);
 		auto Fullpath = std::string(m_SongsFolder + FilePath);
 		m_FullFilePath = Fullpath;
 
@@ -25,26 +21,26 @@ namespace Parser {
 				
 		m_Text = FileToStringVector(m_FullFilePath);
 
-		LOGGER_INFO("Parsing Background Image from file => {}", m_FullFilePath);
+		LOGGER_DEBUG("Parsing Background Image from file => {}", m_FullFilePath);
 		auto image = ParseBackgroundImage();
-		LOGGER_INFO("Parsing General from file => {}", m_FullFilePath);
+		LOGGER_DEBUG("Parsing General from file => {}", m_FullFilePath);
 		General general = ParseGeneral();
-		LOGGER_INFO("Parsing Metadata from file => {}", m_FullFilePath);
+		LOGGER_DEBUG("Parsing Metadata from file => {}", m_FullFilePath);
 		Metadata meta = ParseMetadata();
-		LOGGER_INFO("Parsing SearchBy from file => {}", m_FullFilePath);
+		LOGGER_DEBUG("Parsing SearchBy from file => {}", m_FullFilePath);
 		SearchBy search = ParseSearchBy();
-		LOGGER_INFO("Parsing Difficulty from file => {}", m_FullFilePath);
+		LOGGER_DEBUG("Parsing Difficulty from file => {}", m_FullFilePath);
 		Difficulty diff = ParseDifficulty();
 		// TODO: If any of the above contains default values (-1 for everything except Difficulty diff), throw an error @done(2019-01-02 18:46 UTC+01)
 		if (general.HasDefaults() || meta.HasDefaults() || search.HasDefaults() || diff.HasDefaults())
 		{
-			LOGGER_WARN("Headerinformation (General, Metadata, SearchBy, Difficulty) incomplete, make sure your files have the correct format. File => {}", FilePath);
+			LOGGER_DEBUG("Headerinformation (General, Metadata, SearchBy, Difficulty) incomplete, make sure your files have the correct format. File => {}", FilePath);
 		}
 
 		// TODO: Parsing TimingsPoints, Then Hitobjects @done(2019-01-02 18:22 UTC+01)
-		LOGGER_INFO("Parsing TimingsPoints from file => {}", m_FullFilePath);
+		LOGGER_DEBUG("Parsing TimingsPoints from file => {}", m_FullFilePath);
 		timings = ParseTimingPoints();
-		LOGGER_INFO("Parsing Hitobjects from file => {}", m_FullFilePath);
+		LOGGER_DEBUG("Parsing Hitobjects from file => {}", m_FullFilePath);
 		hitobjects = ParseHitobjects();
 
 		m_Text = std::vector<std::string>(500);
@@ -54,7 +50,7 @@ namespace Parser {
 
 	std::unique_ptr<Beatmap> Parser::BeatmapFromString(const std::vector<std::string> & Text)
 	{
-		LOGGER_INFO("Parsing from StringVector");
+		LOGGER_DEBUG("Parsing from StringVector");
 		m_Text = Text;
 		m_FullFilePath = "NO PATH GIVEN";
 		m_FileName = "NO FILE GIVEN";
@@ -63,6 +59,45 @@ namespace Parser {
 
 	void Parser::GetAllFiles()
 	{
+		if (m_ListOfFiles.size() < 1)
+		{
+			auto count = CacheBeatmaps();
+			LOGGER_INFO("Cached {} Beatmaps", count);
+			return;
+		}
+	}
+
+	int Parser::CacheBeatmaps()
+	{
+		std::ifstream readFile;
+		readFile.open("Beatmaps.prs");
+		std::string line;
+
+		if (m_ListOfFiles.size() > 1)
+		{
+			return m_ListOfFiles.size();
+		}
+
+		if (!readFile.is_open())
+		{
+			LOGGER_INFO("Couldnt open => {}", "Beatmaps.prs");
+			LOGGER_INFO("Creating now...");
+		}
+		else
+		{
+			while (std::getline(readFile, line))
+			{
+				m_ListOfFiles.push_back(line);
+			}
+
+			return m_ListOfFiles.size();
+		}
+
+		readFile.close();
+		
+		std::ofstream writeFile;
+		writeFile.open("Beatmaps.prs");
+
 		for (std::experimental::filesystem::recursive_directory_iterator i(m_SongsFolder), end; i != end; ++i)
 		{
 			if (!is_directory(i->path()))
@@ -74,9 +109,16 @@ namespace Parser {
 					LOGGER_TRACE("Found File => {}", i->path().string());
 					std::string RelativeFilePath(i->path().string().erase(0, m_SongsFolder.size()));
 					m_ListOfFiles.emplace_back(RelativeFilePath);
+					writeFile.write(RelativeFilePath.c_str(), strlen(RelativeFilePath.c_str()));
+					writeFile.write("\n", 1);
+					writeFile.flush();
 				}
 			}
 		}
+
+		writeFile.flush();
+		writeFile.close();
+		return 0;
 	}
 
 	std::string Parser::ParseBackgroundImage()
@@ -276,7 +318,7 @@ namespace Parser {
 				FileFormatVersion = line.erase(0, 16);
 				LOGGER_TRACE("FOUND FILE FORMAT => {}", FileFormatVersion);
 				m_TempVersion = FileFormatVersion;
-				LOGGER_WARN("File Version too old. cant parse timings and Hitobjects.");
+				LOGGER_WARN("File Version too old. Cant parse timings and Hitobjects.");
 				found++;
 			}
 
@@ -499,7 +541,7 @@ namespace Parser {
 			result.push_back(line);
 		}
 
-		LOGGER_INFO("Closing file => {}", filename);
+		LOGGER_DEBUG("Closing file => {}", filename);
 		m_FileHandle.close();
 
 		return result;

@@ -75,10 +75,10 @@ int main(int argc, const char * argv[])
 
 	}
 
-	LOGGER_INFO("Running Bass => Lib {} | DLL {}", BASS_GetVersion(), BASSVERSION);
+	LOGGER_INFO("Running Bass => DLL {} | Lib {}", HIWORD(BASS_GetVersion()), BASSVERSION);
 
 	if (!BASS_Init(-1, 44100, 0, NULL, NULL)) {
-		LOGGER_ERROR("Can't initialize device");
+		LOGGER_ERROR("Can't initialize Bass device");
 		return 0;
 	}
 	

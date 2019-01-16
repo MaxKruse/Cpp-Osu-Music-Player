@@ -44,6 +44,8 @@ namespace Parser {
 		SearchBy   ParseSearchBy();
 		Difficulty ParseDifficulty();
 
+		int CacheBeatmaps();
+
 		std::vector<std::string> FileToStringVector(std::string filename);
 		std::vector<std::string> split(const std::string & s, const char & delim);
 	};

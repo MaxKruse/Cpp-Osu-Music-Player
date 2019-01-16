@@ -55,8 +55,8 @@ namespace Parser {
 
 			if (!found)
 			{
-				LOGGER_WARN("Hitobject at {} doesnt seem to have a Timingpoint that affects it.", object->GetOffset());
-				LOGGER_WARN("Giving it default hitsounds...");
+				LOGGER_DEBUG("Hitobject at {} doesnt seem to have a Timingpoint that affects it.", object->GetOffset());
+				LOGGER_DEBUG("Giving it default hitsounds...");
 				std::vector<std::string> temp = std::vector<std::string>();
 				temp.emplace_back("normal-hitnormal.wav");
 
@@ -72,7 +72,7 @@ namespace Parser {
 
 	Beatmap::~Beatmap()
 	{
-		LOGGER_INFO("Deleting Hitobjects From Beatmap => {}", m_FilePath);
+		LOGGER_DEBUG("Deleting Hitobjects From Beatmap => {}", m_FilePath);
 		for (auto& object : m_HitObjects)
 		{
 			delete object;
@@ -80,7 +80,7 @@ namespace Parser {
 
 		m_HitObjects.clear();
 
-		LOGGER_INFO("Deleting TimingPoints From Beatmap => {}", m_FilePath);
+		LOGGER_DEBUG("Deleting TimingPoints From Beatmap => {}", m_FilePath);
 		m_TimingPoints.clear();
 		
 	}
