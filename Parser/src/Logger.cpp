@@ -38,7 +38,7 @@ namespace Parser {
 #ifdef _DEBUG
 		s_ConsoleLogger->set_level(spdlog::level::debug);
 #elif _RELEASE
-		s_ConsoleLogger->set_level(spdlog::level::info);
+		s_ConsoleLogger->set_level(spdlog::level::warn);
 #else
 		s_ConsoleLogger->set_level(spdlog::level::err);
 #endif
