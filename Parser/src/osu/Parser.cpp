@@ -7,11 +7,11 @@ namespace Parser {
 		: m_SongsFolder(SongsFolderPath)
 	{
 		LOGGER_INFO("Songs folder set => {}", m_SongsFolder);
-
+		p_RNG.seed(time(0));
 		GetAllFiles();
 	}
 
-	std::shared_ptr<Beatmap> Parser::BeatmapFromFile(const std::string & FilePath)
+	std::unique_ptr<Beatmap> Parser::BeatmapFromFile(const std::string & FilePath)
 	{
 		LOGGER_DEBUG("Parsing from file => {}", FilePath);
 		auto Fullpath = std::string(m_SongsFolder + FilePath);
@@ -45,16 +45,16 @@ namespace Parser {
 
 		m_Text = std::vector<std::string>(500);
 
-		return std::make_shared<Beatmap>(m_FullFilePath, image, hitobjects, timings, general, meta, search, diff);
+		return std::make_unique<Beatmap>(m_FullFilePath, image, hitobjects, timings, general, meta, search, diff);
 	}
 
-	std::shared_ptr<Beatmap> Parser::BeatmapFromString(const std::vector<std::string> & Text)
+	std::unique_ptr<Beatmap> Parser::BeatmapFromString(const std::vector<std::string> & Text)
 	{
 		LOGGER_DEBUG("Parsing from StringVector");
 		m_Text = Text;
 		m_FullFilePath = "NO PATH GIVEN";
 		m_FileName = "NO FILE GIVEN";
-		return std::make_shared<Beatmap>();
+		return std::make_unique<Beatmap>();
 	}
 
 	void Parser::GetAllFiles()
@@ -176,7 +176,7 @@ namespace Parser {
 
 		if (m_TempVersion != "v14" && m_TempVersion != "v13" && m_TempVersion != "v12")
 		{
-			LOGGER_WARN("File Version too old. Cant parse timings and Hitobjects.");
+			LOGGER_WARN("File Version too old. Cant parse timingpoints.");
 			return timingpoints;
 		}
 
@@ -254,7 +254,7 @@ namespace Parser {
 
 		if (m_TempVersion != "v14" && m_TempVersion != "v13" && m_TempVersion != "v12")
 		{
-			LOGGER_WARN("File Version too old. Cant parse timings and Hitobjects.");
+			LOGGER_WARN("File Version too old. Cant parse hitobjects.");
 			return hitobjects;
 		}
 

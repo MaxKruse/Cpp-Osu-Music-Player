@@ -5,13 +5,15 @@
 
 namespace Parser {
 
+	std::mt19937_64 p_RNG;
+
 	class API Parser
 	{
 	public:
 		Parser(const std::string & SongsFolderPath, bool GetListOfFiles = true);
 
-		std::shared_ptr<Beatmap> BeatmapFromFile(const std::string & FilePath);
-		std::shared_ptr<Beatmap> BeatmapFromString(const std::vector<std::string> & Text);
+		std::unique_ptr<Beatmap> BeatmapFromFile(const std::string & FilePath);
+		std::unique_ptr<Beatmap> BeatmapFromString(const std::vector<std::string> & Text);
 
 		void GetAllFiles();
 
@@ -49,5 +51,24 @@ namespace Parser {
 		std::vector<std::string> FileToStringVector(std::string filename);
 		std::vector<std::string> split(const std::string & s, const char & delim);
 	};
+
+	size_t Random(size_t low = 0, size_t high = 0xFFFFFFF)
+	{
+		std::uniform_int_distribution<size_t> GetRandom(low, high);
+
+		size_t index = GetRandom(p_RNG);
+		return index;
+	}
+
+	template<typename T>
+	size_t Random(std::vector<T> input)
+	{
+		size_t high = input.size();
+		size_t low = 0;
+		std::uniform_int_distribution<size_t> GetRandom(low, high);
+
+		size_t index = GetRandom(p_RNG);
+		return index;
+	}
 
 }  // namespace Parser

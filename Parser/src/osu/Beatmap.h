@@ -229,8 +229,8 @@ namespace Parser {
 		return os << d.ToString();
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, const Beatmap& b)
+	inline std::ostream& operator<<(std::ostream& os, const std::unique_ptr<Beatmap>& b)
 	{
-		return os << b.ToString();
+		return os << b->ToString();
 	}
 }  // namespace Parser
