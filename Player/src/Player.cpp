@@ -64,14 +64,6 @@ static void Benchmark()
 	MessageBox(nullptr, L"Benchmark Done", L"Benchmark", MB_OK);
 }
 
-static size_t Random(size_t low = 0, size_t high = 0xFFFFFFF)
-{
-	size_t index = (size_t)pow((rand() * 5) % high, rand() * (sqrt(2)));
-	index = index % (high-low);
-	index = index + low;
-	return index;
-}
-
 int main(int argc, const char * argv[])
 {
 	// Init the Logger for the whole Program
@@ -101,7 +93,7 @@ int main(int argc, const char * argv[])
 	//Parser::Parser p("C:/Dev/C++ Osu Music Player/Player/");
 	Parser::Parser p("D:/osu/Songs/");
 	auto list = p.GetListOfFiles();
-	auto index = Random(0, list.size());
+	auto index = Praser::Random(0, list.size());
 
 	auto beatmap = p.BeatmapFromFile(list[index]);
 
