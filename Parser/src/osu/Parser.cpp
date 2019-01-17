@@ -80,26 +80,47 @@ namespace Parser {
 
 		if (!readFile.is_open())
 		{
-			LOGGER_INFO("Couldnt open => {}", "Beatmaps.prs");
+			LOGGER_INFO("Couldn't open => {}", "Beatmaps.prs");
 			LOGGER_INFO("Creating now...");
 		}
 		else
 		{
+			int l = 0;
 			while (std::getline(readFile, line))
 			{
-				if (line.length() != 0)
+				if (l == 0)
+				{
+					auto path = line.erase(0, 15);
+					if (path != m_SongsFolder)
+					{
+						LOGGER_INFO("Couldn't find cache for folder => {}", m_SongsFolder);
+						LOGGER_INFO("Creating now...");
+						readFile.close();
+						DeleteFile(L"Beatmaps.prs");
+						break;
+					}
+				}
+
+				if (line.length() != 0 && line.find("cached_path_is=") == std::string::npos)
 				{
 					m_ListOfFiles.push_back(line);
 				}
-			}
 
-			return m_ListOfFiles.size();
+				l++;
+			}
+			if (l != 0)
+			{
+				return m_ListOfFiles.size();
+			}
 		}
 
 		readFile.close();
 		
 		std::ofstream writeFile;
 		writeFile.open("Beatmaps.prs");
+		writeFile.write("cached_path_is=", 15);
+		writeFile.write(m_SongsFolder.c_str(), strlen(m_SongsFolder.c_str()));
+		writeFile.write("\n", 1);
 
 		for (std::experimental::filesystem::recursive_directory_iterator i(m_SongsFolder), end; i != end; ++i)
 		{
@@ -109,7 +130,7 @@ namespace Parser {
 				// See: https://stackoverflow.com/a/23658737
 				if (i->path().extension() == ".osu")
 				{
-					LOGGER_TRACE("Found File => {}", i->path().string());
+					LOGGER_TRACE("Found file => {}", i->path().string());
 					std::string RelativeFilePath(i->path().string().erase(0, m_SongsFolder.size()));
 					m_ListOfFiles.emplace_back(RelativeFilePath);
 					writeFile.write(RelativeFilePath.c_str(), strlen(RelativeFilePath.c_str()));
@@ -121,6 +142,7 @@ namespace Parser {
 
 		writeFile.flush();
 		writeFile.close();
+		LOGGER_INFO("Cached all beatmaps");
 		return 0;
 	}
 
@@ -535,7 +557,7 @@ namespace Parser {
 
 		if (!m_FileHandle.is_open())
 		{
-			LOGGER_ERROR("Couldnt open => {}", filename);
+			LOGGER_ERROR("Couldn't open => {}", filename);
 			LOGGER_ERROR("Are you sure the file exists and isnt being used by any other program?");
 			return result;
 		}
