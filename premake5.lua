@@ -61,15 +61,18 @@ project "Parser"
 		defines "_DEBUG"
 		optimize "Debug"
 		symbols "Full"
+		buildoptions "/MDd"
 
 	filter "configurations:Release"
 		defines "_RELEASE"
 		optimize "On"
 		symbols "On"
+		buildoptions "/MD"
 
 	filter "configurations:Dist"
 		defines "_DIST"
 		optimize "Size"
+		buildoptions "/MD"
 
 
 
@@ -120,12 +123,15 @@ project "Player"
 		defines "_DEBUG"
 		optimize "Debug"
 		symbols "Full"
+		buildoptions "/MDd"
 
 	filter "configurations:Release"
 		defines "_RELEASE"
 		optimize "On"
 		symbols "On"
+		buildoptions "/MD"
 
 	filter "configurations:Dist"
 		defines "_DIST"
 		optimize "Size"
+		buildoptions "/MD"
