@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdio>
 #include <cmath>
+#include <cstdlib>
 #include <Windows.h>
 #include <string>
 #include <vector>
