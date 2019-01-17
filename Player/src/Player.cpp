@@ -93,9 +93,11 @@ int main(int argc, const char * argv[])
 	//Parser::Parser p("C:/Dev/C++ Osu Music Player/Player/");
 	Parser::Parser p("D:/osu/Songs/");
 	auto list = p.GetListOfFiles();
-	auto index = Praser::Random(0, list.size());
+	auto index = Parser::Random(list);
 
 	auto beatmap = p.BeatmapFromFile(list[index]);
+
+	LOGGER_WARN("{}", beatmap);
 
 	return 0xDEAD;
 }
