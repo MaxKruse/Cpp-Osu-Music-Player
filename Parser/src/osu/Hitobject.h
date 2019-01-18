@@ -20,22 +20,23 @@ namespace Parser {
 	{
 	public:
 		Hitobject(unsigned short x, unsigned short y, long offset, unsigned short type)
-			: m_Position(x, y), m_Offset(offset), m_Type(type)
+			: m_Position(x, y), m_Type(type)
 		{
-		}	// TODO(Max): x, y, time, type, >> hitSound..., extras << @done (2019-01-03 22:12 UTC+01)
+			m_Offset.emplace_back(offset);
+		}
 		virtual ~Hitobject() = default;
 
-		virtual std::vector<std::string> GetHitsounds(TimingPoint t) = 0;
+		virtual std::pair<long, std::vector<std::string>> GetHitsounds(TimingPoint t) = 0;
 		
-		inline const unsigned short GetX() const { return m_Position.X; }
-		inline const unsigned short GetY() const { return m_Position.Y; }
-		inline const long GetOffset() const { return m_Offset; }
-		inline const unsigned short GetType() const { return m_Type; }
+		inline const unsigned short    GetX() const { return m_Position.X; }
+		inline const unsigned short    GetY() const { return m_Position.Y; }
+		inline const std::vector<long> GetOffsets() const { return m_Offset; }
+		inline const unsigned short    GetType() const { return m_Type; }
 			   
 	protected:
-		Position       m_Position;
-		long           m_Offset;
-		unsigned short m_Type;
+		Position                    m_Position;
+		std::vector<long>           m_Offset;
+		unsigned short              m_Type;
 	};
 
 }  // namespace Parser

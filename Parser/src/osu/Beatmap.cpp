@@ -41,12 +41,12 @@ namespace Parser {
 					break;
 				}
 
-				if (object->GetOffset() < timingpoint.GetOffset() && found == false)
+				if (object->GetOffsets()[0] < timingpoint.GetOffset() && found == false)
 				{
 					timingpoint_to_use = timingpoint;
 					found = true;
 				}
-				else if (object->GetOffset() > timingpoint.GetOffset())
+				else if (object->GetOffsets()[0] > timingpoint.GetOffset())
 				{
 					timingpoint_to_use = timingpoint;
 					found = true;
@@ -55,18 +55,18 @@ namespace Parser {
 
 			if (!found)
 			{
-				LOGGER_DEBUG("Hitobject at {} doesnt seem to have a Timingpoint that affects it.", object->GetOffset());
+				LOGGER_DEBUG("Hitobject at {} doesnt seem to have a Timingpoint that affects it.", object->GetOffsets()[0]);
 				LOGGER_DEBUG("Giving it default hitsounds...");
 				std::vector<std::string> temp = std::vector<std::string>();
 				temp.emplace_back("normal-hitnormal.wav");
 
-				m_HitsoundsOnTiming.emplace(std::pair<long, std::vector<std::string>>(object->GetOffset(), temp));
-				m_Offsets.emplace_back(object->GetOffset());
+				m_HitsoundsOnTiming.emplace(object->GetOffsets()[0], temp);
+				m_Offsets.emplace_back(object->GetOffsets());
 				continue;
 			}
-
-			m_HitsoundsOnTiming.emplace(std::pair<long, std::vector<std::string>>(object->GetOffset(), object->GetHitsounds(timingpoint_to_use)));
-			m_Offsets.emplace_back(object->GetOffset());
+			
+			m_HitsoundsOnTiming.emplace(object->GetHitsounds(timingpoint_to_use));
+			m_Offsets.emplace_back(object->GetOffsets());
 		}
 	}
 

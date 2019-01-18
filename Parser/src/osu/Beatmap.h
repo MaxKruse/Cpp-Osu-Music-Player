@@ -185,17 +185,23 @@ namespace Parser {
 		~Beatmap();
 
 		inline const std::map<long, std::vector<std::string>> GetHitsoundsOfTimings() const { return m_HitsoundsOnTiming; }
-		inline const long GetLastOffset() const { return m_HitObjects[m_HitObjects.size() - 1]->GetOffset(); }
-		inline const std::vector<long> GetOffsets() const { return m_Offsets; }
+		const long GetLastOffset() const
+		{
+			auto last_object = m_HitObjects.size() - 1;
+			auto offsets_of_last = m_HitObjects[last_object]->GetOffsets();
+			return offsets_of_last[offsets_of_last.size() - 1];
+		}
+
+		inline const std::vector<std::vector<long>> GetOffsets() const { return m_Offsets; }
 
 		std::string ToString() const;
 		
 	private:
-		std::string               m_FilePath;
-		std::string               m_BackgroundImage;
-		std::vector<Hitobject*>   m_HitObjects;
-		std::vector<TimingPoint>  m_TimingPoints;
-		std::vector<long>		  m_Offsets;
+		std::string                           m_FilePath;
+		std::string                           m_BackgroundImage;
+		std::vector<Hitobject*>               m_HitObjects;
+		std::vector<TimingPoint>              m_TimingPoints;
+		std::vector<std::vector<long>>		  m_Offsets;
 
 		std::map<long, std::vector<std::string>> m_HitsoundsOnTiming;
 		

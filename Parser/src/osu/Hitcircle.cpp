@@ -8,11 +8,9 @@ namespace Parser {
 	{
 	}
 
-	std::vector<std::string> Hitcircle::GetHitsounds(TimingPoint t)
+	std::pair<long, std::vector<std::string>> Hitcircle::GetHitsounds(TimingPoint t)
 	{
 		auto s = std::vector<std::string>();
-		s.reserve(4); // hitnormal + additions (clap, finish, whistle), there is no other possiblity
-
 		auto sampleset = t.GetSampleSet();
 		auto sampleindex = t.GetSampleIndex();
 
@@ -112,8 +110,9 @@ namespace Parser {
 			}
 
 		}
-		
-		return s;
+
+		std::pair<long, std::vector<std::string>> m(m_Offset[0], s);
+		return m;
 	}
 
 }
