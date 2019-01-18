@@ -5,7 +5,8 @@
 
 namespace Parser {
 
-	std::mt19937_64 p_RNG;
+	std::default_random_engine p_RNG;
+	time_t x;
 
 	class API Parser
 	{
@@ -54,21 +55,28 @@ namespace Parser {
 
 	size_t Random(size_t low = 0, size_t high = 0xFFFFFFF)
 	{
-		std::uniform_int_distribution<size_t> GetRandom(low, high);
+		uint64_t z = (x += 0x9e3779b97f4a7c15);
+		z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
+		z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
 
-		size_t index = GetRandom(p_RNG);
-		return index;
+		z = z % (high - low);
+		z += low;
+		return z;
 	}
 
 	template<typename T>
 	size_t Random(std::vector<T> input)
 	{
-		size_t high = input.size();
 		size_t low = 0;
-		std::uniform_int_distribution<size_t> GetRandom(low, high);
+		size_t high = input.size();
 
-		size_t index = GetRandom(p_RNG);
-		return index;
+		uint64_t z = (x += 0x9e3779b97f4a7c15);
+		z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
+		z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
+
+		z = z % (high - low);
+		z += low;
+		return z;
 	}
 
 }  // namespace Parser

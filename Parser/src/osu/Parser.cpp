@@ -7,7 +7,8 @@ namespace Parser {
 		: m_SongsFolder(SongsFolderPath)
 	{
 		LOGGER_INFO("Songs folder set => {}", m_SongsFolder);
-		p_RNG.seed(time(0));
+		x = time(NULL);
+		//p_RNG.seed(x);
 		GetAllFiles();
 	}
 
