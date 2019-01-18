@@ -19,6 +19,7 @@ project "Parser"
 	kind "SharedLib"
 	language "C++"
 	characterset "Unicode"
+	vectorextensions "AVX2"
 
 	floatingpoint "Fast"
 
@@ -81,6 +82,7 @@ project "Player"
 	kind "ConsoleApp"
 	language "C++"
 	characterset "Unicode"
+	vectorextensions "AVX2"
 
 	floatingpoint "Fast"
 
