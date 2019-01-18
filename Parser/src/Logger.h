@@ -46,3 +46,6 @@ namespace Parser {
 
 #define LOGGER_CRITICAL(...)		::Parser::Logger::GetConsoleLogger()->critical(__VA_ARGS__);\
 									::Parser::Logger::GetFileLogger()->critical(__VA_ARGS__)
+
+#define LOGGER_FLUSH()				::Parser::Logger::GetConsoleLogger()->flush();\
+									::Parser::Logger::GetFileLogger()->flush()
