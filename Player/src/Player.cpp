@@ -10,20 +10,24 @@ static void ShowAllOffsetsOfMap(const std::shared_ptr<Parser::Beatmap>& map)
 	cxxtimer::Timer timer;
 	auto hitsoundsOfObjects = map->GetHitsoundsOfTimings();
 	auto offsets = map->GetOffsets();
-	for (auto& offset : offsets)
+	for (auto& offsetlist : offsets)
 	{
-		timer.start();
-		if (hitsoundsOfObjects.find(offset) != hitsoundsOfObjects.end())
+		for (auto& offset : offsetlist)
 		{
-			LOGGER_DEBUG("Time to find offset in map => {}ns", timer.count<std::chrono::nanoseconds>());
-			timer.reset();
-			// Hitsound found 
-			LOGGER_DEBUG("HITSOUNDS FOR OFFEST {} FOUND =>", offset);
-			for (auto& hitsound : hitsoundsOfObjects[offset])
+			timer.start();
+			if (hitsoundsOfObjects.find(offset) != hitsoundsOfObjects.end())
 			{
-				LOGGER_DEBUG("{}", hitsound);
+				LOGGER_DEBUG("Time to find offset in map => {}ns", timer.count<std::chrono::nanoseconds>());
+				timer.reset();
+				// Hitsound found 
+				LOGGER_DEBUG("HITSOUNDS FOR OFFEST {} FOUND =>", offset);
+				for (auto& hitsound : hitsoundsOfObjects[offset])
+				{
+					LOGGER_DEBUG("{}", hitsound);
+				}
 			}
 		}
+		
 	}
 }
 
@@ -95,9 +99,23 @@ int main(int argc, const char * argv[])
 	auto list = p.GetListOfFiles();
 	auto index = Parser::Random(list);
 
+	auto total = 0;
+	auto amount = 2500;
+
+	for (size_t i = 0; i < amount; i++)
+	{
+		auto a = Parser::Random(list);
+		total += a;
+	}
+	
+	LOGGER_DEBUG("Should be => {}", list.size() / 2.0);
+	LOGGER_DEBUG("{}", total / amount);
+	
+
 	auto beatmap = p.BeatmapFromFile(list[index]);
 
-	LOGGER_WARN("{}", beatmap);
+
+	LOGGER_FLUSH();
 
 	return 0xDEAD;
 }
