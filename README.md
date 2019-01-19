@@ -11,9 +11,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 You will need the following:
 
-```
-- Bass/Bass_FX DLL and Licenses
-```
+* Bass/Bass_FX DLL (BASS_VERSION 516) and Licenses
+* premake5 to build your solution files
 
 ### Installing
 
@@ -28,9 +27,9 @@ Also using [Visual Studio Code](https://code.visualstudio.com/) together with [T
 
 ## Built With
 
-* [CxxTimer](http://www.dropwizard.io/1.0.2/docs/) - Timer used for benchmarking and debugging
+* [CxxTimer](https://github.com/andremaravilha/cxxtimer) - Timer used for benchmarking and debugging
 * [spdlog](https://maven.apache.org/) - Logging purposes
-* [SoLoud](https://github.com/jarikomppa/soloud) - Audio Processing and playback
+* [Bass](https://un4seen.com) - Audio Processing and playback
 
 ## Contributing
 
@@ -48,7 +47,7 @@ See also the list of [contributors](https://github.com/MaxKruse/Cpp-Osu-Music-Pl
 
 ## License
 
-This project is licensed under the GNU GENERAL PUBLIC LICENSE  - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GNU GENERAL PUBLIC LICENSE  - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
