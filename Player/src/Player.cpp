@@ -98,22 +98,10 @@ int main(int argc, const char * argv[])
 	Parser::Parser p("D:/osu/Songs/");
 	auto list = p.GetListOfFiles();
 	auto index = Parser::Random(list);
-
-	auto total = 0;
-	auto amount = 2500;
-
-	for (size_t i = 0; i < amount; i++)
-	{
-		auto a = Parser::Random(list);
-		total += a;
-	}
-	
-	LOGGER_DEBUG("Should be => {}", list.size() / 2.0);
-	LOGGER_DEBUG("{}", total / amount);
-	
-
 	auto beatmap = p.BeatmapFromFile(list[index]);
 
+	LOGGER_INFO("MP3 for {} => {}", list[index], beatmap->GetMp3());
+	LOGGER_INFO("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
 
 	LOGGER_FLUSH();
 
