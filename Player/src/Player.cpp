@@ -87,7 +87,7 @@ int main(int argc, const char * argv[])
 
 	LOGGER_INFO("Running Bass => DLL {} | Lib {}", HIWORD(BASS_GetVersion()), BASSVERSION);
 
-	if (!BASS_Init(-1, 44100, 0, NULL, NULL)) {
+	if (!BASS_Init(-1, 44100, BASS_DEVICE_INIT, NULL, NULL)) {
 		LOGGER_ERROR("Can't initialize Bass device");
 		return 0;
 	}
@@ -103,7 +103,16 @@ int main(int argc, const char * argv[])
 	LOGGER_INFO("MP3 for {} => {}", list[index], beatmap->GetMp3());
 	LOGGER_INFO("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
 
-	LOGGER_FLUSH();
+	HSTREAM Channel;
+		
+	if (!(Channel = BASS_StreamCreateFile(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT)) && !(Channel = BASS_MusicLoad(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, BASS_MUSIC_RAMP | BASS_MUSIC_PRESCAN | BASS_MUSIC_DECODE, 0)))
+	{
+		LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());	
+	}
+	BASS_SetVolume(0.4f);
+	BASS_ChannelPlay(Channel, TRUE);
+	Sleep(6000);
 
+	LOGGER_FLUSH();
 	return 0xDEAD;
 }
