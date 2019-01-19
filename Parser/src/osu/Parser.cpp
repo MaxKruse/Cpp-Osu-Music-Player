@@ -7,8 +7,6 @@ namespace Parser {
 		: m_SongsFolder(SongsFolderPath)
 	{
 		LOGGER_INFO("Songs folder set => {}", m_SongsFolder);
-		x = time(NULL);
-		//p_RNG.seed(x);
 		GetAllFiles();
 	}
 
@@ -17,6 +15,11 @@ namespace Parser {
 		LOGGER_DEBUG("Parsing from file => {}", FilePath);
 		auto Fullpath = std::string(m_SongsFolder + FilePath);
 		m_FullFilePath = Fullpath;
+		replaceAll(m_FullFilePath, "\\", "/");
+
+		auto deleteUntilHere = m_FullFilePath.find_last_of("/", m_FullFilePath.length());
+		auto temp = m_FullFilePath;
+		auto Folder = std::string(temp.erase(deleteUntilHere, temp.length()) + "/");
 
 		m_FileName = FilePath;
 				
@@ -44,9 +47,8 @@ namespace Parser {
 		LOGGER_DEBUG("Parsing Hitobjects from file => {}", m_FullFilePath);
 		hitobjects = ParseHitobjects();
 
-		m_Text = std::vector<std::string>(500);
-
-		return std::make_unique<Beatmap>(m_FullFilePath, image, hitobjects, timings, general, meta, search, diff);
+		m_Text.clear();
+		return std::make_unique<Beatmap>(m_FullFilePath, Folder, image, hitobjects, timings, general, meta, search, diff);
 	}
 
 	std::unique_ptr<Beatmap> Parser::BeatmapFromString(const std::vector<std::string> & Text)

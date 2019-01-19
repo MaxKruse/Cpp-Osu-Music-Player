@@ -35,6 +35,8 @@ namespace Parser {
 			return ss.str();
 		}
 
+		inline const std::string GetAudioFilename() const { return m_AudioFilename; }
+
 		bool HasDefaults()
 		{
 			if (m_FileFormatVersion.empty() || m_AudioFilename.empty() || m_SampleSet.empty() || m_Mode == -1)
@@ -181,7 +183,7 @@ namespace Parser {
 	public:
 		Beatmap();
 
-		Beatmap(const std::string & FilePath, const std::string & BackgroundImage, std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint> Timingpoints, General g, Metadata m, SearchBy s, Difficulty d);
+		Beatmap(const std::string & FilePath, const std::string & Folder, const std::string & BackgroundImage, std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint> Timingpoints, General g, Metadata m, SearchBy s, Difficulty d);
 		~Beatmap();
 
 		inline const std::map<long, std::vector<std::string>> GetHitsoundsOfTimings() const { return m_HitsoundsOnTiming; }
@@ -191,13 +193,17 @@ namespace Parser {
 			auto offsets_of_last = m_HitObjects[last_object]->GetOffsets();
 			return offsets_of_last[offsets_of_last.size() - 1];
 		}
-
+		inline const std::string GetMp3() const { return m_General.GetAudioFilename(); }
+		inline const std::string GetFolderPath() const { return m_Folder; }
+		inline const std::string GetFullMp3Path() const { return GetFolderPath() + GetMp3(); }
+		inline const std::string GetFilePath() const { return m_FilePath; }
 		inline const std::vector<std::vector<long>> GetOffsets() const { return m_Offsets; }
 
 		std::string ToString() const;
 		
 	private:
 		std::string                           m_FilePath;
+		std::string                           m_Folder;
 		std::string                           m_BackgroundImage;
 		std::vector<Hitobject*>               m_HitObjects;
 		std::vector<TimingPoint>              m_TimingPoints;
@@ -209,8 +215,6 @@ namespace Parser {
 		Metadata   m_Metadata;
 		SearchBy   m_SearchBy;
 		Difficulty m_Difficulty;
-
-
 	};
 
 	

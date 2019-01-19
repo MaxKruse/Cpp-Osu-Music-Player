@@ -4,8 +4,6 @@
 #include "Hitcircle.h"
 
 namespace Parser {
-
-	std::default_random_engine p_RNG;
 	time_t x;
 
 	class API Parser
@@ -55,11 +53,12 @@ namespace Parser {
 
 	size_t Random(size_t low = 0, size_t high = 0xFFFFFFF)
 	{
-		uint64_t z = (x += 0x9e3779b97f4a7c15);
+		srand(time(NULL));
+		/*uint64_t z = (x += 0x9e3779b97f4a7c15);
 		z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
 		z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
-
-		z = z % (high - low);
+		*/
+		size_t z = rand() % (high - low);
 		z += low;
 		return z;
 	}
@@ -67,16 +66,28 @@ namespace Parser {
 	template<typename T>
 	size_t Random(std::vector<T> input)
 	{
+		srand(time(NULL));
 		size_t low = 0;
 		size_t high = input.size();
-
+		/*
 		uint64_t z = (x += 0x9e3779b97f4a7c15);
 		z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
 		z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
-
-		z = z % (high - low);
+		*/
+		size_t z = rand() % (high - low);
 		z += low;
 		return z;
+	}
+
+	// See: https://stackoverflow.com/a/3418285
+	void replaceAll(std::string& str, const std::string& from, const std::string& to) {
+		if (from.empty())
+			return;
+		size_t start_pos = 0;
+		while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+			str.replace(start_pos, from.length(), to);
+			start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+		}
 	}
 
 }  // namespace Parser

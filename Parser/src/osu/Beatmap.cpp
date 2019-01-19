@@ -20,10 +20,11 @@ namespace Parser {
 	/// <param name="s">Data thats used to Search for a specific object later on</param>
 	/// <param name="d">Object-specific difficulty settings</param>
 	Beatmap::Beatmap(
-		const std::string & FilePath, const std::string & BackgroundImage , std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint> Timingpoints,
+		const std::string & FilePath, const std::string & Folder, const std::string & BackgroundImage, 
+		std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint> Timingpoints, 
 		General g, Metadata m, SearchBy s, Difficulty d
 	)
-		: m_FilePath(FilePath), m_BackgroundImage(BackgroundImage), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d)
+		: m_FilePath(FilePath), m_Folder(Folder), m_BackgroundImage(BackgroundImage), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d)
 	{
 		LOGGER_INFO("Creating Beatmap From File => {}", FilePath);
 
