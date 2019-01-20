@@ -4,6 +4,7 @@
 #include "cxxtimer.hpp"
 
 #include "bass.h"
+#include "bass_fx.h"
 
 static void ShowAllOffsetsOfMap(const std::shared_ptr<Parser::Beatmap>& map)
 {
@@ -103,21 +104,60 @@ int main(int argc, const char * argv[])
 		auto index = Parser::Random(list);
 		auto beatmap = p.BeatmapFromFile(list[index]);
 
-		LOGGER_INFO("MP3 for {} => {}", list[index], beatmap->GetMp3());
-		LOGGER_INFO("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
+		if (!beatmap->IsPlayable())
+		{
+			LOGGER_ERROR("Cant Play => {}", beatmap->GetMetadataText());
+			continue;
+		}
+	
+		LOGGER_DEBUG("MP3 for {} => {}", list[index], beatmap->GetMp3());
+		LOGGER_DEBUG("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
 
-		HSTREAM Channel = 0;
-		if (!(Channel = BASS_StreamCreateFile(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, 0)) && !(Channel = BASS_MusicLoad(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, BASS_MUSIC_RAMP | BASS_MUSIC_PRESCAN, 0)))
+		HSTREAM Channel = 0, ChannelFX = 0;
+		if (!(Channel = BASS_StreamCreateFile(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, BASS_STREAM_DECODE)) && !(Channel = BASS_MusicLoad(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, BASS_MUSIC_RAMP | BASS_MUSIC_PRESCAN, 0)))
 		{
 			LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());
 			return 0xDEAD;
 		}
 		LOGGER_DEBUG("Channel set => {}", Channel);
-		BASS_ChannelSetAttribute(Channel, BASS_ATTRIB_VOL, 0.07);
-		BASS_ChannelSetAttribute(Channel, BASS_ATTRIB_MUSIC_SPEED, 128.0f);
-		BASS_ChannelPlay(Channel, true);
 
-		while (BASS_ChannelIsActive(Channel)) {
+		LOGGER_INFO("Playing => {}", beatmap->GetMetadataText());
+		
+
+		auto bpm = beatmap->GetBPM();
+		
+		if (!(ChannelFX = BASS_FX_TempoCreate(Channel, BASS_FX_FREESOURCE)))
+		{
+			LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());
+			return 0xDEAD;
+		}
+
+		BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_VOL, 0.05);
+				
+		auto lengthInBytes = BASS_ChannelGetLength(ChannelFX,	BASS_POS_BYTE);
+		auto lengthInSeconds = BASS_ChannelBytes2Seconds(ChannelFX, lengthInBytes);
+
+		auto Target = 180;
+		
+		LOGGER_DEBUG("Changing BPM from {} to {}", bpm, Target);
+		auto factor = ((double)bpm / (double)Target);
+		auto increase = (1 - factor);
+		increase *= 100.0;
+		LOGGER_DEBUG("Increase was {:.2f}%", increase);
+		BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_TEMPO, increase);
+
+		int a = (int)floor(lengthInSeconds / 60);
+		int b = (int)floor(fmod(lengthInSeconds, 60));
+		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
+		lengthInSeconds = lengthInSeconds * (1.0 - (increase / 100.0));
+
+		a = (int)floor(lengthInSeconds / 60);
+		b = (int)floor(fmod(lengthInSeconds, 60));
+		LOGGER_ERROR("Length: {:02d}:{:02d}", a, b);
+
+		BASS_ChannelPlay(ChannelFX, true);
+
+		while (BASS_ChannelIsActive(ChannelFX)) {
 			Sleep(50);
 		}
 		Sleep(500);
