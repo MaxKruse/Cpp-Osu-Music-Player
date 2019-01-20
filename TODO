@@ -69,6 +69,8 @@
 
 ☐ For Search purposes, create SortBy-Only objects of Beatmaps @created(19-01-12 15:09)
 
+☐ Settings file @created(19-01-20 21:33)
+
 ☐ Support Custom Hitsound Files + Indicies @low 
 ✔ Figure out why deleting a Beatmap doesnt give back all the memory @high @started(19-01-03 23:21) @done(19-01-03 23:23) @lasted(2m25s)
     See commit.
