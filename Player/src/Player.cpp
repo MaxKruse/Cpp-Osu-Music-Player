@@ -87,7 +87,7 @@ int main(int argc, const char * argv[])
 
 	LOGGER_INFO("Running Bass => DLL {} | Lib {}", HIWORD(BASS_GetVersion()), BASSVERSION);
 
-	if (!BASS_Init(-1, 44100, BASS_DEVICE_INIT, NULL, NULL)) {
+	if (!BASS_Init(-1, 48000, 0, NULL, NULL)) {
 		LOGGER_ERROR("Can't initialize Bass device");
 		return 0;
 	}
@@ -97,23 +97,33 @@ int main(int argc, const char * argv[])
 	//Parser::Parser p("C:/Dev/C++ Osu Music Player/Player/");
 	Parser::Parser p("D:/osu/Songs/");
 	auto list = p.GetListOfFiles();
-	auto index = Parser::Random(list);
-	auto beatmap = p.BeatmapFromFile(list[index]);
 
-	LOGGER_INFO("MP3 for {} => {}", list[index], beatmap->GetMp3());
-	LOGGER_INFO("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
+	do
+	{
+		auto index = Parser::Random(list);
+		auto beatmap = p.BeatmapFromFile(list[index]);
 
-	HSTREAM Channel = 0;		
-	if (!(Channel = BASS_StreamCreateFile(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, BASS_STREAM_DECODE | BASS_SAMPLE_FLOAT)) && !(Channel = BASS_MusicLoad(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, BASS_MUSIC_RAMP | BASS_MUSIC_PRESCAN | BASS_MUSIC_DECODE, 0)))
-	{
-		LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());	
+		LOGGER_INFO("MP3 for {} => {}", list[index], beatmap->GetMp3());
+		LOGGER_INFO("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
+
+		HSTREAM Channel = 0;
+		if (!(Channel = BASS_StreamCreateFile(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, 0)) && !(Channel = BASS_MusicLoad(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, BASS_MUSIC_RAMP | BASS_MUSIC_PRESCAN, 0)))
+		{
+			LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());
+			return 0xDEAD;
+		}
+		LOGGER_DEBUG("Channel set => {}", Channel);
+		BASS_ChannelSetAttribute(Channel, BASS_ATTRIB_VOL, 0.07);
+		BASS_ChannelSetAttribute(Channel, BASS_ATTRIB_MUSIC_SPEED, 128.0f);
+		BASS_ChannelPlay(Channel, true);
+
+		while (BASS_ChannelIsActive(Channel)) {
+			Sleep(50);
+		}
+		Sleep(500);
 	}
-	BASS_ChannelPlay(Channel, TRUE);
-	for (size_t i = 0; i < 10000; i++)
-	{
-		Sleep(1);
-	}
+	while (true);
 
 	LOGGER_FLUSH();
-	return 0xDEAD;
+	return 1;
 }
