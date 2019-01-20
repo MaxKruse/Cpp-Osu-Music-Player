@@ -53,7 +53,7 @@ namespace Parser {
 
 	size_t Random(size_t low = 0, size_t high = 0xFFFFFFF)
 	{
-		srand(time(NULL));
+		//srand(time(NULL));
 		/*uint64_t z = (x += 0x9e3779b97f4a7c15);
 		z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
 		z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
@@ -66,7 +66,7 @@ namespace Parser {
 	template<typename T>
 	size_t Random(std::vector<T> input)
 	{
-		srand(time(NULL));
+		//srand(time(NULL));
 		size_t low = 0;
 		size_t high = input.size();
 		/*

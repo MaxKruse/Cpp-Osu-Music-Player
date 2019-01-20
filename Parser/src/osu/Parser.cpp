@@ -7,6 +7,7 @@ namespace Parser {
 		: m_SongsFolder(SongsFolderPath)
 	{
 		LOGGER_INFO("Songs folder set => {}", m_SongsFolder);
+		srand(time(NULL));
 		GetAllFiles();
 	}
 
