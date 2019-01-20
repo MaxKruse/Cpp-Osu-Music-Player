@@ -113,7 +113,8 @@ project "Player"
 	links
 	{
 		"Parser",
-		"bass.lib"
+		"bass.lib",
+		"bass_fx.lib"
 	}
 
 	filter "system:windows"
