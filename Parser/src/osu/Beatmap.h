@@ -36,6 +36,7 @@ namespace Parser {
 		}
 
 		inline const std::string GetAudioFilename() const { return m_AudioFilename; }
+		inline const std::string GetFileformatVersion() const { return m_FileFormatVersion; }
 
 		bool HasDefaults()
 		{
@@ -70,6 +71,11 @@ namespace Parser {
 		{
 			LOGGER_TRACE("{}", ToString());
 		}
+
+		inline const std::string GetArtist() const { return m_Artist; }
+		inline const std::string GetTitle() const { return m_Title; }
+		inline const std::string GetCreator() const { return m_Creator; }
+		inline const std::string GetVersion() const { return m_Version; }
 
 		std::string ToString() const
 		{
@@ -193,11 +199,32 @@ namespace Parser {
 			auto offsets_of_last = m_HitObjects[last_object]->GetOffsets();
 			return offsets_of_last[offsets_of_last.size() - 1];
 		}
+
+		inline const std::string GetMetadataText() const { return std::string(m_Metadata.GetArtist() + " - " + m_Metadata.GetTitle() + " (" + m_Metadata.GetCreator() + ") [" + m_Metadata.GetVersion() + "]"); }
 		inline const std::string GetMp3() const { return m_General.GetAudioFilename(); }
 		inline const std::string GetFolderPath() const { return m_Folder; }
 		inline const std::string GetFullMp3Path() const { return GetFolderPath() + GetMp3(); }
 		inline const std::string GetFilePath() const { return m_FilePath; }
 		inline const std::vector<std::vector<long>> GetOffsets() const { return m_Offsets; }
+		const int GetBPM() const
+		{
+			return (int)ceil(pow(m_TimingPoints[0].GetMillisecondsPerBeat() / 1000, -1) * 60);
+		}
+
+		inline const bool IsPlayable() const
+		{ 
+			if (m_General.GetFileformatVersion() == "v13")
+			{
+				return true;
+			}
+			
+			if (m_General.GetFileformatVersion() == "v14")
+			{
+				return true;
+			}
+
+			return false;
+		}
 
 		std::string ToString() const;
 		
