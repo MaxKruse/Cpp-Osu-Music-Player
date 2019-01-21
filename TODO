@@ -19,14 +19,8 @@
 
 ☐ Add sound lib @high
     ✔ Un4Seen Bass @high @done(19-01-15 18:50)
-    Possible Options that i scouted:
-        ✘ MMSystem.h (Windows Driver) @cancelled(19-01-04 19:42)
-        ✘ Un4Seen Bass + Bass_FX (High Pitch, "Nightcore Mode") @cancelled(19-01-09 13:31)
-            This seems likely, documentation is provided in the download.
-        ✘ PortAudio @cancelled(19-01-09 20:14)
-            See: https://git.assembla.com/portaudio.git
-        ✘ SoLoud @cancelled(19-01-15 18:50)
-            See: https://github.com/jarikomppa/soloud
+        It is important to ALWAYS load mp3 with BASS_STREAM_DECODE if we want to use them in BASS_FX_CreateTempo and change their tempo. 
+        1. It will only play the normal Channel if its NOT Decoded, CreateTempo Re-Encodes the stream when calling and creating a new channel
 
 ☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high
     This is planned to be a Weekly thing, below are the occurances.
@@ -60,6 +54,10 @@
         ☐ SliderHead @low
         ☐ SliderTick @low
         ☐ SliderEnd @low
+
+☐ Play sounds of Hitobjects when offset is reached @created(19-01-21 14:21)
+        ☐ make sure to remove the already played elements, otherwise we would have unwanted behaviour @created(19-01-21 14:22)
+
 
 ✔ Implement Vector of All .osu files @started(19-01-05 14:43) @done(19-01-05 14:55) @lasted(12m25s)
 
