@@ -206,9 +206,9 @@ namespace Parser {
 		inline const std::string GetFullMp3Path() const { return GetFolderPath() + GetMp3(); }
 		inline const std::string GetFilePath() const { return m_FilePath; }
 		inline const std::vector<std::vector<long>> GetOffsets() const { return m_Offsets; }
-		const int GetBPM() const
+		const double GetBPM() const
 		{
-			return (int)ceil(pow(m_TimingPoints[0].GetMillisecondsPerBeat() / 1000, -1) * 60);
+			return (pow(m_TimingPoints[0].GetMillisecondsPerBeat() / (double)1000.0, (double)-1.0) * (double)60.0);
 		}
 
 		inline const bool IsPlayable() const
