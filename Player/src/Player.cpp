@@ -137,13 +137,16 @@ int main(int argc, const char * argv[])
 		auto lengthInBytes = BASS_ChannelGetLength(ChannelFX,	BASS_POS_BYTE);
 		auto lengthInSeconds = BASS_ChannelBytes2Seconds(ChannelFX, lengthInBytes);
 
-		auto Target = 180;
+		//auto Target = 220;
 		
-		LOGGER_DEBUG("Changing BPM from {} to {}", bpm, Target);
-		auto factor = ((double)bpm / (double)Target);
-		auto increase = (1 - factor);
-		increase *= 100.0;
+		//LOGGER_DEBUG("Changing BPM from {} to {}", bpm, Target);
+		//auto factor = ((double)bpm / (double)Target);
+		//auto increase = (1 - factor);
+		//increase *= 100.0;
+		auto increase = 100.0f / 3.0f ;
 		LOGGER_DEBUG("Increase was {:.2f}%", increase);
+
+		LOGGER_DEBUG("Changing BPM from {:.2f} to {:.2f}", (float)bpm, (float)bpm * (1.0f + (float)(increase / 100.0f)));
 		BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_TEMPO, increase);
 
 		int a = (int)floor(lengthInSeconds / 60);
@@ -153,7 +156,7 @@ int main(int argc, const char * argv[])
 
 		a = (int)floor(lengthInSeconds / 60);
 		b = (int)floor(fmod(lengthInSeconds, 60));
-		LOGGER_ERROR("Length: {:02d}:{:02d}", a, b);
+		LOGGER_ERROR("Modified Length: {:02d}:{:02d}", a, b);
 
 		BASS_ChannelPlay(ChannelFX, true);
 
