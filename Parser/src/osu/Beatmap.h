@@ -37,6 +37,7 @@ namespace Parser {
 
 		inline const std::string GetAudioFilename() const { return m_AudioFilename; }
 		inline const std::string GetFileformatVersion() const { return m_FileFormatVersion; }
+		inline const int GetMode() const { return m_Mode; }
 
 		bool HasDefaults()
 		{
@@ -219,6 +220,11 @@ namespace Parser {
 			}
 			
 			if (m_General.GetFileformatVersion() == "v14")
+			{
+				return true;
+			}
+
+			if(m_General.GetMode() == 0)
 			{
 				return true;
 			}
