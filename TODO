@@ -35,7 +35,9 @@
             ✔ 1. Review/Cleanup @started(19-01-11 17:31) @done(19-01-11 17:33) @lasted(2m52s)
             Clang Tidy - Not Much change
         - 20.01.2019
-            ☐ 2. Review/Cleanup
+            ✔ 2. Review/Cleanup @done(19-01-23 22:13)
+            Clang Tidy - Mainly Parser cleanup
+            Friendly reminder from M4-Dev to add more comments to the code.
         - 30.01.2019
             ☐ 3. Review/Cleanup
         - 10.02.2019
