@@ -88,6 +88,7 @@ int main(int argc, const char * argv[])
 
 	LOGGER_INFO("Running Bass => DLL {} | Lib {}", HIWORD(BASS_GetVersion()), BASSVERSION);
 
+	// Init Bass audio device to 48kHz and default sound output
 	if (!BASS_Init(-1, 48000, 0, NULL, NULL)) {
 		LOGGER_ERROR("Can't initialize Bass device");
 		return 0;
@@ -99,20 +100,28 @@ int main(int argc, const char * argv[])
 	Parser::Parser p("D:/osu/Songs/");
 	auto list = p.GetListOfFiles();
 
-	do
+	do // Music Playing Loop
 	{
+		// Get Beatmap and load it
 		auto index = Parser::Random(list);
 		auto beatmap = p.BeatmapFromFile(list[index]);
 
+		// Check if beatmap is supported
 		if (!beatmap->IsPlayable())
 		{
 			LOGGER_ERROR("Cant Play => {}", beatmap->GetMetadataText());
 			continue;
 		}
-	
+
+		// Debug logs
 		LOGGER_DEBUG("MP3 for {} => {}", list[index], beatmap->GetMp3());
 		LOGGER_DEBUG("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
 
+		// Setup for Bass-Channels
+		// Playback works like this:
+		// 1. Make Channel Variables
+		// 2. Initialize Channel from File
+		// 		If using BASS_FX_* to create the actual channel to playback the file, give Bass the BASS_STREAM_DECODE Flag, otherwise just 0
 		HSTREAM Channel = 0, ChannelFX = 0;
 		if (!(Channel = BASS_StreamCreateFile(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, BASS_STREAM_DECODE)) && !(Channel = BASS_MusicLoad(FALSE, beatmap->GetFullMp3Path().c_str(), 0, 0, BASS_MUSIC_RAMP | BASS_MUSIC_PRESCAN, 0)))
 		{
@@ -120,35 +129,32 @@ int main(int argc, const char * argv[])
 			return 0xDEAD;
 		}
 		LOGGER_DEBUG("Channel set => {}", Channel);
-
 		LOGGER_INFO("Playing => {}", beatmap->GetMetadataText());
-		
 
-		auto bpm = beatmap->GetBPM();
-		
+		// 3. From the Decoded channel, create a TempoChannel which allows to change the tempo
 		if (!(ChannelFX = BASS_FX_TempoCreate(Channel, BASS_FX_FREESOURCE)))
 		{
 			LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());
 			return 0xDEAD;
 		}
 
+		// 4. Set Volume so we dont get deaf by it playing at full volume
 		BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_VOL, 0.05);
 				
-		auto lengthInBytes = BASS_ChannelGetLength(ChannelFX,	BASS_POS_BYTE);
-		auto lengthInSeconds = BASS_ChannelBytes2Seconds(ChannelFX, lengthInBytes);
-
-		//auto Target = 220;
-		
-		//LOGGER_DEBUG("Changing BPM from {} to {}", bpm, Target);
-		//auto factor = ((double)bpm / (double)Target);
-		//auto increase = (1 - factor);
-		//increase *= 100.0;
+		// An increase by 33.333[...]% Makes the MP3 Play 1.5 Faster (dont ask me why or how, makes no sense to me. Should be 50% really...)
 		auto increase = 100.0f / 3.0f ;
+		auto bpm = beatmap->GetBPM();
 		LOGGER_DEBUG("Increase was {:.2f}%", increase);
 
+		// 5. Get Song Length to Display change later
+		auto lengthInBytes = BASS_ChannelGetLength(ChannelFX, BASS_POS_BYTE);
+		auto lengthInSeconds = BASS_ChannelBytes2Seconds(ChannelFX, lengthInBytes);
+
+		// 6. Change the speed
 		LOGGER_DEBUG("Changing BPM from {:.2f} to {:.2f}", (float)bpm, (float)bpm * (1.0f + (float)(increase / 100.0f)));
 		BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_TEMPO, increase);
 
+		// 7. Display Data
 		int a = (int)floor(lengthInSeconds / 60);
 		int b = (int)floor(fmod(lengthInSeconds, 60));
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
@@ -158,15 +164,19 @@ int main(int argc, const char * argv[])
 		b = (int)floor(fmod(lengthInSeconds, 60));
 		LOGGER_ERROR("Modified Length: {:02d}:{:02d}", a, b);
 
+		// Play the Tempo Channel
 		BASS_ChannelPlay(ChannelFX, true);
 
 		while (BASS_ChannelIsActive(ChannelFX)) {
+			// Bass plays async, While the Channel is playing, sleep to not consume CPU. 50ms because we are not performing time critical operations
 			Sleep(50);
 		}
+		// Wait between songs so we dont go from mp3 to mp3 without giving the listener a break
 		Sleep(500);
 	}
-	while (true);
+	while (true); // As long as the user doesnt close the program, we will continue playing forever
 
+	// On Exit, flush all debug output to logfile
 	LOGGER_FLUSH();
 	return 1;
 }

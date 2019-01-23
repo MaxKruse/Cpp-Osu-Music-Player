@@ -5,6 +5,7 @@
 
 namespace Parser {
 
+	// Basic struct to safe memory
 	struct API Position
 	{
 		unsigned short X;
@@ -22,6 +23,7 @@ namespace Parser {
 		Hitobject(unsigned short x, unsigned short y, long offset, unsigned short type)
 			: m_Position(x, y), m_Type(type)
 		{
+			// Hitobjects always have a starting offset, BUT different types might have other Offsets
 			m_Offset.emplace_back(offset);
 		}
 		virtual ~Hitobject() = default;

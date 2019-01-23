@@ -19,6 +19,7 @@ namespace Parser {
 			throw "Could not create folder \"logs/\"";
 		}
 
+		// Create the Filename for the logfile
 		time_t rawtime;
 		struct tm * timeinfo;
 		char buffer[64];
@@ -33,6 +34,8 @@ namespace Parser {
 		s_FileLogger = spdlog::rotating_logger_mt("FILELOG", str, 1024 * 1024 * 256, 4);
 		s_FileLogger->set_level(spdlog::level::debug);
 		spdlog::flush_on(spdlog::level::info);
+
+		// Setup log levels for the console based on compiled version
 
 		s_ConsoleLogger = spdlog::stdout_color_mt("CONSOLE");
 #ifdef _DEBUG

@@ -3,6 +3,8 @@
 
 namespace Parser {
 
+	// A Hitcircle is the 2nd simplest Hitobject, next to a spinner
+	// One offset, a maximum of 4 possible hitsounds (including default)
 	class API Hitcircle : public Hitobject
 	{
 	public:

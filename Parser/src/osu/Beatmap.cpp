@@ -28,6 +28,7 @@ namespace Parser {
 	{
 		LOGGER_INFO("Creating Beatmap From File => {}", FilePath);
 
+		// Pre-parsing all hitsounds for all hitobjects
 		m_HitsoundsOnTiming = std::map<long, std::vector<std::string>>();
 
 		for (auto& object : m_HitObjects)
@@ -60,7 +61,7 @@ namespace Parser {
 				LOGGER_DEBUG("Giving it default hitsounds...");
 				std::vector<std::string> temp = std::vector<std::string>();
 				temp.emplace_back("normal-hitnormal.wav");
-
+				// Since its not supported, give it a hitsound on its only guaranteed Offset
 				m_HitsoundsOnTiming.emplace(object->GetOffsets()[0], temp);
 				m_Offsets.emplace_back(object->GetOffsets());
 				continue;
@@ -71,6 +72,7 @@ namespace Parser {
 		}
 	}
 
+	// Manually cleanup the memory we used from Hitobjects. Timingpoints were created as Objects, not pointers, so we dont need to destroy these. That happens by default
 	Beatmap::~Beatmap()
 	{
 		LOGGER_DEBUG("Deleting Hitobjects From Beatmap => {}", m_FilePath);

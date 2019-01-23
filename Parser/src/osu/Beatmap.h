@@ -185,6 +185,7 @@ namespace Parser {
 		}
 	};
 
+	// A Beatmap is a single Object that knows about all of its contents (see .osu files for contents)
 	class API Beatmap
 	{
 	public:
@@ -207,12 +208,12 @@ namespace Parser {
 		inline const std::string GetFullMp3Path() const { return GetFolderPath() + GetMp3(); }
 		inline const std::string GetFilePath() const { return m_FilePath; }
 		inline const std::vector<std::vector<long>> GetOffsets() const { return m_Offsets; }
-		const double GetBPM() const
+		const double GetBPM() const // This calculation is wrong, only correct up to the decimal point (+- 1)
 		{
-			return (pow(m_TimingPoints[0].GetMillisecondsPerBeat() / (double)1000.0, (double)-1.0) * (double)60.0);
+			return (pow(m_TimingPoints[0].GetMillisecondsPerBeat() / (double)1000.0, (double)-1.0) * (double)59.9);
 		}
 
-		inline const bool IsPlayable() const
+		inline const bool IsPlayable() const // Only make supported files playable
 		{ 
 			if (m_General.GetFileformatVersion() == "v13")
 			{
@@ -250,7 +251,7 @@ namespace Parser {
 		Difficulty m_Difficulty;
 	};
 
-	
+	// These are operators for the Logger to use, they tell it how to insert objects and print their info (see the Class' ".ToString()" function for more info)
 
 	inline std::ostream& operator<<(std::ostream& os, const General& e)
 	{

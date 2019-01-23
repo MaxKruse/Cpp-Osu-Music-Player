@@ -6,6 +6,7 @@
 namespace Parser {
 	time_t x;
 
+	// Parser Class to handle .osu files
 	class API Parser
 	{
 	public:
@@ -51,13 +52,10 @@ namespace Parser {
 		std::vector<std::string> split(const std::string & s, const char & delim);
 	};
 
+
+	// Random Functions using Low/High or a vector of sorts, to return a random index between given low and high
 	size_t Random(size_t low = 0, size_t high = 0xFFFFFFF)
 	{
-		//srand(time(NULL));
-		/*uint64_t z = (x += 0x9e3779b97f4a7c15);
-		z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
-		z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
-		*/
 		size_t z = rand() % (high - low);
 		z += low;
 		return z;
@@ -66,14 +64,8 @@ namespace Parser {
 	template<typename T>
 	size_t Random(std::vector<T> input)
 	{
-		//srand(time(NULL));
 		size_t low = 0;
 		size_t high = input.size();
-		/*
-		uint64_t z = (x += 0x9e3779b97f4a7c15);
-		z = (z ^ (z >> 30)) * 0xbf58476d1ce4e5b9;
-		z = (z ^ (z >> 27)) * 0x94d049bb133111eb;
-		*/
 		size_t z = rand() % (high - low);
 		z += low;
 		return z;
