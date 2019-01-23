@@ -21,8 +21,6 @@ project "Parser"
 	characterset "Unicode"
 	vectorextensions "AVX2"
 
-	floatingpoint "Fast"
-
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
 
@@ -83,8 +81,6 @@ project "Player"
 	language "C++"
 	characterset "Unicode"
 	vectorextensions "AVX2"
-
-	floatingpoint "Fast"
 
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
