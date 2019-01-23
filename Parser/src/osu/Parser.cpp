@@ -3,11 +3,11 @@
 
 namespace Parser {
 
-	Parser::Parser(const std::string & SongsFolderPath, bool GetListOfFiles)
-		: m_SongsFolder(SongsFolderPath)
+	Parser::Parser(const std::string SongsFolderPath, bool GetListOfFiles)
+		: m_SongsFolder(std::move(SongsFolderPath))
 	{
 		LOGGER_INFO("Songs folder set => {}", m_SongsFolder);
-		srand(time(NULL));
+		srand(time(nullptr));
 		GetAllFiles();
 	}
 
@@ -18,7 +18,7 @@ namespace Parser {
 		m_FullFilePath = Fullpath;
 		replaceAll(m_FullFilePath, "\\", "/");
 
-		auto deleteUntilHere = m_FullFilePath.find_last_of("/", m_FullFilePath.length());
+		auto deleteUntilHere = m_FullFilePath.find_last_of('/', m_FullFilePath.length());
 		auto temp = m_FullFilePath;
 		auto Folder = std::string(temp.erase(deleteUntilHere, temp.length()) + "/");
 
@@ -63,7 +63,7 @@ namespace Parser {
 
 	void Parser::GetAllFiles()
 	{
-		if (m_ListOfFiles.size() < 1)
+		if (m_ListOfFiles.empty())
 		{
 			auto count = CacheBeatmaps();
 			LOGGER_INFO("Cached {} Beatmaps", count);
@@ -242,9 +242,11 @@ namespace Parser {
 				bool inherited = false;
 
 				if (stoi(parts[6]) == 1)
+				{
 					inherited = true;
+				}
 
-				timingpoints.push_back(TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
+				timingpoints.emplace_back(TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
 			}
 
 		}
@@ -340,9 +342,10 @@ namespace Parser {
 
 		for(auto line : m_Text)
 		{
-
 			if (found == 4)
+			{
 				break;
+			}
 			
 			if (line.find("osu file format v") != std::string::npos)
 			{
@@ -392,7 +395,9 @@ namespace Parser {
 		{
 
 			if (found == 6)
+			{
 				break;
+			}
 
 			if (line.find("Artist:") != std::string::npos)
 			{
@@ -453,7 +458,9 @@ namespace Parser {
 		{
 
 			if (found == 4)
+			{
 				break;
+			}
 
 			if (line.find("Source:") != std::string::npos)
 			{
@@ -502,7 +509,9 @@ namespace Parser {
 		{
 
 			if (found == 6)
+			{
 				break;
+			}
 
 			if (line.find("HPDrainRate:") != std::string::npos)
 			{
@@ -550,7 +559,7 @@ namespace Parser {
 		return Difficulty(HPDrainRate, CircleSize, OverallDifficulty, ApproachRate, SliderMultiplier, SliderTickRate);
 	}
 
-	std::vector<std::string> Parser::FileToStringVector(std::string filename)
+	std::vector<std::string> Parser::FileToStringVector(const std::string & filename)
 	{
 		std::vector<std::string> result = std::vector<std::string>();
 		std::string line;

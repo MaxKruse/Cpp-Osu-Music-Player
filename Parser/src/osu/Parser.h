@@ -9,7 +9,7 @@ namespace Parser {
 	class API Parser
 	{
 	public:
-		Parser(const std::string & SongsFolderPath, bool GetListOfFiles = true);
+		Parser(const std::string SongsFolderPath, bool GetListOfFiles = true);
 
 		std::unique_ptr<Beatmap> BeatmapFromFile(const std::string & FilePath);
 		std::unique_ptr<Beatmap> BeatmapFromString(const std::vector<std::string> & Text);
@@ -47,7 +47,7 @@ namespace Parser {
 
 		int CacheBeatmaps();
 
-		std::vector<std::string> FileToStringVector(std::string filename);
+		std::vector<std::string> FileToStringVector(const std::string & filename);
 		std::vector<std::string> split(const std::string & s, const char & delim);
 	};
 
@@ -82,7 +82,9 @@ namespace Parser {
 	// See: https://stackoverflow.com/a/3418285
 	void replaceAll(std::string& str, const std::string& from, const std::string& to) {
 		if (from.empty())
+		{
 			return;
+		}
 		size_t start_pos = 0;
 		while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
 			str.replace(start_pos, from.length(), to);
