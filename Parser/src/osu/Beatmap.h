@@ -210,7 +210,7 @@ namespace Parser {
 		inline const std::vector<std::vector<long>> GetOffsets() const { return m_Offsets; }
 		const double GetBPM() const // This calculation is wrong, only correct up to the decimal point (+- 1)
 		{
-			return (pow(m_TimingPoints[0].GetMillisecondsPerBeat() / (double)1000.0, (double)-1.0) * (double)59.9);
+			return (60000.0 / m_TimingPoints[0].GetMillisecondsPerBeat());
 		}
 
 		inline const bool IsPlayable() const // Only make supported files playable
