@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="osu">
+      <UniqueIdentifier>{5C9A880B-C8A3-887C-511F-9F7CBD27947C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Logger.h" />
+    <ClInclude Include="src\osu\Beatmap.h">
+      <Filter>osu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Hitcircle.h">
+      <Filter>osu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Hitobject.h">
+      <Filter>osu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Parser.h">
+      <Filter>osu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\TimingPoint.h">
+      <Filter>osu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Logger.cpp" />
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\osu\Beatmap.cpp">
+      <Filter>osu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\Hitcircle.cpp">
+      <Filter>osu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\Parser.cpp">
+      <Filter>osu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\TimingPoint.cpp">
+      <Filter>osu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\pch.cpp" />
+  </ItemGroup>
+</Project>
