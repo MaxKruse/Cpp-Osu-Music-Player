@@ -1,5 +1,7 @@
 # C++ Osu Music Player
 
+[![Build status](https://ci.appveyor.com/api/projects/status/1g4exu2ywcbq8drn?svg=true)](https://ci.appveyor.com/project/MaxKruse/cpp-osu-music-player)
+
 Meant to be a on-the-side learning experience, this is supposed to be a simple music player, working off of [osu!](https://osu.ppy.sh/) and its files.
 I basically want to listen to maps including their hitsounds without actually letting the game run in the background and take up a lot of memory, CPU and GPU.
 
