@@ -102,7 +102,7 @@ int main(int argc, const char * argv[])
 	do // Music Playing Loop
 	{
 		// Get Beatmap and load it
-		auto index = 4424; //Parser::Random(list);
+		auto index = Parser::Random(list);
 		auto beatmap = p.BeatmapFromFile(list[index]);
 
 		// Check if beatmap is supported
@@ -172,7 +172,7 @@ int main(int argc, const char * argv[])
 		QWORD bytePos = 0;
 		int Offset;
 
-		while (BASS_ChannelIsActive(ChannelFX)) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 50ms because we are not performing time critical operations
+		while (BASS_ChannelIsActive(ChannelFX)) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
 			
 			// Check for the current Position in the channel
 			if (bytePos = BASS_ChannelGetPosition(ChannelFX, BASS_POS_BYTE))
@@ -201,16 +201,16 @@ int main(int argc, const char * argv[])
 					hitsounds.erase(Offset + 1);
 				}
 
-				// Offset +2
-				else if (hitsounds.find(Offset + 2) != hitsounds.end())
-				{
-					for (auto& sound : hitsounds[Offset + 2])
-					{
-						// Display each hitsound
-						LOGGER_DEBUG("Hitsound at {}ms => {}", Offset + 2, sound);
-					}
-					hitsounds.erase(Offset + 2);
-				}
+				//// Offset +2
+				//else if (hitsounds.find(Offset + 2) != hitsounds.end())
+				//{
+				//	for (auto& sound : hitsounds[Offset + 2])
+				//	{
+				//		// Display each hitsound
+				//		LOGGER_DEBUG("Hitsound at {}ms => {}", Offset + 2, sound);
+				//	}
+				//	hitsounds.erase(Offset + 2);
+				//}
 
 				// Offset -1
 				else if (hitsounds.find(Offset - 1) != hitsounds.end())
@@ -223,20 +223,22 @@ int main(int argc, const char * argv[])
 					hitsounds.erase(Offset - 1);
 				}
 
-				// Offset -2
-				else if (hitsounds.find(Offset - 2) != hitsounds.end())
-				{
-					for (auto& sound : hitsounds[Offset - 2])
-					{
-						// Display each hitsound
-						LOGGER_DEBUG("Hitsound at {}ms => {}", Offset - 2, sound);
-					}
-					hitsounds.erase(Offset - 2);
-				}
+				//// Offset -2
+				//else if (hitsounds.find(Offset - 2) != hitsounds.end())
+				//{
+				//	for (auto& sound : hitsounds[Offset - 2])
+				//	{
+				//		// Display each hitsound
+				//		LOGGER_DEBUG("Hitsound at {}ms => {}", Offset - 2, sound);
+				//	}
+				//	hitsounds.erase(Offset - 2);
+				//}
 			}
 
 			Sleep(1);
 		}
+
+		LOGGER_ERROR("Missed Hitsounds: {}", hitsounds.size());
 
 		// Wait between songs so we dont go from mp3 to mp3 without giving the listener a break
 		Sleep(500);
