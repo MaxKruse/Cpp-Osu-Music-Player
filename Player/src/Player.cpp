@@ -6,7 +6,7 @@
 #include "bass.h"
 #include "bass_fx.h"
 
-static void ShowAllOffsetsOfMap(const std::shared_ptr<Parser::Beatmap>& map)
+static void ShowAllOffsetsOfMap(const std::unique_ptr<Parser::Beatmap>& map)
 {
 	cxxtimer::Timer timer;
 	auto hitsoundsOfObjects = map->GetHitsoundsOfTimings();
@@ -28,7 +28,6 @@ static void ShowAllOffsetsOfMap(const std::shared_ptr<Parser::Beatmap>& map)
 				}
 			}
 		}
-		
 	}
 }
 
@@ -43,7 +42,7 @@ static void Benchmark()
 
 	MessageBox(nullptr, L"Start Parsing", L"Benchmark", MB_OK);
 
-	std::vector<std::shared_ptr<Parser::Beatmap>> Beatmaps;
+	std::vector<std::unique_ptr<Parser::Beatmap>> Beatmaps;
 	timer.start();
 	for (auto& file : ListOfFiles)
 	{
@@ -103,7 +102,7 @@ int main(int argc, const char * argv[])
 	do // Music Playing Loop
 	{
 		// Get Beatmap and load it
-		auto index = Parser::Random(list);
+		auto index = 4424; //Parser::Random(list);
 		auto beatmap = p.BeatmapFromFile(list[index]);
 
 		// Check if beatmap is supported
@@ -139,10 +138,10 @@ int main(int argc, const char * argv[])
 		}
 
 		// 4. Set Volume so we dont get deaf by it playing at full volume
-		BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_VOL, 0.05);
+		BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_VOL, 0.05f);
 				
 		// An increase by 33.333[...]% Makes the MP3 Play 1.5 Faster (dont ask me why or how, makes no sense to me. Should be 50% really...)
-		auto increase = 100.0f / 3.0f ;
+		auto increase = 100.0f / 3.0f; // Speeding it up apparently messes with the offset detection
 		auto bpm = beatmap->GetBPM();
 		LOGGER_DEBUG("Increase was {:.2f}%", increase);
 
@@ -164,13 +163,81 @@ int main(int argc, const char * argv[])
 		b = (int)floor(fmod(lengthInSeconds, 60));
 		LOGGER_ERROR("Modified Length: {:02d}:{:02d}", a, b);
 
+		// Get the hitsounds
+		auto hitsounds = beatmap->GetHitsoundsOfTimings();
+
 		// Play the Tempo Channel
 		BASS_ChannelPlay(ChannelFX, true);
 
-		while (BASS_ChannelIsActive(ChannelFX)) {
-			// Bass plays async, While the Channel is playing, sleep to not consume CPU. 50ms because we are not performing time critical operations
-			Sleep(50);
+		QWORD bytePos = 0;
+		int Offset;
+
+		while (BASS_ChannelIsActive(ChannelFX)) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 50ms because we are not performing time critical operations
+			
+			// Check for the current Position in the channel
+			if (bytePos = BASS_ChannelGetPosition(ChannelFX, BASS_POS_BYTE))
+			{
+				Offset = round(BASS_ChannelBytes2Seconds(ChannelFX, bytePos) * 1000);
+
+				// Check for hitsound entry at this offset
+				if (hitsounds.find(Offset) != hitsounds.end())
+				{
+					for (auto& sound : hitsounds[Offset])
+					{
+						// Display each hitsound
+						LOGGER_DEBUG("Hitsound at {}ms => {}", Offset, sound);
+					}
+					hitsounds.erase(Offset);
+				}
+
+				// Offset +1
+				else if (hitsounds.find(Offset + 1) != hitsounds.end())
+				{
+					for (auto& sound : hitsounds[Offset + 1])
+					{
+						// Display each hitsound
+						LOGGER_DEBUG("Hitsound at {}ms => {}", Offset + 1, sound);
+					}
+					hitsounds.erase(Offset + 1);
+				}
+
+				// Offset +2
+				else if (hitsounds.find(Offset + 2) != hitsounds.end())
+				{
+					for (auto& sound : hitsounds[Offset + 2])
+					{
+						// Display each hitsound
+						LOGGER_DEBUG("Hitsound at {}ms => {}", Offset + 2, sound);
+					}
+					hitsounds.erase(Offset + 2);
+				}
+
+				// Offset -1
+				else if (hitsounds.find(Offset - 1) != hitsounds.end())
+				{
+					for (auto& sound : hitsounds[Offset - 1])
+					{
+						// Display each hitsound
+						LOGGER_DEBUG("Hitsound at {}ms => {}", Offset - 1, sound);
+					}
+					hitsounds.erase(Offset - 1);
+				}
+
+				// Offset -2
+				else if (hitsounds.find(Offset - 2) != hitsounds.end())
+				{
+					for (auto& sound : hitsounds[Offset - 2])
+					{
+						// Display each hitsound
+						LOGGER_DEBUG("Hitsound at {}ms => {}", Offset - 2, sound);
+					}
+					hitsounds.erase(Offset - 2);
+				}
+			}
+
+			Sleep(1);
 		}
+
 		// Wait between songs so we dont go from mp3 to mp3 without giving the listener a break
 		Sleep(500);
 	}
