@@ -1,4 +1,4 @@
-workspace "C++ Osu Music Player"
+workspace "MusicPlayer"
 	architecture "x64"
 	startproject "Player"
 
