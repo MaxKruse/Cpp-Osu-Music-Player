@@ -215,17 +215,12 @@ namespace Parser {
 
 		inline const bool IsPlayable() const // Only make supported files playable
 		{ 
-			if (m_General.GetFileformatVersion() == "v13")
+			if (m_General.GetFileformatVersion() == "v13" && m_General.GetMode() == 0)
 			{
 				return true;
 			}
 			
-			if (m_General.GetFileformatVersion() == "v14")
-			{
-				return true;
-			}
-
-			if(m_General.GetMode() == 0)
+			if (m_General.GetFileformatVersion() == "v14" && m_General.GetMode() == 0)
 			{
 				return true;
 			}
