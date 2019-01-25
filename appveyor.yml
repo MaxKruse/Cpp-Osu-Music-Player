@@ -30,7 +30,7 @@ install:
 
     ./premake5 vs2017
 build:
-  project: ./C++ Osu Music Player.sln
+  project: MusicPlayer.sln
   verbosity: detailed
 on_failure:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
