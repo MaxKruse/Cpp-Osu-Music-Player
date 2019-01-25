@@ -24,8 +24,6 @@ project "Parser"
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
 
-	print(prj.name)
-
 	pchheader "pch.h"
 	pchsource "Parser/src/pch.cpp"
 
