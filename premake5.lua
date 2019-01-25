@@ -19,10 +19,12 @@ project "Parser"
 	kind "SharedLib"
 	language "C++"
 	characterset "Unicode"
-	vectorextensions "AVX2"
+	vectorextensions "AVX"
 
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
+
+	print(prj.name)
 
 	pchheader "pch.h"
 	pchsource "Parser/src/pch.cpp"
@@ -80,7 +82,7 @@ project "Player"
 	kind "ConsoleApp"
 	language "C++"
 	characterset "Unicode"
-	vectorextensions "AVX2"
+	vectorextensions "AVX"
 
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
