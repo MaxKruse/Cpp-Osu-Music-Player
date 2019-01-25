@@ -33,6 +33,6 @@ before_build:
 - ps: dir
 build:
   project: C++ Osu Music Player.sln
-  verbosity: minimal
+  verbosity: detailed
 on_failure:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
