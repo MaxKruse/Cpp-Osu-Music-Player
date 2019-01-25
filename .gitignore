@@ -263,8 +263,8 @@ __pycache__/
 *.pyc
 
 # VS 2017 Files
-#**/*.vcxproj*
-#*.sln
+**/*.vcxproj*
+*.sln
 
 # Custom File Ignores
 **/logs/**
