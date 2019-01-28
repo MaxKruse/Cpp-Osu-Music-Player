@@ -112,9 +112,6 @@ int main(int argc, const char * argv[])
 			continue;
 		}
 
-		// Wait between songs so we dont go from mp3 to mp3 without giving the listener a break
-		Sleep(beatmap->GetAudioleadIn());
-
 		// Debug logs
 		LOGGER_DEBUG("MP3 for {} => {}", list[index], beatmap->GetMp3());
 		LOGGER_DEBUG("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
@@ -141,14 +138,10 @@ int main(int argc, const char * argv[])
 		}
 
 		// 4. Set Volume so we dont get deaf by it playing at full volume
-		BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_VOL, 0.05f);
-				
-		// An increase by 33.333[...]% Makes the MP3 Play 1.5 Faster (dont ask me why or how, makes no sense to me. Should be 50% really...)
-		auto increase = 100.0f / 3.0f; // Speeding it up apparently messes with the offset detection
-		auto bpm = beatmap->GetBPM();
-		LOGGER_DEBUG("Increase was {:.2f}%", increase);
+		BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_VOL, 0.03f);
 
 		// 5. Get Song Length to Display change later
+		auto bpm = beatmap->GetBPM();
 		auto lengthInBytes = BASS_ChannelGetLength(ChannelFX, BASS_POS_BYTE);
 		auto lengthInSeconds = BASS_ChannelBytes2Seconds(ChannelFX, lengthInBytes);
 
@@ -157,11 +150,16 @@ int main(int argc, const char * argv[])
 		int a = (int)floor(lengthInSeconds / 60);
 		int b = (int)floor(fmod(lengthInSeconds, 60));
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
-		lengthInSeconds = lengthInSeconds * (1.0 - (increase / 100.0));
 
 		// 7. Speed Up
 		if (bpm < 180.0)
 		{
+			// An increase by 33.333[...]% Makes the MP3 Play 1.5 Faster (dont ask me why or how, makes no sense to me. Should be 50% really...)
+			auto increase = 100.0f / 3.0f; // Speeding it up apparently messes with the offset detection
+
+			lengthInSeconds = lengthInSeconds * (1.0 - (increase / 100.0));
+			LOGGER_DEBUG("Increase was {:.2f}%", increase);
+
 			LOGGER_DEBUG("Changing BPM from {:.2f} to {:.2f}", (float)bpm, (float)bpm * (1.0f + (float)(increase / 100.0f)));
 			BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_TEMPO, increase);
 
@@ -179,6 +177,10 @@ int main(int argc, const char * argv[])
 
 		QWORD bytePos = 0;
 		int Offset;
+		auto offsets = beatmap->GetOffsets();
+
+		// Wait between songs so we dont go from mp3 to mp3 without giving the listener a break
+		Sleep(beatmap->GetAudioleadIn());
 
 		while (BASS_ChannelIsActive(ChannelFX)) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
 			
@@ -186,64 +188,60 @@ int main(int argc, const char * argv[])
 			if (bytePos = BASS_ChannelGetPosition(ChannelFX, BASS_POS_BYTE))
 			{
 				Offset = (int)floor(BASS_ChannelBytes2Seconds(ChannelFX, bytePos) * 1000);
+				bool found = false;
+				int foundOffset = 0;
 
-				// Check for hitsound entry at this offset
-				if (hitsounds.find(Offset) != hitsounds.end())
+				for (auto& o : offsets)
 				{
-					for (auto& sound : hitsounds[Offset])
+					for (auto& u : o)
 					{
-						// Display each hitsound
-						LOGGER_DEBUG("Hitsound at {}ms => {}", Offset, sound);
+						found = Offset >= u;
+
+						if (found)
+						{
+							foundOffset = u;
+							break;
+						}
 					}
-					hitsounds.erase(Offset);
+
+					if (found)
+					{
+						break;
+					}
 				}
 
-				// Offset +1
-				else if (hitsounds.find(Offset + 1) != hitsounds.end())
+				if (!found)
 				{
-					for (auto& sound : hitsounds[Offset + 1])
-					{
-						// Display each hitsound
-						LOGGER_DEBUG("Hitsound at {}ms => {}", Offset + 1, sound);
-					}
-					hitsounds.erase(Offset + 1);
+					continue;
 				}
 
-				//// Offset +2
-				//else if (hitsounds.find(Offset + 2) != hitsounds.end())
-				//{
-				//	for (auto& sound : hitsounds[Offset + 2])
-				//	{
-				//		// Display each hitsound
-				//		LOGGER_DEBUG("Hitsound at {}ms => {}", Offset + 2, sound);
-				//	}
-				//	hitsounds.erase(Offset + 2);
-				//}
-
-				// Offset -1
-				else if (hitsounds.find(Offset - 1) != hitsounds.end())
+				
+				for (auto& sound : hitsounds[foundOffset])
 				{
-					for (auto& sound : hitsounds[Offset - 1])
-					{
-						// Display each hitsound
-						LOGGER_DEBUG("Hitsound at {}ms => {}", Offset - 1, sound);
-					}
-					hitsounds.erase(Offset - 1);
+					// Display each hitsound
+					LOGGER_DEBUG("Hitsound at {}ms => {}", foundOffset, sound);
 				}
-
-				//// Offset -2
-				//else if (hitsounds.find(Offset - 2) != hitsounds.end())
-				//{
-				//	for (auto& sound : hitsounds[Offset - 2])
-				//	{
-				//		// Display each hitsound
-				//		LOGGER_DEBUG("Hitsound at {}ms => {}", Offset - 2, sound);
-				//	}
-				//	hitsounds.erase(Offset - 2);
-				//}
+				hitsounds.erase(foundOffset);
+				
 			}
 
 			Sleep(1);
+		}
+
+		if (hitsounds.empty())
+		{
+			continue;
+		}
+
+		for (auto& o : offsets)
+		{
+			for (auto& u : o)
+			{
+				for (auto& hs : hitsounds[u])
+				{
+					LOGGER_ERROR("Missed Hitsound at {} => {}", u, hs);
+				}
+			}
 		}
 
 		LOGGER_ERROR("Missed Hitsounds: {}", hitsounds.size());
