@@ -6,7 +6,7 @@ image: Visual Studio 2017
 clone_folder: C:\Dev
 clone_script:
 - ps: >-
-    git clone -q --recursive https://github.com/MaxKruse/Cpp-Osu-Music-Player.git OsuProj
+    git clone -q --recursive https://github.com/MaxKruse/Cpp-Osu-Music-Player.git
 
     cd OsuProj
 
@@ -23,6 +23,6 @@ install:
 
     ./premake5 vs2017
 build_script:
-- ps: msbuild /t:"C:\Dev\OsuProj" MusicPlayer.sln
+- ps: msbuild /t:"C:\Dev\Cpp-Osu-Music-Player" /m MusicPlayer.sln
 on_failure:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
