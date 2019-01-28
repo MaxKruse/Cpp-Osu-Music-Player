@@ -200,7 +200,7 @@ int main(int argc, const char * argv[])
 						if (found)
 						{
 							foundOffset = u;
-<<<<<<< HEAD
+
 							for (auto& sound : hitsounds[foundOffset])
 							{
 								// Display each hitsound
@@ -208,8 +208,6 @@ int main(int argc, const char * argv[])
 							}
 							hitsounds.erase(foundOffset);
 							found = false;
-=======
->>>>>>> master
 							break;
 						}
 					}
@@ -219,23 +217,6 @@ int main(int argc, const char * argv[])
 						break;
 					}
 				}
-
-				if (!found)
-				{
-					continue;
-				}
-<<<<<<< HEAD
-=======
-
-				
-				for (auto& sound : hitsounds[foundOffset])
-				{
-					// Display each hitsound
-					LOGGER_DEBUG("Hitsound at {}ms => {}", foundOffset, sound);
-				}
-				hitsounds.erase(foundOffset);
-				
->>>>>>> master
 			}
 		}
 
