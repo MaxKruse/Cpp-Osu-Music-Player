@@ -3,11 +3,6 @@ pull_requests:
   do_not_increment_build_number: true
 skip_tags: true
 image: Visual Studio 2017
-configuration:
-- Debug
-- Release
-- Dist
-platform: x64
 clone_folder: C:\Dev
 clone_script:
 - ps: >-
@@ -24,9 +19,7 @@ install:
 - ps: >-
     Start-FileDownload 'https://github.com/premake/premake-core/releases/download/v5.0.0-alpha13/premake-5.0.0-alpha13-windows.zip' 'premake.zip'
 
-
     7z x premake.zip
-
 
     ./premake5 vs2017
 build:
