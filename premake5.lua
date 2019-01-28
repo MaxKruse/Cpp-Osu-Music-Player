@@ -21,6 +21,8 @@ project "Parser"
 	characterset "Unicode"
 	vectorextensions "AVX"
 
+	toolset "msc"
+
 	staticruntime "Off"
 
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
@@ -79,6 +81,8 @@ project "Player"
 	language "C++"
 	characterset "Unicode"
 	vectorextensions "AVX"
+
+	toolset "msc"
 
 	staticruntime "Off"
 

@@ -8,7 +8,7 @@ clone_script:
 - ps: >-
     git clone -q --recursive https://github.com/MaxKruse/Cpp-Osu-Music-Player.git
 
-    cd OsuProj
+    cd Cpp-Osu-Music-Player
 
     git checkout -qf
 
