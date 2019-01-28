@@ -22,6 +22,12 @@ install:
     7z x premake.zip
 
     ./premake5 vs2017
+before_build:
+  - ps: >-
+    dir
+    cd C:\Dev\Cpp-Osu-Music-Player
+    dir
+
 build:
   project: MusicPlayer.sln
   verbosity: detailed
