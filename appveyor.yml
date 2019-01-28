@@ -23,8 +23,10 @@ install:
 
     ./premake5 vs2017
 build_script:
-- ps: >- 
-  msbuild /t:"C:\Dev\Cpp-Osu-Music-Player\Parser" /m Parser.vcxproj
-  msbuild /t:"C:\Dev\Cpp-Osu-Music-Player\Player" /m Player.vcxproj
+- ps: >-
+    msbuild /t:"C:\Dev\Cpp-Osu-Music-Player\Parser" /m Parser.vcxproj
+
+    msbuild /t:"C:\Dev\Cpp-Osu-Music-Player\Player" /m Player.vcxproj
+
 on_failure:
 - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
