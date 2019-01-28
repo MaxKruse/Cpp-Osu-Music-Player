@@ -21,6 +21,8 @@ project "Parser"
 	characterset "Unicode"
 	vectorextensions "AVX"
 
+	staticruntime "Off"
+
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
 
@@ -53,25 +55,21 @@ project "Parser"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 	filter "configurations:Debug"
 		defines "_DEBUG"
 		optimize "Debug"
 		symbols "Full"
-		buildoptions "/MDd"
 
 	filter "configurations:Release"
 		defines "_RELEASE"
 		optimize "On"
 		symbols "On"
-		buildoptions "/MD"
 
 	filter "configurations:Dist"
 		defines "_DIST"
 		optimize "Size"
-		buildoptions "/MD"
 
 
 
@@ -81,6 +79,8 @@ project "Player"
 	language "C++"
 	characterset "Unicode"
 	vectorextensions "AVX"
+
+	staticruntime "Off"
 
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
@@ -115,22 +115,18 @@ project "Player"
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
 	filter "configurations:Debug"
 		defines "_DEBUG"
 		optimize "Debug"
 		symbols "Full"
-		buildoptions "/MDd"
 
 	filter "configurations:Release"
 		defines "_RELEASE"
 		optimize "On"
 		symbols "On"
-		buildoptions "/MD"
 
 	filter "configurations:Dist"
 		defines "_DIST"
 		optimize "Size"
-		buildoptions "/MD"
