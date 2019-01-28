@@ -112,6 +112,9 @@ int main(int argc, const char * argv[])
 			continue;
 		}
 
+		// Wait between songs so we dont go from mp3 to mp3 without giving the listener a break
+		Sleep(beatmap->GetAudioleadIn());
+
 		// Debug logs
 		LOGGER_DEBUG("MP3 for {} => {}", list[index], beatmap->GetMp3());
 		LOGGER_DEBUG("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
@@ -149,19 +152,24 @@ int main(int argc, const char * argv[])
 		auto lengthInBytes = BASS_ChannelGetLength(ChannelFX, BASS_POS_BYTE);
 		auto lengthInSeconds = BASS_ChannelBytes2Seconds(ChannelFX, lengthInBytes);
 
-		// 6. Change the speed
-		LOGGER_DEBUG("Changing BPM from {:.2f} to {:.2f}", (float)bpm, (float)bpm * (1.0f + (float)(increase / 100.0f)));
-		BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_TEMPO, increase);
 
-		// 7. Display Data
+		// 6. Display Data
 		int a = (int)floor(lengthInSeconds / 60);
 		int b = (int)floor(fmod(lengthInSeconds, 60));
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
 		lengthInSeconds = lengthInSeconds * (1.0 - (increase / 100.0));
 
-		a = (int)floor(lengthInSeconds / 60);
-		b = (int)floor(fmod(lengthInSeconds, 60));
-		LOGGER_ERROR("Modified Length: {:02d}:{:02d}", a, b);
+		// 7. Speed Up
+		if (bpm < 180.0)
+		{
+			LOGGER_DEBUG("Changing BPM from {:.2f} to {:.2f}", (float)bpm, (float)bpm * (1.0f + (float)(increase / 100.0f)));
+			BASS_ChannelSetAttribute(ChannelFX, BASS_ATTRIB_TEMPO, increase);
+
+			a = (int)floor(lengthInSeconds / 60);
+			b = (int)floor(fmod(lengthInSeconds, 60));
+			LOGGER_INFO("Modified Length: {:02d}:{:02d}", a, b);
+		}
+		
 
 		// Get the hitsounds
 		auto hitsounds = beatmap->GetHitsoundsOfTimings();
@@ -177,7 +185,7 @@ int main(int argc, const char * argv[])
 			// Check for the current Position in the channel
 			if (bytePos = BASS_ChannelGetPosition(ChannelFX, BASS_POS_BYTE))
 			{
-				Offset = round(BASS_ChannelBytes2Seconds(ChannelFX, bytePos) * 1000);
+				Offset = (int)floor(BASS_ChannelBytes2Seconds(ChannelFX, bytePos) * 1000);
 
 				// Check for hitsound entry at this offset
 				if (hitsounds.find(Offset) != hitsounds.end())
@@ -239,9 +247,6 @@ int main(int argc, const char * argv[])
 		}
 
 		LOGGER_ERROR("Missed Hitsounds: {}", hitsounds.size());
-
-		// Wait between songs so we dont go from mp3 to mp3 without giving the listener a break
-		Sleep(500);
 	}
 	while (true); // As long as the user doesnt close the program, we will continue playing forever
 

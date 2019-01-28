@@ -14,15 +14,16 @@ namespace Parser {
 		std::string m_FileFormatVersion;
 		std::string m_AudioFilename;
 		std::string m_SampleSet;
-		int      m_Mode{-1};
+		int			m_AudioLeadIn{-1};
+		int			m_Mode{-1};
 	public:
 		General() 
 		{
-			LOGGER_WARN("General cant be set!");
+			LOGGER_WARN("General hasnt been set!");
 		}
 
-		General(std::string FileFormatVersion, std::string AudioFilename, std::string SampleSet, int Mode)
-			: m_FileFormatVersion(std::move(FileFormatVersion)), m_AudioFilename(std::move(AudioFilename)), m_SampleSet(std::move(SampleSet)), m_Mode(Mode)
+		General(std::string FileFormatVersion, std::string AudioFilename, std::string SampleSet, int Mode, int AudioLeadIn)
+			: m_FileFormatVersion(std::move(FileFormatVersion)), m_AudioFilename(std::move(AudioFilename)), m_SampleSet(std::move(SampleSet)), m_Mode(Mode), m_AudioLeadIn(AudioLeadIn)
 		{
 			LOGGER_TRACE("{}", ToString());
 		}
@@ -37,6 +38,7 @@ namespace Parser {
 
 		inline const std::string GetAudioFilename() const { return m_AudioFilename; }
 		inline const std::string GetFileformatVersion() const { return m_FileFormatVersion; }
+		inline const int GetAudioLeadIn() const { return m_AudioLeadIn; }
 		inline const int GetMode() const { return m_Mode; }
 
 		bool HasDefaults()
@@ -64,7 +66,7 @@ namespace Parser {
 	public:
 		Metadata()
 		{
-			LOGGER_WARN("Metadata cant be set!");
+			LOGGER_WARN("Metadata hasnt been set!");
 		}
 
 		Metadata(std::string Artist, std::string ArtistUnicode, std::string Title, std::string TitleUnicode, std::string Creator, std::string Version)
@@ -110,7 +112,7 @@ namespace Parser {
 	public:
 		SearchBy()
 		{
-			LOGGER_WARN("SearchBy cant be set!");
+			LOGGER_WARN("SearchBy hasnt been set!");
 		}
 
 		SearchBy(std::string Source, std::string Tags, int BeatmapID, int BeatmapSetID)
@@ -158,7 +160,7 @@ namespace Parser {
 	public:
 		Difficulty()
 		{
-			LOGGER_WARN("Difficulty cant be set!");
+			LOGGER_WARN("Difficulty hasnt been set!");
 		}
 
 		Difficulty(unsigned short HPDrainRate, unsigned short CircleSize, unsigned short OverallDifficulty, unsigned short ApproachRate, float SliderMultiplier, unsigned short SliderTickRate)
@@ -202,6 +204,7 @@ namespace Parser {
 			return offsets_of_last[offsets_of_last.size() - 1];
 		}
 
+		inline const int GetAudioleadIn() const { return m_General.GetAudioLeadIn(); }
 		inline const std::string GetMetadataText() const { return std::string(m_Metadata.GetArtist() + " - " + m_Metadata.GetTitle() + " (" + m_Metadata.GetCreator() + ") [" + m_Metadata.GetVersion() + "]"); }
 		inline const std::string GetMp3() const { return m_General.GetAudioFilename(); }
 		inline const std::string GetFolderPath() const { return m_Folder; }

@@ -368,13 +368,14 @@ namespace Parser {
 		std::string FileFormatVersion = "-1";
 		std::string AudioFilename = "-1";
 		std::string SampleSet = "-1";
+		int AudioLeadIn = -1;
 		int Mode = -1;
 
 		int found = 0;
 
 		for(auto line : m_Text)
 		{
-			if (found == 4)
+			if (found == 5)
 			{
 				break;
 			}
@@ -394,6 +395,13 @@ namespace Parser {
 				found++;
 			}
 
+			if (line.find("AudioLeadIn: ") != std::string::npos)
+			{
+				AudioLeadIn = atoi(line.erase(0, 13).c_str());
+				LOGGER_TRACE("FOUND AUDIOLEADIN => {}", AudioLeadIn);
+				found++;
+			}
+
 			if (line.find("SampleSet: ") != std::string::npos)
 			{
 				SampleSet = line.erase(0, 11);
@@ -409,7 +417,7 @@ namespace Parser {
 			}
 		}
 
-		return General(FileFormatVersion, AudioFilename, SampleSet, Mode);
+		return General(FileFormatVersion, AudioFilename, SampleSet, Mode, AudioLeadIn);
 	}
 
 	// Parse the Metadata Section from a file
