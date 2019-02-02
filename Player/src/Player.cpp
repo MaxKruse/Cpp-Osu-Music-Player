@@ -35,7 +35,7 @@ static void Benchmark()
 {
 	cxxtimer::Timer timer;
 
-	Parser::Parser p("C:\\Dev\\C++ Osu Music Player\\Player\\");
+	Parser::Parser p("C:/Dev/C++ Osu Music Player/Player/");
 	//Parser::Parser p("D:/osu/Songs/");
 	
 	auto ListOfFiles = p.GetListOfFiles();
@@ -187,13 +187,13 @@ int main(int argc, const char * argv[])
 			// Check for the current Position in the channel
 			if (bytePos = BASS_ChannelGetPosition(ChannelFX, BASS_POS_BYTE))
 			{
-				Offset = (int)floor(BASS_ChannelBytes2Seconds(ChannelFX, bytePos) * 1000);
+				Offset = floor(BASS_ChannelBytes2Seconds(ChannelFX, bytePos) * 1000.0);
 				bool found = false;
 				int foundOffset = 0;
 
-				for (auto& o : offsets)
+				for (const auto& o : offsets)
 				{
-					for (auto& u : o)
+					for (const auto& u : o)
 					{
 						found = Offset >= u;
 
@@ -201,7 +201,7 @@ int main(int argc, const char * argv[])
 						{
 							foundOffset = u;
 
-							for (auto& sound : hitsounds[foundOffset])
+							for (const auto& sound : hitsounds[foundOffset])
 							{
 								// Display each hitsound
 								LOGGER_DEBUG("Hitsound at {}ms => {}", foundOffset, sound);
@@ -225,11 +225,11 @@ int main(int argc, const char * argv[])
 			continue;
 		}
 
-		for (auto& o : offsets)
+		for (const auto& o : offsets)
 		{
-			for (auto& u : o)
+			for (const auto& u : o)
 			{
-				for (auto& hs : hitsounds[u])
+				for (const auto& hs : hitsounds[u])
 				{
 					LOGGER_ERROR("Missed Hitsound at {} => {}", u, hs);
 				}

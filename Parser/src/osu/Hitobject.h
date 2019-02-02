@@ -26,6 +26,7 @@ namespace Parser {
 			// Hitobjects always have a starting offset, BUT different types might have other Offsets
 			m_Offset.emplace_back(offset);
 		}
+
 		virtual ~Hitobject() = default;
 
 		virtual std::pair<long, std::vector<std::string>> GetHitsounds(TimingPoint t) = 0;
