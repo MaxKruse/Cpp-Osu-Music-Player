@@ -42,7 +42,19 @@ project "Parser"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/vendor/cxxtimer"
+		"%{prj.name}/vendor/cxxtimer",
+		"Player/vendor/Un4Seen_bass"
+	}
+
+	libdirs
+	{
+		"Player/vendor/Un4Seen_bass"
+	}
+
+	links
+	{
+		"bass.lib",
+		"bass_fx.lib"
 	}
 
 	defines
