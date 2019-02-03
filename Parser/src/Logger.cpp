@@ -31,7 +31,7 @@ namespace Parser {
 		
 		const spdlog::filename_t &str(buffer);
 
-		s_FileLogger = spdlog::rotating_logger_mt("FILELOG", str, 1024 * 1024 * 256, 4);
+		s_FileLogger = spdlog::basic_logger_mt("FILELOG", "logs/basic-log.txt");
 		s_FileLogger->set_level(spdlog::level::debug);
 		spdlog::flush_on(spdlog::level::warn);
 
