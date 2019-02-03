@@ -47,7 +47,16 @@
 
 ☐ Play sounds of Hitobjects when offset is reached @created(19-01-21 14:21)
         ✔ make sure to remove the already played elements, otherwise we would have unwanted behaviour @created(19-01-21 14:22) @done(19-01-25 17:52)
-
+☐ Beatmaps Know about their Own Channels @created(19-02-03 12:36)
+        ✔ Beatmap.GetChannel() @created(19-02-03 12:38) @started(19-02-03 12:45) @done(19-02-03 12:49) @lasted(4m49s)
+        ✔ Beatmap.GetFXChannel() @created(19-02-03 12:38) @started(19-02-03 12:45) @done(19-02-03 12:49) @lasted(4m47s)
+        ✔ Beatmap.ChangeVolume(int vol) @created(19-02-03 12:49) @started(19-02-03 12:59) @done(19-02-03 13:03) @lasted(4m52s)
+            From 0 - 100%
+        ☐ Beatmap.PlaySamples(long offset) @created(19-02-03 12:38)
+        ✔ Beatmap.Play() @created(19-02-03 12:38) @started(19-02-03 12:51) @done(19-02-03 12:52) @lasted(1m30s)
+        ✔ Beatmap.Pause() @created(19-02-03 12:52) @started(19-02-03 12:53) @done(19-02-03 12:59) @lasted(6m1s)
+        ✔ Beatmap.Stop() @created(19-02-03 12:52) @started(19-02-03 12:55) @done(19-02-03 12:55) @lasted(56s)
+        ✔ Beatmap.Reset() @created(19-02-03 12:52) @started(19-02-03 12:59) @done(19-02-03 12:59) @lasted(3s)
 
 ✔ Implement Vector of All .osu files @started(19-01-05 14:43) @done(19-01-05 14:55) @lasted(12m25s)
 
