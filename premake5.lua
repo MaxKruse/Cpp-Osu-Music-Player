@@ -64,7 +64,7 @@ project "Parser"
 
 	postbuildcommands
 	{
-		"mkdir ../bin/" .. outputDir .. "/Player & {COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputDir .. "/Player"
+		("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputDir .. "/Player/\"")
 	}
 
 	filter "system:windows"
