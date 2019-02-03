@@ -4,6 +4,9 @@
 #include "Hitobject.h"
 #include "TimingPoint.h"
 
+#include "bass.h"
+#include "bass_fx.h"
+
 namespace Parser {
 
 	/// <summary>
@@ -211,25 +214,39 @@ namespace Parser {
 		inline const std::string GetFullMp3Path() const { return GetFolderPath() + GetMp3(); }
 		inline const std::string GetFilePath() const { return m_FilePath; }
 		inline const std::vector<std::vector<long>> GetOffsets() const { return m_Offsets; }
-		const double GetBPM() const // This calculation is wrong, only correct up to the decimal point (+- 1)
+		const double GetBPM() const
 		{
 			return (60000.0 / m_TimingPoints[0].GetMillisecondsPerBeat());
 		}
 
-		inline const bool IsPlayable() const // Only make supported files playable
+		const bool IsPlayable() const // Only make supported files playable
 		{ 
-			if (m_General.GetFileformatVersion() == "v13" && m_General.GetMode() == 0)
+			if (m_General.GetMode() != 0)
+			{ 
+				return false;
+			}
+
+			if (m_General.GetFileformatVersion() == "v13")
 			{
 				return true;
 			}
 			
-			if (m_General.GetFileformatVersion() == "v14" && m_General.GetMode() == 0)
+			if (m_General.GetFileformatVersion() == "v14")
 			{
 				return true;
 			}
 
 			return false;
 		}
+
+		inline const HSTREAM GetChannel() { return m_BaseChannel; }
+		inline const HSTREAM GetFXChannel() { return m_FXChannel; }
+
+		void Play();
+		void Pause();
+		void Stop();
+		void Reset();
+		void SetVolume(unsigned char Vol);
 
 		std::string ToString() const;
 		
@@ -240,6 +257,11 @@ namespace Parser {
 		std::vector<Hitobject*>               m_HitObjects;
 		std::vector<TimingPoint>              m_TimingPoints;
 		std::vector<std::vector<long>>		  m_Offsets;
+
+		HSTREAM m_BaseChannel;
+		HSTREAM m_FXChannel;
+		bool    m_Paused;
+		QWORD	m_ChannelPos;
 
 		std::map<long, std::vector<std::string>> m_HitsoundsOnTiming;
 		

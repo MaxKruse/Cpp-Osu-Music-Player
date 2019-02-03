@@ -24,7 +24,7 @@ namespace Parser {
 		std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint> Timingpoints, 
 		General g, Metadata m, SearchBy s, Difficulty d
 	)
-		: m_FilePath(FilePath), m_Folder(Folder), m_BackgroundImage(BackgroundImage), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d)
+		: m_FilePath(FilePath), m_Folder(Folder), m_BackgroundImage(BackgroundImage), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d), m_Paused(false)
 	{
 		LOGGER_INFO("Creating Beatmap From File => {}", FilePath);
 
@@ -70,6 +70,20 @@ namespace Parser {
 			m_HitsoundsOnTiming.emplace(object->GetHitsounds(timingpoint_to_use));
 			m_Offsets.emplace_back(object->GetOffsets());
 		}
+
+		// Creating BASS Channels
+		if (!(m_BaseChannel = BASS_StreamCreateFile(FALSE, GetFullMp3Path().c_str(), 0, 0, BASS_STREAM_DECODE)) && !(m_BaseChannel = BASS_MusicLoad(FALSE, GetFullMp3Path().c_str(), 0, 0, BASS_MUSIC_RAMP | BASS_MUSIC_PRESCAN, 0)))
+		{
+			LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());
+		}
+
+		if (!(m_FXChannel = BASS_FX_TempoCreate(m_BaseChannel, BASS_FX_FREESOURCE)))
+		{
+			LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());
+		}
+
+		// Set Volume
+		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, 0.2f);
 	}
 
 	// Manually cleanup the memory we used from Hitobjects. Timingpoints were created as Objects, not pointers, so we dont need to destroy these. That happens by default
@@ -86,6 +100,44 @@ namespace Parser {
 		LOGGER_DEBUG("Deleting TimingPoints From Beatmap => {}", m_FilePath);
 		m_TimingPoints.clear();
 		
+	}
+
+	void Beatmap::Play()
+	{
+		if (!m_Paused)
+		{
+			Sleep(m_General.GetAudioLeadIn());
+			BASS_ChannelPlay(m_FXChannel, true);
+		}
+		else
+		{
+			BASS_ChannelSetPosition(m_FXChannel, m_ChannelPos, BASS_POS_BYTE);
+			BASS_ChannelPlay(m_FXChannel, false);
+		}
+	}
+
+	void Beatmap::Pause()
+	{
+		m_ChannelPos = BASS_ChannelGetPosition(m_FXChannel, BASS_POS_BYTE);
+		BASS_ChannelStop(m_FXChannel);
+		m_Paused = true;
+	}
+
+	void Beatmap::Stop()
+	{
+		BASS_ChannelStop(m_FXChannel);
+		LOGGER_INFO("Stopping FXChannel {}", m_FXChannel);
+	}
+
+	void Beatmap::Reset()
+	{
+		m_ChannelPos = 0;
+	}
+
+	void Beatmap::SetVolume(unsigned char Vol)
+	{
+		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, Vol / 100.0f);
+		LOGGER_INFO("Changed volume to {}%", Vol);
 	}
 
 	std::string Beatmap::ToString() const
