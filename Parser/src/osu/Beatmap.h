@@ -219,6 +219,14 @@ namespace Parser {
 			return (60000.0 / m_TimingPoints[0].GetMillisecondsPerBeat());
 		}
 
+		const QWORD GetCurrentOffset() const
+		{ 
+			QWORD bytePos = BASS_ChannelGetPosition(m_FXChannel, BASS_POS_BYTE);
+			return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos) * 1000.0);
+		}
+
+		inline const bool IsPlaying() const { return BASS_ChannelIsActive(m_FXChannel); }
+
 		const bool IsPlayable() const // Only make supported files playable
 		{ 
 			if (m_General.GetMode() != 0)
@@ -239,14 +247,25 @@ namespace Parser {
 			return false;
 		}
 
-		inline const HSTREAM GetChannel() { return m_BaseChannel; }
-		inline const HSTREAM GetFXChannel() { return m_FXChannel; }
+		inline const HSTREAM GetChannel() const { return m_BaseChannel; }
+		inline const HSTREAM GetFXChannel() const { return m_FXChannel; }
 
+		const QWORD GetSongLength() const
+		{
+			QWORD bytePos = BASS_ChannelGetLength(m_FXChannel, BASS_POS_BYTE);
+			return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos) * 1000.0);
+		}
+
+		void GetMissedHitsounds();
+		inline const size_t CountMissedHitsounds() const { return m_HitsoundsOnTimingDeleteable.size(); }
+		
 		void Play();
 		void Pause();
 		void Stop();
 		void Reset();
 		void SetVolume(unsigned char Vol);
+
+		void PlaySamples(long offset);
 
 		std::string ToString() const;
 		
@@ -264,6 +283,7 @@ namespace Parser {
 		QWORD	m_ChannelPos;
 
 		std::map<long, std::vector<std::string>> m_HitsoundsOnTiming;
+		std::map<long, std::vector<std::string>> m_HitsoundsOnTimingDeleteable;
 		
 		General    m_General;
 		Metadata   m_Metadata;

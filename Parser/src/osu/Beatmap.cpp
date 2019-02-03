@@ -71,6 +71,8 @@ namespace Parser {
 			m_Offsets.emplace_back(object->GetOffsets());
 		}
 
+		m_HitsoundsOnTimingDeleteable = m_HitsoundsOnTiming;
+
 		// Creating BASS Channels
 		if (!(m_BaseChannel = BASS_StreamCreateFile(FALSE, GetFullMp3Path().c_str(), 0, 0, BASS_STREAM_DECODE)) && !(m_BaseChannel = BASS_MusicLoad(FALSE, GetFullMp3Path().c_str(), 0, 0, BASS_MUSIC_RAMP | BASS_MUSIC_PRESCAN, 0)))
 		{
@@ -102,11 +104,22 @@ namespace Parser {
 		
 	}
 
+	void Beatmap::GetMissedHitsounds()
+	{
+		for (const auto& pair : m_HitsoundsOnTimingDeleteable)
+		{
+			for (const auto& moreData : pair.second)
+			{
+				LOGGER_ERROR("Missed sound at {} => {}", pair.first, moreData);
+			}
+		}
+	}
+
 	void Beatmap::Play()
 	{
 		if (!m_Paused)
 		{
-			Sleep(m_General.GetAudioLeadIn());
+			Sleep(m_General.GetAudioLeadIn() + 1000);
 			BASS_ChannelPlay(m_FXChannel, true);
 		}
 		else
@@ -114,6 +127,7 @@ namespace Parser {
 			BASS_ChannelSetPosition(m_FXChannel, m_ChannelPos, BASS_POS_BYTE);
 			BASS_ChannelPlay(m_FXChannel, false);
 		}
+		m_Paused = false;
 	}
 
 	void Beatmap::Pause()
@@ -138,6 +152,24 @@ namespace Parser {
 	{
 		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, Vol / 100.0f);
 		LOGGER_INFO("Changed volume to {}%", Vol);
+	}
+
+	void Beatmap::PlaySamples(long offset)
+	{
+		do
+		{
+			if (m_HitsoundsOnTimingDeleteable.find(offset) == m_HitsoundsOnTimingDeleteable.end())
+			{
+				break;
+			}
+			for (const auto& sound : m_HitsoundsOnTimingDeleteable.at(offset))
+			{
+				// Display each hitsound
+				LOGGER_ERROR("Hitsound at {}ms => {}", offset, sound);
+				m_HitsoundsOnTimingDeleteable.erase(offset);
+			}
+		} while (m_HitsoundsOnTimingDeleteable.size() != 0);
+		
 	}
 
 	std::string Beatmap::ToString() const
