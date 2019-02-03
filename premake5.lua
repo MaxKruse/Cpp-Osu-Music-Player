@@ -114,7 +114,8 @@ project "Player"
 		"%{prj.name}/vendor/Un4Seen_bass",
 		"Parser/src",
 		"Parser/vendor/cxxtimer",
-		"Parser/vendor/spdlog/include"
+		"Parser/vendor/spdlog/include",
+		"%{prj.name}/vendor/ImGui"
 	}
 
 	libdirs
