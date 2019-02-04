@@ -10,7 +10,7 @@
         1. It will only play the normal Channel if its NOT Decoded, CreateTempo Re-Encodes the stream when calling and creating a new channel
 
 ☐ Code cleanup (continuos) via Clang-Tidy and have other people look over it @high
-    This is planned to be a Weekly thing, below are the occurances.
+    This is planned to be a Weekly-ish thing, below are the occurances.
     Sources for this include:
         - https://www.reddit.com/r/reviewmycode/
         - https://www.reddit.com/r/codereview/
