@@ -117,6 +117,8 @@ namespace Parser {
 
 	void Beatmap::Play()
 	{
+		m_HitsoundsOnTimingDeleteable = m_HitsoundsOnTiming;
+		LOGGER_INFO("Playing: {}", GetMetadataText());
 		if (!m_Paused)
 		{
 			Sleep(m_General.GetAudioLeadIn() + 1000);
@@ -154,21 +156,37 @@ namespace Parser {
 		LOGGER_INFO("Changed volume to {}%", Vol);
 	}
 
+	void Beatmap::SetSpeedup(unsigned char Speed)
+	{
+		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_TEMPO, (float)(Speed));
+	}
+
 	void Beatmap::PlaySamples(long offset)
 	{
+		LOGGER_ERROR("PLAYING HITSOUNDS UP TO {}ms", offset);
 		do
 		{
-			if (m_HitsoundsOnTimingDeleteable.find(offset) == m_HitsoundsOnTimingDeleteable.end())
+			for (const auto& pair : m_HitsoundsOnTimingDeleteable)
 			{
-				break;
+				LOGGER_INFO("pair.first = [}",pair.first);
+				if (offset >= pair.first)
+				{
+					for (const auto& sound : m_HitsoundsOnTimingDeleteable.at(pair.first))
+					{
+						// Display each hitsound
+						LOGGER_ERROR("Hitsound at {}ms => {}", pair.first, sound);
+					}
+					m_HitsoundsOnTimingDeleteable.erase(pair.first);
+				}
+				else
+				{
+					LOGGER_INFO("All Hitsounds Played");
+					return;
+				}
+				
 			}
-			for (const auto& sound : m_HitsoundsOnTimingDeleteable.at(offset))
-			{
-				// Display each hitsound
-				LOGGER_ERROR("Hitsound at {}ms => {}", offset, sound);
-				m_HitsoundsOnTimingDeleteable.erase(offset);
-			}
-		} while (m_HitsoundsOnTimingDeleteable.size() != 0);
+
+		} while (m_HitsoundsOnTimingDeleteable.at(offset).size() != 0);
 		
 	}
 

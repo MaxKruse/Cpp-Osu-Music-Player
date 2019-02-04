@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "osu/Parser.h"
 #include "cxxtimer.hpp"
+#include "imgui.h"
 
 int main(int argc, const char * argv[])
 {
@@ -35,7 +36,7 @@ int main(int argc, const char * argv[])
 	do // Music Playing Loop
 	{
 		// Get Beatmap and load it
-		auto index = Parser::Random(list);
+		auto index = 5000; //Parser::Random(list);
 		auto beatmap = p.BeatmapFromFile(list[index]);
 
 		// Check if beatmap is supported
@@ -53,12 +54,12 @@ int main(int argc, const char * argv[])
 		auto bpm = beatmap->GetBPM();
 		auto lengthInSeconds = beatmap->GetSongLength();
 
-
 		// 6. Display Data
 		int a = (int)floor(lengthInSeconds / 60);
 		int b = (int)floor(fmod(lengthInSeconds, 60));
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
 		
+		beatmap->SetVolume(10);
 		beatmap->Play();
 
 		QWORD bytePos = 0;
@@ -66,12 +67,12 @@ int main(int argc, const char * argv[])
 		auto offsets = beatmap->GetOffsets();
 
 		while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
-			
 			// Check for the current Position in the channel
 			if (Offset = beatmap->GetCurrentOffset())
 			{
 				beatmap->PlaySamples(Offset);
 			}
+			std::this_thread::sleep_for(std::chrono::microseconds(200));
 		}
 		
 		beatmap->GetMissedHitsounds();

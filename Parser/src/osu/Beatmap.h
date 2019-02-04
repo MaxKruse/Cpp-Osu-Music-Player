@@ -264,6 +264,7 @@ namespace Parser {
 		void Stop();
 		void Reset();
 		void SetVolume(unsigned char Vol);
+		void SetSpeedup(unsigned char Speed);
 
 		void PlaySamples(long offset);
 
