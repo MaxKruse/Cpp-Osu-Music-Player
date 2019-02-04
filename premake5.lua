@@ -105,7 +105,10 @@ project "Player"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/ImGui/*.h",
+		"%{prj.name}/vendor/ImGui/*.cpp",
+
 	}
 
 	includedirs
