@@ -36,7 +36,7 @@ int main(int argc, const char * argv[])
 	do // Music Playing Loop
 	{
 		// Get Beatmap and load it
-		auto index = 5000; //Parser::Random(list);
+		auto index = Parser::Random(list);
 		auto beatmap = p.BeatmapFromFile(list[index]);
 
 		// Check if beatmap is supported
@@ -59,7 +59,7 @@ int main(int argc, const char * argv[])
 		int b = (int)floor(fmod(lengthInSeconds, 60));
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
 		
-		beatmap->SetVolume(10);
+		beatmap->SetVolume(7);
 		beatmap->Play();
 
 		QWORD bytePos = 0;

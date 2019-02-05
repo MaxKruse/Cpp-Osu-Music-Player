@@ -105,9 +105,7 @@ project "Player"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
-		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/ImGui/*.h",
-		"%{prj.name}/vendor/ImGui/*.cpp",
+		"%{prj.name}/src/**.cpp"
 
 	}
 
@@ -117,8 +115,7 @@ project "Player"
 		"%{prj.name}/vendor/Un4Seen_bass",
 		"Parser/src",
 		"Parser/vendor/cxxtimer",
-		"Parser/vendor/spdlog/include",
-		"%{prj.name}/vendor/ImGui"
+		"Parser/vendor/spdlog/include"
 	}
 
 	libdirs
