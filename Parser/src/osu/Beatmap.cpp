@@ -164,29 +164,26 @@ namespace Parser {
 	void Beatmap::PlaySamples(long offset)
 	{
 		LOGGER_DEBUG("PLAYING HITSOUNDS UP TO {}ms", offset);
-		do
+		
+		for (const auto& pair : m_HitsoundsOnTimingDeleteable)
 		{
-			for (const auto& pair : m_HitsoundsOnTimingDeleteable)
+			LOGGER_INFO("pair.first = {}",pair.first);
+			if (offset >= pair.first)
 			{
-				LOGGER_INFO("pair.first = [}",pair.first);
-				if (offset >= pair.first)
+				for (const auto& sound : m_HitsoundsOnTimingDeleteable.at(pair.first))
 				{
-					for (const auto& sound : m_HitsoundsOnTimingDeleteable.at(pair.first))
-					{
-						// Display each hitsound
-						LOGGER_DEBUG("Hitsound at {}ms => {}", pair.first, sound);
-					}
-					m_HitsoundsOnTimingDeleteable.erase(pair.first);
+					// Display each hitsound
+					LOGGER_DEBUG("Hitsound at {}ms => {}", pair.first, sound);
 				}
-				else
-				{
-					LOGGER_INFO("All Hitsounds Played");
-					return;
-				}
-				
+				m_HitsoundsOnTimingDeleteable.erase(pair.first);
 			}
-
-		} while (m_HitsoundsOnTimingDeleteable.at(offset).size() != 0);
+			else
+			{
+				LOGGER_INFO("All Hitsounds Played");
+				return;
+			}
+				
+		}
 		
 	}
 

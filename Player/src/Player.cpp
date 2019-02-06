@@ -28,6 +28,8 @@ int main(int argc, const char * argv[])
 		return 0;
 	}
 
+	// TurboBadger
+
 	//Parser::Parser p("C:/Dev/C++ Osu Music Player/Player/");
 	Parser::Parser p("D:/osu/Songs/");
 	auto list = p.GetListOfFiles();
@@ -58,7 +60,7 @@ int main(int argc, const char * argv[])
 		int b = (int)floor(fmod(lengthInSeconds, 60));
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
 		
-		beatmap->SetVolume(7);
+		beatmap->SetVolume(4);
 		beatmap->Play();
 
 		QWORD bytePos = 0;
@@ -74,9 +76,13 @@ int main(int argc, const char * argv[])
 			std::this_thread::sleep_for(std::chrono::microseconds(200));
 		}
 		
-		beatmap->GetMissedHitsounds();
+		if (beatmap->CountMissedHitsounds() > 1)
+		{
+			beatmap->GetMissedHitsounds();
 
-		LOGGER_ERROR("Missed Hitsounds: {}", beatmap->CountMissedHitsounds());
+			LOGGER_ERROR("Missed Hitsounds: {}", beatmap->CountMissedHitsounds());
+		}
+		
 	}
 	while (true); // As long as the user doesnt close the program, we will continue playing forever
 
