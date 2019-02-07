@@ -75,7 +75,7 @@ int main(int argc, const char * argv[])
 				beatmap->PlaySamples(Offset);
 			}
 			std::this_thread::sleep_for(std::chrono::microseconds(200));
-			LOGGER_DEBUG("Total Length: {}\t\tOffset: {}", lengthInSeconds, Offset);
+			LOGGER_DEBUG("\rTotal Length: {}\t\tOffset: {}", lengthInSeconds, Offset);
 		}
 		
 	}

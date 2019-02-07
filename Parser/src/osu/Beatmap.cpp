@@ -261,6 +261,13 @@ namespace Parser {
 					{
 						// Display each hitsound
 						LOGGER_DEBUG("Hitsound at {}ms => {}", pair.first, sound);
+
+						// If the hitsound file doesnt exist, just skip this entire sound
+						if (m_SampleChannels.find(sound) == m_SampleChannels.end())
+						{
+							LOGGER_WARN("Couldn't find .wav file. Skipping Hitsound");
+							continue;
+						}
 						BASS_ChannelPlay(m_SampleChannels.at(sound), true);
 					}
 					m_HitsoundsOnTimingDeleteable.erase(pair.first);
