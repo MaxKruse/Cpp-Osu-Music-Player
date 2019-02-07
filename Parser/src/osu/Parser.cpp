@@ -259,15 +259,15 @@ namespace Parser {
 
 				std::vector<std::string> parts = split(line, ',');
 
-				long offset = stol(parts[0]);
-				unsigned short milliseconds_per_beat = stoi(parts[1]);
-				unsigned short sampleset = stoi(parts[3]);
-				unsigned short sampleindex = stoi(parts[4]);
-				unsigned short volume = stoi(parts[5]);
+				long offset = stol(parts.at(0));
+				unsigned short milliseconds_per_beat = stoi(parts.at(1));
+				unsigned short sampleset = stoi(parts.at(3));
+				unsigned short sampleindex = stoi(parts.at(4));
+				unsigned short volume = stoi(parts.at(5));
 				
 				bool inherited = false;
 
-				if (stoi(parts[6]) & 1) // If its Inherited (this means you can inherit from it, not that it inherited from somewhere), the first bit is flipped (1 in Base10)
+				if (stoi(parts.at(6)) & 1) // If its Inherited (this means you can inherit from it, not that it inherited from somewhere), the first bit is flipped (1 in Base10)
 				{
 					inherited = true;
 				}
@@ -333,18 +333,18 @@ namespace Parser {
 
 				std::vector<std::string> parts = split(line, ',');
 				
-				if (stoi(parts[3]) & 1) // Circle
+				if (stoi(parts.at(3)) & 1) // Circle
 				{
-					std::vector<std::string> extras = split(parts[5], ':');
-					hitobjects.emplace_back(new Hitcircle(stoi(parts[0]), stoi(parts[1]), stol(parts[2]), stoi(parts[3]), stoi(parts[4]), extras));
+					std::vector<std::string> extras = split(parts.at(5), ':');
+					hitobjects.emplace_back(new Hitcircle(stoi(parts.at(0)), stoi(parts.at(1)), stol(parts.at(2)), stoi(parts.at(3)), stoi(parts.at(4)), extras));
 					
 				}
-				else if (stoi(parts[3]) & 2) // Slider
+				else if (stoi(parts.at(3)) & 2) // Slider
 				{
 					// TODO: IMPLEMENT SLIDER
 					
 				}
-				else if (stoi(parts[3]) & 8)  // Spinner
+				else if (stoi(parts.at(3)) & 8)  // Spinner
 				{
 					// TODO: IMPLEMENT SPINNER
 					

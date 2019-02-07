@@ -43,12 +43,12 @@ namespace Parser {
 					break;
 				}
 
-				if (object->GetOffsets()[0] < timingpoint.GetOffset() && found == false)
+				if (object->GetOffsets().at(0) < timingpoint.GetOffset() && found == false)
 				{
 					timingpoint_to_use = timingpoint;
 					found = true;
 				}
-				else if (object->GetOffsets()[0] > timingpoint.GetOffset())
+				else if (object->GetOffsets().at(0) > timingpoint.GetOffset())
 				{
 					timingpoint_to_use = timingpoint;
 					found = true;
@@ -57,12 +57,12 @@ namespace Parser {
 
 			if (!found)
 			{
-				LOGGER_DEBUG("Hitobject at {} doesnt seem to have a Timingpoint that affects it.", object->GetOffsets()[0]);
+				LOGGER_DEBUG("Hitobject at {} doesnt seem to have a Timingpoint that affects it.", object->GetOffsets().at(0));
 				LOGGER_DEBUG("Giving it default hitsounds...");
 				std::vector<std::string> temp = std::vector<std::string>();
 				temp.emplace_back("normal-hitnormal.wav");
 				// Since its not supported, give it a hitsound on its only guaranteed Offset
-				m_HitsoundsOnTiming.emplace(object->GetOffsets()[0], temp);
+				m_HitsoundsOnTiming.emplace(object->GetOffsets().at(0), temp);
 				m_Offsets.emplace_back(object->GetOffsets());
 				continue;
 			}
@@ -84,8 +84,62 @@ namespace Parser {
 			LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());
 		}
 
+		// Load Hitsound Samples and add them to the Map
+		std::string DefaultHitsoundFolder("C:/Dev/C++ Osu Music Player/default_sounds/");
+
+
+		// First Priority: Folder Path itself
+		for (std::experimental::filesystem::recursive_directory_iterator i(m_Folder), end; i != end; ++i)
+		{
+			// Skip Directories
+			if (!is_directory(i->path()))
+			{
+				LOGGER_TRACE("Element => {}", i->path().string());
+				// See: https://stackoverflow.com/a/23658737
+				if (i->path().extension() == ".wav")
+				{
+					// Filepath formating and writing to file
+					LOGGER_DEBUG("Found file => {}", i->path().string());
+					std::string SampleLocation = i->path().string();
+					std::string Index = i->path().string().erase(0, m_Folder.size());
+					m_SampleChannels.emplace(Index, BASS_StreamCreateFile(0, SampleLocation.c_str(), 0, 0, 0));
+				}
+			}
+		}
+
+		// Second Priority: Default Path
+		for (std::experimental::filesystem::recursive_directory_iterator i(DefaultHitsoundFolder), end; i != end; ++i)
+		{
+			// Skip Directories
+			if (!is_directory(i->path()))
+			{
+				LOGGER_TRACE("Element => {}", i->path().string());
+				// See: https://stackoverflow.com/a/23658737
+				if (i->path().extension() == ".wav")
+				{
+					// Filepath formating and writing to file
+					LOGGER_DEBUG("Found file => {}", i->path().string());
+					std::string SampleLocation = i->path().string();
+					std::string Index = i->path().string().erase(0, DefaultHitsoundFolder.size());
+					if (m_SampleChannels.find(Index) == m_SampleChannels.end()) // cant find this Index, therefore loading
+					{
+						m_SampleChannels.emplace(Index, BASS_StreamCreateFile(0, SampleLocation.c_str(), 0, 0, 0));
+					}
+				}
+			}
+		}
+
 		// Set Volume
-		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, 0.2f);
+		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, 0.1f);
+
+		// Volume Change for all Hitsounds to same Volume as base Channel
+		float multi = 1.2f; // Hitsound should be slightly louder imo
+
+		for (const auto& Sample : m_SampleChannels)
+		{
+			BASS_ChannelSetAttribute(Sample.second, BASS_ATTRIB_VOL, 0.1f * multi);
+			LOGGER_INFO("Changed volume of sample {} to {}%", Sample.first, 0.1f * multi);
+		}
 	}
 
 	// Manually cleanup the memory we used from Hitobjects. Timingpoints were created as Objects, not pointers, so we dont need to destroy these. That happens by default
@@ -189,6 +243,7 @@ namespace Parser {
 					{
 						// Display each hitsound
 						LOGGER_DEBUG("Hitsound at {}ms => {}", pair.first, sound);
+						BASS_ChannelPlay(m_SampleChannels.at(sound), true);
 					}
 					m_HitsoundsOnTimingDeleteable.erase(pair.first);
 					return;

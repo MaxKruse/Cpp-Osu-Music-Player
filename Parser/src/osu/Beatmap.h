@@ -203,8 +203,8 @@ namespace Parser {
 		const long GetLastOffset() const
 		{
 			auto last_object = m_HitObjects.size() - 1;
-			auto offsets_of_last = m_HitObjects[last_object]->GetOffsets();
-			return offsets_of_last[offsets_of_last.size() - 1];
+			auto offsets_of_last = m_HitObjects.at(last_object)->GetOffsets();
+			return offsets_of_last.at(offsets_of_last.size() - 1);
 		}
 
 		inline const int GetAudioleadIn() const { return m_General.GetAudioLeadIn(); }
@@ -216,7 +216,7 @@ namespace Parser {
 		inline const std::vector<std::vector<long>> GetOffsets() const { return m_Offsets; }
 		const double GetBPM() const
 		{
-			return (60000.0 / m_TimingPoints[0].GetMillisecondsPerBeat());
+			return (60000.0 / m_TimingPoints.at(0).GetMillisecondsPerBeat());
 		}
 
 		const QWORD GetCurrentOffset() const
@@ -283,6 +283,7 @@ namespace Parser {
 		bool    m_Paused;
 		QWORD	m_ChannelPos;
 
+		std::map<std::string, QWORD>             m_SampleChannels;
 		std::map<long, std::vector<std::string>> m_HitsoundsOnTiming;
 		std::map<long, std::vector<std::string>> m_HitsoundsOnTimingDeleteable;
 		

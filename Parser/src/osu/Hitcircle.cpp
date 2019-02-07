@@ -16,10 +16,10 @@ namespace Parser {
 		auto sampleset = t.GetSampleSet();
 		auto sampleindex = t.GetSampleIndex();
 
-		auto set_extra = stoi(m_Extras[0]);
-		auto addition_extra = stoi(m_Extras[1]);
-		auto customindex_extra = stoi(m_Extras[2]);
-		auto samplevloume_extra = stoi(m_Extras[3]);
+		auto set_extra = stoi(m_Extras.at(0));
+		auto addition_extra = stoi(m_Extras.at(1));
+		auto customindex_extra = stoi(m_Extras.at(2));
+		auto samplevloume_extra = stoi(m_Extras.at(3));
 
 		// This is a mess, will have to redo later to comment on this
 
@@ -114,7 +114,7 @@ namespace Parser {
 
 		}
 
-		std::pair<long, std::vector<std::string>> m(m_Offset[0], s);
+		std::pair<long, std::vector<std::string>> m(m_Offset.at(0), s);
 		return m;
 	}
 

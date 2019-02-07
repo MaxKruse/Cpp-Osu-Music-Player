@@ -38,7 +38,7 @@ int main(int argc, const char * argv[])
 	{
 		// Get Beatmap and load it
 		auto index = Parser::Random(list);
-		auto beatmap = p.BeatmapFromFile(list[index]);
+		auto beatmap = p.BeatmapFromFile(list.at(index));
 
 		// Check if beatmap is supported
 		if (!beatmap->IsPlayable())
@@ -48,7 +48,7 @@ int main(int argc, const char * argv[])
 		}
 
 		// Debug logs
-		LOGGER_DEBUG("MP3 for {} => {}", list[index], beatmap->GetMp3());
+		LOGGER_DEBUG("MP3 for {} => {}", list.at(index), beatmap->GetMp3());
 		LOGGER_DEBUG("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
 
 		// 5. Get Song Length to Display change later
