@@ -61,7 +61,7 @@ int main(int argc, const char * argv[])
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
 		
 		beatmap->SetVolume(4);
-		beatmap->SetSpeedup(5);
+		beatmap->SetSpeedup(127);
 		beatmap->Play();
 
 		QWORD bytePos = 0;
@@ -75,13 +75,7 @@ int main(int argc, const char * argv[])
 				beatmap->PlaySamples(Offset);
 			}
 			std::this_thread::sleep_for(std::chrono::microseconds(200));
-		}
-		
-		if (beatmap->CountMissedHitsounds() > 1)
-		{
-			beatmap->GetMissedHitsounds();
-
-			LOGGER_ERROR("Missed Hitsounds: {}", beatmap->CountMissedHitsounds());
+			LOGGER_DEBUG("Total Length: {}\t\tOffset: {}", lengthInSeconds, Offset);
 		}
 		
 	}

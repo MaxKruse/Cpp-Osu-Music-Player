@@ -225,7 +225,7 @@ namespace Parser {
 			return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos) * 1000.0) + 21;
 		}
 
-		inline const bool IsPlaying() const { return BASS_ChannelIsActive(m_FXChannel); }
+		bool IsPlaying() { return BASS_ChannelIsActive(m_FXChannel); }
 
 		const bool IsPlayable() const // Only make supported files playable
 		{ 
