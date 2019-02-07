@@ -230,6 +230,11 @@ namespace Parser {
 
 	void Beatmap::PlaySamples(long offset)
 	{
+		if (m_HitsoundsOnTimingDeleteable.empty())
+		{
+			return;
+		}
+
 		// Check if offset is smaller than first sound
 		for (const auto& pair : m_HitsoundsOnTimingDeleteable)
 		{
