@@ -19,9 +19,20 @@ namespace Parser {
 		auto set_extra = stoi(m_Extras.at(0));
 		auto addition_extra = stoi(m_Extras.at(1));
 		auto customindex_extra = stoi(m_Extras.at(2));
-		auto samplevloume_extra = stoi(m_Extras.at(3));
+		auto samplevolume_extra = stoi(m_Extras.at(3));
 
 		// This is a mess, will have to redo later to comment on this
+
+		// Custom Hitsounds
+		std::string customIndex = "";
+
+		if (sampleindex > 2)
+		{
+			customIndex = std::to_string(sampleindex);
+		}
+		
+		customIndex = customindex_extra > 1 ? std::to_string(customindex_extra) : "";
+		
 
 		// Base Sound
 		if (set_extra != 0)
@@ -66,51 +77,86 @@ namespace Parser {
 			// Normal
 			if (addition_extra == 1)
 			{
-				if (m_Hitsound & 1 << 1)
+				if (m_Hitsound & (1 << 1))
 				{
-					s.emplace_back("normal-hitwhistle.wav");
+					s.emplace_back("normal-hitwhistle" + customIndex + ".wav");
 				}
-				else if (m_Hitsound & 1 << 2)
+				if (m_Hitsound & (1 << 2))
 				{
-					s.emplace_back("normal-hitfinish.wav");
+					s.emplace_back("normal-hitfinish" + customIndex + ".wav");
 				}
-				else if (m_Hitsound & 1 << 3)
+				if (m_Hitsound & (1 << 3))
 				{
-					s.emplace_back("normal-hitclap.wav");
+					s.emplace_back("normal-hitclap" + customIndex + ".wav");
 				}
 			}
 			// Soft
 			else if (addition_extra == 2)
 			{
-				if (m_Hitsound & 1 << 1)
+				if (m_Hitsound & (1 << 1))
 				{
-					s.emplace_back("soft-hitwhistle.wav");
+					s.emplace_back("soft-hitwhistle" + customIndex + ".wav");
 				}
-				else if (m_Hitsound & 1 << 2)
+				if (m_Hitsound & (1 << 2))
 				{
-					s.emplace_back("soft-hitfinish.wav");
+					s.emplace_back("soft-hitfinish" + customIndex + ".wav");
 				}
-				else if (m_Hitsound & 1 << 3)
+				if (m_Hitsound & (1 << 3))
 				{
-					s.emplace_back("soft-hitclap.wav");
+					s.emplace_back("soft-hitclap" + customIndex + ".wav");
 				}
 			}
 			// Drum
 			else if (addition_extra == 3)
 			{
-				if (m_Hitsound & 1 << 1)
+				if (m_Hitsound & (1 << 1))
 				{
-					s.emplace_back("drum-hitwhistle.wav");
+					s.emplace_back("drum-hitwhistle" + customIndex + ".wav");
 				}
-				else if (m_Hitsound & 1 << 2)
+				if (m_Hitsound & (1 << 2))
 				{
-					s.emplace_back("drum-hitfinish.wav");
+					s.emplace_back("drum-hitfinish" + customIndex + ".wav");
 				}
-				else if (m_Hitsound & 1 << 3)
+				if (m_Hitsound & (1 << 3))
 				{
-					s.emplace_back("drum-hitclap.wav");
+					s.emplace_back("drum-hitclap" + customIndex + ".wav");
 				}
 			}
+
+		}
+
+		// Custom Indexes
+		else if (customindex_extra != 0)
+		{
+			std::string sampleSetString;
+
+			if (sampleset == 1)
+			{
+				sampleSetString = "normal-";
+			}
+			else if (sampleset == 1)
+			{
+				sampleSetString = "soft-";
+			}
+			else if (sampleset == 1)
+			{
+				sampleSetString = "drum-";
+			}
+
+			
+			if (m_Hitsound & (1 << 1))
+			{
+				s.emplace_back(sampleSetString + "hitwhistle" + customIndex + ".wav");
+			}
+			if (m_Hitsound & (1 << 2))
+			{
+				s.emplace_back(sampleSetString + "hitfinish" + customIndex + ".wav");
+			}
+			if (m_Hitsound & (1 << 3))
+			{
+				s.emplace_back(sampleSetString + "hitclap" + customIndex + ".wav");
+			}
+			
 
 		}
 

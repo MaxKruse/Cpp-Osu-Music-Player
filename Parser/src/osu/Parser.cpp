@@ -118,7 +118,7 @@ namespace Parser {
 					}
 				}
 
-				if (line.length() != 0 && line.find("cached_path_is=") == std::string::npos)
+				if (line.length() != 0 && l > 1)
 				{
 					m_ListOfFiles.push_back(line);
 				}

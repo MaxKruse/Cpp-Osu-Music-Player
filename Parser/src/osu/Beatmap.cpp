@@ -130,15 +130,17 @@ namespace Parser {
 		}
 
 		// Set Volume
-		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, 0.1f);
+		float TotalVol = 0.08f;
 
-		// Volume Change for all Hitsounds to same Volume as base Channel
-		float multi = 1.2f; // Hitsound should be slightly louder imo
+		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, TotalVol);
+
+		// Volume Change for all Hitsounds based on base Channel
+		float multi = 0.6f;
 
 		for (const auto& Sample : m_SampleChannels)
 		{
-			BASS_ChannelSetAttribute(Sample.second, BASS_ATTRIB_VOL, 0.1f * multi);
-			LOGGER_INFO("Changed volume of sample {} to {}%", Sample.first, 0.1f * multi);
+			BASS_ChannelSetAttribute(Sample.second, BASS_ATTRIB_VOL, TotalVol * multi);
+			LOGGER_INFO("Changed volume of sample {} to {}%", Sample.first, TotalVol * multi);
 		}
 	}
 
@@ -206,11 +208,22 @@ namespace Parser {
 
 	void Beatmap::SetVolume(unsigned char Vol)
 	{
-		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, Vol / 100.0f);
+		float TotalVol = Vol / 100.0f;
+		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, TotalVol);
+
+		// Volume Change for all Hitsounds based on base Channel
+		float multi = 0.6f;
+
+		for (const auto& Sample : m_SampleChannels)
+		{
+			BASS_ChannelSetAttribute(Sample.second, BASS_ATTRIB_VOL, TotalVol * multi);
+			LOGGER_INFO("Changed volume of sample {} to {}%", Sample.first, TotalVol * multi);
+		}
+
 		LOGGER_INFO("Changed volume to {}%", Vol);
 	}
 
-	void Beatmap::SetSpeedup(unsigned char Speed)
+	void Beatmap::SetSpeedup(char Speed)
 	{
 		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_TEMPO, (float)(Speed));
 	}

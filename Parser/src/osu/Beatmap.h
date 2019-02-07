@@ -222,7 +222,7 @@ namespace Parser {
 		const QWORD GetCurrentOffset() const
 		{ 
 			QWORD bytePos = BASS_ChannelGetPosition(m_FXChannel, BASS_POS_BYTE);
-			return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos) * 1000.0);
+			return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos) * 1000.0) + 21;
 		}
 
 		inline const bool IsPlaying() const { return BASS_ChannelIsActive(m_FXChannel); }
@@ -264,7 +264,7 @@ namespace Parser {
 		void Stop();
 		void Reset();
 		void SetVolume(unsigned char Vol);
-		void SetSpeedup(unsigned char Speed);
+		void SetSpeedup(char Speed);
 
 		void PlaySamples(long offset);
 

@@ -61,6 +61,7 @@ int main(int argc, const char * argv[])
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
 		
 		beatmap->SetVolume(4);
+		beatmap->SetSpeedup(5);
 		beatmap->Play();
 
 		QWORD bytePos = 0;
