@@ -30,8 +30,8 @@ int main(int argc, const char * argv[])
 
 	// TurboBadger
 
-	//Parser::Parser p("C:/Dev/C++ Osu Music Player/Player/");
-	Parser::Parser p("D:/osu/Songs/");
+	Parser::Parser p("C:/Dev/C++ Osu Music Player/TestSongs/");
+	//Parser::Parser p("D:/osu/Songs/");
 	auto list = p.GetListOfFiles();
 
 	double bpm;

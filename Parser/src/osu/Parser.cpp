@@ -346,7 +346,8 @@ namespace Parser {
 				}
 				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SPINNER)
 				{
-					// TODO: IMPLEMENT SPINNER
+					std::vector<std::string> extras = split(parts.at(6), ':');
+					hitobjects.emplace_back(new Spinner(stoi(parts.at(0)), stoi(parts.at(1)), stol(parts.at(2)), stoi(parts.at(3)), stoi(parts.at(4)), stoi(parts.at(5)), extras));
 					
 				}
 				else // Invalid Object

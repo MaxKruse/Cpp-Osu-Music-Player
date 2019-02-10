@@ -2,6 +2,7 @@
 #include "Core.h"
 #include "Beatmap.h"
 #include "Hitcircle.h"
+#include "Spinner.h"
 
 namespace Parser {
 	time_t x;
