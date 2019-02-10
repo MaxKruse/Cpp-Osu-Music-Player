@@ -30,9 +30,23 @@ namespace Parser {
 		{
 			customIndex = std::to_string(sampleindex);
 		}
-		
+
 		customIndex = customindex_extra > 1 ? std::to_string(customindex_extra) : "";
-		
+
+		std::string sampleSetString = "normal-";
+
+		if (sampleset == 1)
+		{
+			sampleSetString = "normal-";
+		}
+		else if (sampleset == 2)
+		{
+			sampleSetString = "soft-";
+		}
+		else if (sampleset == 3)
+		{
+			sampleSetString = "drum-";
+		}
 
 		// Base Sound
 		if (set_extra != 0)
@@ -53,111 +67,21 @@ namespace Parser {
 		}
 		else
 		{
-			if (sampleset == 1)
-			{
-				s.emplace_back("normal-hitnormal.wav");
-			}
-			else if (sampleset == 2)
-			{
-				s.emplace_back("soft-hitnormal.wav");
-			}
-			else if (sampleset == 3)
-			{
-				s.emplace_back("drum-hitnormal.wav");
-			}
-			else
-			{
-				s.emplace_back("normal-hitnormal.wav");
-			}
+			s.emplace_back(sampleSetString + "hitnormal.wav");
 		}
 
 		// Additions
-		if (addition_extra != 0)
+		if (m_Hitsound & (1 << 1))
 		{
-			// Normal
-			if (addition_extra == 1)
-			{
-				if (m_Hitsound & (1 << 1))
-				{
-					s.emplace_back("normal-hitwhistle" + customIndex + ".wav");
-				}
-				if (m_Hitsound & (1 << 2))
-				{
-					s.emplace_back("normal-hitfinish" + customIndex + ".wav");
-				}
-				if (m_Hitsound & (1 << 3))
-				{
-					s.emplace_back("normal-hitclap" + customIndex + ".wav");
-				}
-			}
-			// Soft
-			else if (addition_extra == 2)
-			{
-				if (m_Hitsound & (1 << 1))
-				{
-					s.emplace_back("soft-hitwhistle" + customIndex + ".wav");
-				}
-				if (m_Hitsound & (1 << 2))
-				{
-					s.emplace_back("soft-hitfinish" + customIndex + ".wav");
-				}
-				if (m_Hitsound & (1 << 3))
-				{
-					s.emplace_back("soft-hitclap" + customIndex + ".wav");
-				}
-			}
-			// Drum
-			else if (addition_extra == 3)
-			{
-				if (m_Hitsound & (1 << 1))
-				{
-					s.emplace_back("drum-hitwhistle" + customIndex + ".wav");
-				}
-				if (m_Hitsound & (1 << 2))
-				{
-					s.emplace_back("drum-hitfinish" + customIndex + ".wav");
-				}
-				if (m_Hitsound & (1 << 3))
-				{
-					s.emplace_back("drum-hitclap" + customIndex + ".wav");
-				}
-			}
-
+			s.emplace_back(sampleSetString + "hitwhistle" + customIndex + ".wav");
 		}
-
-		// Custom Indexes
-		else if (customindex_extra != 0)
+		if (m_Hitsound & (1 << 2))
 		{
-			std::string sampleSetString;
-
-			if (sampleset == 1)
-			{
-				sampleSetString = "normal-";
-			}
-			else if (sampleset == 1)
-			{
-				sampleSetString = "soft-";
-			}
-			else if (sampleset == 1)
-			{
-				sampleSetString = "drum-";
-			}
-
-			
-			if (m_Hitsound & (1 << 1))
-			{
-				s.emplace_back(sampleSetString + "hitwhistle" + customIndex + ".wav");
-			}
-			if (m_Hitsound & (1 << 2))
-			{
-				s.emplace_back(sampleSetString + "hitfinish" + customIndex + ".wav");
-			}
-			if (m_Hitsound & (1 << 3))
-			{
-				s.emplace_back(sampleSetString + "hitclap" + customIndex + ".wav");
-			}
-			
-
+			s.emplace_back(sampleSetString + "hitfinish" + customIndex + ".wav");
+		}
+		if (m_Hitsound & (1 << 3))
+		{
+			s.emplace_back(sampleSetString + "hitclap" + customIndex + ".wav");
 		}
 
 		std::pair<long, std::vector<std::string>> m(m_Offset.at(0), s);
