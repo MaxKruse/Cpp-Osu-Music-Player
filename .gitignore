@@ -263,7 +263,7 @@ __pycache__/
 *.pyc
 
 # VS 2017 Files
-**/*.vcxproj*
+**/*.vcxproj**
 *.sln
 
 # Custom File Ignores
@@ -271,3 +271,4 @@ __pycache__/
 *.prs
 
 \.vscode/
+Parser/Parser.vcxproj.filters
