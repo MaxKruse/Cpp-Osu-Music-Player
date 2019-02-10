@@ -184,18 +184,29 @@ namespace Parser {
 		m_ChannelPos = 0;
 	}
 
-	void Beatmap::SetVolume(unsigned char Vol)
+	void Beatmap::SetGlobalVolume(unsigned char Vol)
 	{
-		float TotalVol = Vol / 100.0f;
+		m_GlobalVolume = Vol;
+
+		LOGGER_INFO("Changed global volume to {}%", Vol);
+	}
+
+	void Beatmap::SetSongVolume(unsigned char Vol)
+	{
+		float TotalVol = Vol / 100.0f + m_GlobalVolume / 100.0f;
 		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, TotalVol);
 
-		// Volume Change for all Hitsounds based on base Channel
-		float multi = 0.6f;
+		LOGGER_INFO("Changed volume to {}%", Vol);
+	}
+
+	void Beatmap::SetSampleVolume(unsigned char Vol)
+	{
+		float TotalVol = Vol / 100.0f + m_GlobalVolume / 100.0f;
 
 		for (const auto& Sample : m_SampleChannels)
 		{
-			BASS_ChannelSetAttribute(Sample.second, BASS_ATTRIB_VOL, TotalVol * multi);
-			LOGGER_INFO("Changed volume of sample {} to {}%", Sample.first, TotalVol * multi);
+			BASS_ChannelSetAttribute(Sample.second, BASS_ATTRIB_VOL, TotalVol);
+			LOGGER_INFO("Changed volume of sample {} to {}%", Sample.first, TotalVol);
 		}
 
 		LOGGER_INFO("Changed volume to {}%", Vol);

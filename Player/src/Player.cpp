@@ -65,7 +65,9 @@ int main(int argc, const char * argv[])
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
 		
 		LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
-		beatmap->SetVolume(4);
+		beatmap->SetGlobalVolume(30);
+		beatmap->SetSongVolume(4);
+		beatmap->SetSampleVolume(40);
 		beatmap->Play();
 
 		offsets = beatmap->GetOffsets();

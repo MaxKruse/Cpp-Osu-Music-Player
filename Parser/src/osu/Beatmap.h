@@ -260,7 +260,9 @@ namespace Parser {
 		void Pause();
 		void Stop();
 		void Reset();
-		void SetVolume(unsigned char Vol);
+		void SetGlobalVolume(unsigned char Vol);
+		void SetSongVolume(unsigned char Vol);
+		void SetSampleVolume(unsigned char Vol);
 		void SetSpeedup(char Speed);
 
 		void PlaySamples(long offset);
@@ -279,6 +281,7 @@ namespace Parser {
 		HSTREAM m_FXChannel;
 		bool    m_Paused;
 		QWORD	m_ChannelPos;
+		unsigned char m_GlobalVolume;
 
 		std::map<std::string, QWORD>             m_SampleChannels;
 		std::map<long, std::vector<std::string>> m_HitsoundsOnTiming;
