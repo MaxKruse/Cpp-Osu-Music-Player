@@ -34,6 +34,13 @@ int main(int argc, const char * argv[])
 	Parser::Parser p("D:/osu/Songs/");
 	auto list = p.GetListOfFiles();
 
+	double bpm;
+	QWORD lengthInSeconds;
+	int a, b;
+	QWORD bytePos = 0;
+	int Offset;
+	std::vector<std::vector<long>> offsets;
+
 	do // Music Playing Loop
 	{
 		// Get Beatmap and load it
@@ -43,7 +50,7 @@ int main(int argc, const char * argv[])
 		// Check if beatmap is supported
 		if (!beatmap->IsPlayable())
 		{
-			LOGGER_ERROR("Cant Play => {}", beatmap->GetMetadataText());
+			LOGGER_WARN("Cant Play => {}", beatmap->GetMetadataText());
 			continue;
 		}
 
@@ -52,21 +59,19 @@ int main(int argc, const char * argv[])
 		LOGGER_DEBUG("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
 
 		// 5. Get Song Length to Display change later
-		auto bpm = beatmap->GetBPM();
-		auto lengthInSeconds = beatmap->GetSongLength();
+		bpm = beatmap->GetBPM();
+		lengthInSeconds = beatmap->GetSongLength();
 
 		// 6. Display Data
-		int a = (int)floor(lengthInSeconds / 60);
-		int b = (int)floor(fmod(lengthInSeconds, 60));
+		a = (int)floor(lengthInSeconds / 60);
+		b = (int)floor(fmod(lengthInSeconds, 60));
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
 		
+		LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
 		beatmap->SetVolume(4);
-		beatmap->SetSpeedup(127);
 		beatmap->Play();
 
-		QWORD bytePos = 0;
-		int Offset;
-		auto offsets = beatmap->GetOffsets();
+		offsets = beatmap->GetOffsets();
 
 		while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
 			// Check for the current Position in the channel
@@ -75,7 +80,6 @@ int main(int argc, const char * argv[])
 				beatmap->PlaySamples(Offset);
 			}
 			std::this_thread::sleep_for(std::chrono::microseconds(200));
-			LOGGER_DEBUG("\rTotal Length: {}\t\tOffset: {}", lengthInSeconds, Offset);
 		}
 		
 	}
