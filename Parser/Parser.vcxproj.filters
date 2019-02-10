@@ -24,6 +24,7 @@
       <Filter>osu</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\osu\Spinner.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Logger.cpp" />
@@ -40,5 +41,6 @@
       <Filter>osu</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\osu\Spinner.cpp" />
   </ItemGroup>
 </Project>
