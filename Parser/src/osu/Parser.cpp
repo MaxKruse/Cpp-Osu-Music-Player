@@ -111,7 +111,6 @@ namespace Parser {
 			int l = 0;
 			while (std::getline(readFile, line))
 			{
-				LOGGER_ERROR(line);
 				if (l == 0)
 				{
 					auto path = line.erase(0, 15);
