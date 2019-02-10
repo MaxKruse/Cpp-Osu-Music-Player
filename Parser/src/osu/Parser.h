@@ -65,10 +65,14 @@ namespace Parser {
 	template<typename T>
 	size_t Random(std::vector<T> input)
 	{
+		if (input.size() == 1)
+		{
+			return 0;
+		}
 		size_t low = 0;
 		size_t high = input.size();
 		size_t z = rand() % (high - low);
-		z += low;
+		z += low - 1;
 		return z;
 	}
 

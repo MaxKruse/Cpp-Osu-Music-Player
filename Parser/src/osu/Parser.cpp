@@ -67,7 +67,13 @@ namespace Parser {
 		m_Text = Text;
 		m_FullFilePath = "NO PATH GIVEN";
 		m_FileName = "NO FILE GIVEN";
-		return std::make_unique<Beatmap>();
+		auto Folder = "";
+		auto image = "";
+		auto general = General();
+		auto meta = Metadata();
+		auto search = SearchBy();
+		auto diff = Difficulty();
+		return std::make_unique<Beatmap>(m_FullFilePath, Folder, image, hitobjects, timings, general, meta, search, diff);
 	}
 
 	// Cache files if needed
@@ -105,6 +111,7 @@ namespace Parser {
 			int l = 0;
 			while (std::getline(readFile, line))
 			{
+				LOGGER_ERROR(line);
 				if (l == 0)
 				{
 					auto path = line.erase(0, 15);
@@ -118,7 +125,7 @@ namespace Parser {
 					}
 				}
 
-				if (line.length() != 0 && l > 1)
+				if (line.length() != 0 && l > 0)
 				{
 					m_ListOfFiles.push_back(line);
 				}
@@ -155,6 +162,7 @@ namespace Parser {
 					// Filepath formating and writing to file
 					LOGGER_TRACE("Found file => {}", i->path().string());
 					std::string RelativeFilePath(i->path().string().erase(0, m_SongsFolder.size()));
+					replaceAll(RelativeFilePath, "\\", "/");
 					m_ListOfFiles.emplace_back(RelativeFilePath);
 					writeFile.write(RelativeFilePath.c_str(), strlen(RelativeFilePath.c_str()));
 					writeFile.write("\n", 1);
@@ -168,7 +176,7 @@ namespace Parser {
 		writeFile.flush();
 		writeFile.close();
 		LOGGER_INFO("Cached all beatmaps");
-		return 0;
+		return m_ListOfFiles.size();
 	}
 
 	// Get the Background Image Path from a file
