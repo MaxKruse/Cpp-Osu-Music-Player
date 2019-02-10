@@ -144,22 +144,6 @@ namespace Parser {
 		}
 	}
 
-	// Manually cleanup the memory we used from Hitobjects. Timingpoints were created as Objects, not pointers, so we dont need to destroy these. That happens by default
-	Beatmap::~Beatmap()
-	{
-		LOGGER_DEBUG("Deleting Hitobjects From Beatmap => {}", m_FilePath);
-		for (auto& object : m_HitObjects)
-		{
-			delete object;
-		}
-
-		m_HitObjects.clear();
-
-		LOGGER_DEBUG("Deleting TimingPoints From Beatmap => {}", m_FilePath);
-		m_TimingPoints.clear();
-		
-	}
-
 	void Beatmap::GetMissedHitsounds()
 	{
 		for (const auto& pair : m_HitsoundsOnTimingDeleteable)
