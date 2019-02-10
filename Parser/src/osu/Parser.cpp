@@ -333,18 +333,18 @@ namespace Parser {
 
 				std::vector<std::string> parts = split(line, ',');
 				
-				if (stoi(parts.at(3)) & 1) // Circle
+				if (stoi(parts.at(3)) & HITOBJECT_TYPE::HITCIRCLE)
 				{
 					std::vector<std::string> extras = split(parts.at(5), ':');
 					hitobjects.emplace_back(new Hitcircle(stoi(parts.at(0)), stoi(parts.at(1)), stol(parts.at(2)), stoi(parts.at(3)), stoi(parts.at(4)), extras));
 					
 				}
-				else if (stoi(parts.at(3)) & 2) // Slider
+				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SLIDER)
 				{
 					// TODO: IMPLEMENT SLIDER
 					
 				}
-				else if (stoi(parts.at(3)) & 8)  // Spinner
+				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SPINNER)
 				{
 					// TODO: IMPLEMENT SPINNER
 					
