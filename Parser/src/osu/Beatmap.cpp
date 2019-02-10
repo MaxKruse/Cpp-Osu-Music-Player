@@ -193,7 +193,7 @@ namespace Parser {
 
 	void Beatmap::SetSongVolume(unsigned char Vol)
 	{
-		float TotalVol = Vol / 100.0f * (m_GlobalVolume / 100.0f);
+		float TotalVol = Vol / 100.0f * (float)(m_GlobalVolume / 100.0f);
 		BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, TotalVol);
 
 		LOGGER_INFO("Changed volume to {}%", Vol);
@@ -201,15 +201,13 @@ namespace Parser {
 
 	void Beatmap::SetSampleVolume(unsigned char Vol)
 	{
-		float TotalVol = Vol / 100.0f * (m_GlobalVolume / 100.0f);
+		float TotalVol = Vol / 100.0f * (float)(m_GlobalVolume / 100.0f);
 
 		for (const auto& Sample : m_SampleChannels)
 		{
 			BASS_ChannelSetAttribute(Sample.second, BASS_ATTRIB_VOL, TotalVol);
 			LOGGER_INFO("Changed volume of sample {} to {}%", Sample.first, TotalVol);
 		}
-
-		LOGGER_INFO("Changed volume to {}%", Vol);
 	}
 
 	void Beatmap::SetSpeedup(char Speed)
