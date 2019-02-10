@@ -5,6 +5,13 @@
 
 namespace Parser {
 
+	enum HITOBJECT_TYPE
+	{
+		HITCIRCLE	= 1 << 0,
+		SLIDER		= 1 << 1,
+		SPINNER		= 1 << 3
+	};
+
 	// Basic struct to safe memory
 	struct API Position
 	{
