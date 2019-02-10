@@ -2,13 +2,7 @@
 #include "Beatmap.h"
 
 namespace Parser {
-
-	Beatmap::Beatmap()
-	{
-		LOGGER_WARN("No Beatmap was parsed!");
-	}
-
-
+	
 	/// <summary>
 	/// Creates a Basic object for later use
 	/// </summary>
@@ -24,7 +18,7 @@ namespace Parser {
 		std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint> Timingpoints, 
 		General g, Metadata m, SearchBy s, Difficulty d
 	)
-		: m_FilePath(FilePath), m_Folder(Folder), m_BackgroundImage(BackgroundImage), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d), m_Paused(false)
+		: m_FilePath(FilePath), m_Folder(Folder), m_BackgroundImage(BackgroundImage), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d), m_Paused(false), m_BaseChannel(0), m_FXChannel(0), m_ChannelPos(0)
 	{
 		LOGGER_INFO("Creating Beatmap From File => {}", FilePath);
 
@@ -222,11 +216,11 @@ namespace Parser {
 		// Check if offset is smaller than first sound
 		for (const auto& pair : m_HitsoundsOnTimingDeleteable)
 		{
-			if (offset < pair.first)
+			if (offset < pair.first) // We dont have any sound before the offset
 			{
 				return;
 			}
-			else
+			else // We have either a hitsound on the Offset or before it
 			{
 				LOGGER_DEBUG("PLAYING HITSOUNDS UP TO {}ms", offset);
 				break;
@@ -238,7 +232,7 @@ namespace Parser {
 		{
 			for (const auto& pair : m_HitsoundsOnTimingDeleteable)
 			{
-				LOGGER_INFO("pair.first = {}", pair.first);
+				LOGGER_DEBUG("pair.first = {}", pair.first);
 				if (offset >= pair.first)
 				{
 					for (const auto& sound : m_HitsoundsOnTimingDeleteable.at(pair.first))
