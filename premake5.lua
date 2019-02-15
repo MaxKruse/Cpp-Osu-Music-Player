@@ -86,7 +86,7 @@ project "Parser"
 		defines "_DIST"
 		optimize "Size"
 
-Include "Player/vendor/SimpleIni"
+include "Player/vendor/SimpleIni"
 
 project "Player"
 	location "Player"
