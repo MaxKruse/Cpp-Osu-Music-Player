@@ -4,6 +4,3 @@
 [submodule "Parser/vendor/cxxtimer"]
 	path = Parser/vendor/cxxtimer
 	url = https://github.com/andremaravilha/cxxtimer
-[submodule "Player/vendor/INIH"]
-	path = Player/vendor/INIH
-	url = https://github.com/jtilly/inih.git
