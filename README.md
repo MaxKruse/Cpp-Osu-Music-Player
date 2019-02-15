@@ -30,8 +30,9 @@ Also using [Visual Studio Code](https://code.visualstudio.com/) together with [T
 ## Built With
 
 * [CxxTimer](https://github.com/andremaravilha/cxxtimer) - Timer used for benchmarking and debugging
-* [spdlog](https://maven.apache.org/) - Logging purposes
+* [spdlog](https://github.com/gabime/spdlog) - Logging purposes
 * [Bass](https://un4seen.com) - Audio Processing and playback
+* [SimpleIni](https://github.com/brofield/simpleini.git) - Config File Handling
 
 ## Contributing
 
