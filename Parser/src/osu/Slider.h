@@ -19,6 +19,21 @@ namespace Parser {
 		std::vector<std::string> m_EdgeHitsounds;
 		std::vector<std::string> m_EdgeAdditions;
 		std::vector<std::string> m_Extras;
+
+
+
+		// Taken from: https://stackoverflow.com/a/46931770
+		std::vector<std::string> split(const std::string & s, const char & delim) {
+			std::vector<std::string> result;
+			std::stringstream ss(s);
+			std::string item;
+
+			while (std::getline(ss, item, delim)) {
+				result.push_back(item);
+			}
+
+			return result;
+		}
 	};
 
 }  // namespace Parser

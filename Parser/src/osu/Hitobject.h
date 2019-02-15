@@ -1,6 +1,5 @@
 #pragma once
 #include "Core.h"
-#include "Logger.h"
 #include "TimingPoint.h"
 
 namespace Parser {

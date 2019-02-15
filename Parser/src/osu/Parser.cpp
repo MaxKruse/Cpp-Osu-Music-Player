@@ -271,7 +271,12 @@ namespace Parser {
 				std::vector<std::string> parts = split(line, ',');
 
 				long offset = stol(parts.at(0));
-				unsigned short milliseconds_per_beat = stoi(parts.at(1));
+				if (parts.at(1).find(".") != std::string::npos)
+				{
+					auto pos = parts.at(1).find(".");
+					parts.at(1).erase(pos);
+				}
+				unsigned int milliseconds_per_beat = stoi(parts.at(1));
 				unsigned short sampleset = stoi(parts.at(3));
 				unsigned short sampleindex = stoi(parts.at(4));
 				unsigned short volume = stoi(parts.at(5));
@@ -665,19 +670,6 @@ namespace Parser {
 
 		LOGGER_DEBUG("Closing file => {}", filename);
 		m_FileHandle.close();
-
-		return result;
-	}
-	
-	// Taken from: https://stackoverflow.com/a/46931770
-	std::vector<std::string> Parser::split(const std::string & s, const char & delim) {
-		std::vector<std::string> result;
-		std::stringstream ss(s);
-		std::string item;
-
-		while (std::getline(ss, item, delim)) {
-			result.push_back(item);
-		}
 
 		return result;
 	}

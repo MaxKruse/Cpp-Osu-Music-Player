@@ -1,6 +1,5 @@
 #pragma once
 #include "Core.h"
-#include "Logger.h"
 #include "Hitobject.h"
 #include "TimingPoint.h"
 

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Logger.h"
 
+
 #ifdef BUILD_DLL
 	#define API __declspec(dllexport)
 #else
