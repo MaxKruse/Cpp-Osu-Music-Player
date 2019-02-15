@@ -85,7 +85,7 @@ project "Parser"
 		defines "_DIST"
 		optimize "Size"
 
-
+Include "Player/vendor/SimpleIni"
 
 project "Player"
 	location "Player"
@@ -113,6 +113,7 @@ project "Player"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/Un4Seen_bass",
+		"%{prj.name}/vendor/SimpleIni",
 		"Parser/src",
 		"Parser/vendor/cxxtimer",
 		"Parser/vendor/spdlog/include"
