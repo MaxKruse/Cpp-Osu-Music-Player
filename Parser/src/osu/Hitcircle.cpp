@@ -8,7 +8,7 @@ namespace Parser {
 	{
 	}
 
-	// For the timingpoint that affects this Hitcircle, give a pair of:
+	// For the timingpoint that affects this Hitcircle, give a vector pair of:
 	// [Offset] = vector("sound1", "sound2")
 	std::vector<std::pair<long, std::vector<std::string>>> Hitcircle::GetHitsounds(const TimingPoint& t)
 	{
@@ -20,8 +20,6 @@ namespace Parser {
 		auto addition_extra = stoi(m_Extras.at(1));
 		auto customindex_extra = stoi(m_Extras.at(2));
 		auto samplevolume_extra = stoi(m_Extras.at(3));
-
-		// This is a mess, will have to redo later to comment on this
 
 		// Custom Hitsounds
 		std::string customIndex = "";
