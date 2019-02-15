@@ -54,7 +54,8 @@ project "Parser"
 	links
 	{
 		"bass.lib",
-		"bass_fx.lib"
+		"bass_fx.lib",
+		"SimpleIni"
 	}
 
 	defines
