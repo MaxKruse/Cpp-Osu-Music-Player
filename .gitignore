@@ -272,3 +272,6 @@ __pycache__/
 
 \.vscode/
 **\*vcxproj*
+Parser/Parser.vcxproj
+Parser/Parser.vcxproj.filters
+Player/Player.vcxproj
