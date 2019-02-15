@@ -4,3 +4,6 @@
 [submodule "Parser/vendor/cxxtimer"]
 	path = Parser/vendor/cxxtimer
 	url = https://github.com/andremaravilha/cxxtimer
+[submodule "Player/vendor/SimpleIni"]
+	path = Player/vendor/SimpleIni
+	url = https://github.com/brofield/simpleini.git
