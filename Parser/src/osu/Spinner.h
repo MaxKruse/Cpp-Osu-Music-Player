@@ -10,7 +10,7 @@ namespace Parser {
 	public:
 		Spinner(unsigned short x, unsigned short y, long offset, unsigned short type, int hitsound, long end_offset, std::vector<std::string> extras);
 		// Example Line: 256,192,87518,12,0,89299,0:0:0:0:
-		std::pair<long, std::vector<std::string>> GetHitsounds(TimingPoint t) override;
+		std::vector<std::pair<long, std::vector<std::string>>> GetHitsounds(const TimingPoint& t) override;
 
 	private:
 		long m_EndOffset;

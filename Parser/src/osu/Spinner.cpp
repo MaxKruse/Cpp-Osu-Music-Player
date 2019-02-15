@@ -10,7 +10,7 @@ namespace Parser {
 
 	// For the timingpoint that affects this Hitcircle, give a pair of:
 	// [Offset] = vector("sound1", "sound2")
-	std::pair<long, std::vector<std::string>> Spinner::GetHitsounds(TimingPoint t)
+	std::vector<std::pair<long, std::vector<std::string>>> Spinner::GetHitsounds(const TimingPoint& t)
 	{
 		auto s = std::vector<std::string>();
 		auto sampleset = t.GetSampleSet();

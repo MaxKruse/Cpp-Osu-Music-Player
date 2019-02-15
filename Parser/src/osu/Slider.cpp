@@ -1,17 +1,19 @@
 #include "pch.h"
-#include "Hitcircle.h"
+#include "Slider.h"
 
 namespace Parser {
 
-	Hitcircle::Hitcircle(unsigned short x, unsigned short y, long offset, unsigned short type, int hitsound, std::vector<std::string> extras)
-		: Hitobject(x,y,offset,type), m_Hitsound(hitsound), m_Extras(extras)
+	Slider::Slider(unsigned short x, unsigned short y, long offset, unsigned short type, int hitsound, unsigned int repeat, std::vector<std::string> edgeHitsounds, std::vector<std::string> edgeAdditions, std::vector<std::string> extras, float durationWithoutBeatLength)
+		: Hitobject(x,y,offset,type), m_Repeat(repeat), m_EdgeHitsounds(edgeHitsounds), m_EdgeAdditions(edgeAdditions), m_Extras(extras), m_DurationWithoutBeatLength(durationWithoutBeatLength)
 	{
 	}
 
 	// For the timingpoint that affects this Hitcircle, give a pair of:
 	// [Offset] = vector("sound1", "sound2")
-	std::vector<std::pair<long, std::vector<std::string>>> Hitcircle::GetHitsounds(const TimingPoint& t)
+	std::vector<std::pair<long, std::vector<std::string>>> Slider::GetHitsounds(const TimingPoint& t)
 	{
+		m_DurationWithoutBeatLength *= t.GetMillisecondsPerBeat();
+
 		auto s = std::vector<std::string>();
 		auto sampleset = t.GetSampleSet();
 		auto sampleindex = t.GetSampleIndex();

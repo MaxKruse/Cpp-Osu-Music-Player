@@ -61,7 +61,12 @@ namespace Parser {
 				continue;
 			}
 			
-			m_HitsoundsOnTiming.emplace(object->GetHitsounds(timingpoint_to_use));
+			auto hitsoundsVector = object->GetHitsounds(timingpoint_to_use);
+
+			for(auto const& pair : hitsoundsVector)
+			{
+				m_HitsoundsOnTiming.emplace(pair);
+			}
 			m_Offsets.emplace_back(object->GetOffsets());
 		}
 

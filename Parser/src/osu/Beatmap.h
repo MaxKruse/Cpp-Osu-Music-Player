@@ -100,7 +100,6 @@ namespace Parser {
 			}
 			return false;
 		}
-
 	};
 
 	/// <summary>
@@ -188,6 +187,8 @@ namespace Parser {
 			}
 			return false;
 		}
+
+		inline const float GetSliderMultiplier() const { return m_SliderMultiplier; }
 	};
 
 	// A Beatmap is a single Object that knows about all of its contents (see .osu files for contents)

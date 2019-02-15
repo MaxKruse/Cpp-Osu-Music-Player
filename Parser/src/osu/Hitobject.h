@@ -36,7 +36,7 @@ namespace Parser {
 
 		virtual ~Hitobject() = default;
 
-		virtual std::pair<long, std::vector<std::string>> GetHitsounds(TimingPoint t) = 0;
+		virtual std::vector<std::pair<long, std::vector<std::string>>> GetHitsounds(const TimingPoint& t) = 0;
 		
 		inline const unsigned short    GetX() const { return m_Position.X; }
 		inline const unsigned short    GetY() const { return m_Position.Y; }

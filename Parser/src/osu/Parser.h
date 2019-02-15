@@ -1,7 +1,9 @@
 #pragma once
 #include "Core.h"
 #include "Beatmap.h"
+
 #include "Hitcircle.h"
+#include "Slider.h"
 #include "Spinner.h"
 
 namespace Parser {
@@ -34,6 +36,11 @@ namespace Parser {
 		
 		std::vector<TimingPoint> timings;
 		std::vector<Hitobject*> hitobjects;
+
+		General general;
+		Metadata meta;
+		SearchBy search;
+		Difficulty diff;
 
 	private:
 		std::string ParseBackgroundImage();

@@ -36,13 +36,13 @@ namespace Parser {
 		LOGGER_DEBUG("Parsing Background Image from file => {}", m_FullFilePath);
 		auto image = ParseBackgroundImage();
 		LOGGER_DEBUG("Parsing General from file => {}", m_FullFilePath);
-		General general = ParseGeneral();
+		general = ParseGeneral();
 		LOGGER_DEBUG("Parsing Metadata from file => {}", m_FullFilePath);
-		Metadata meta = ParseMetadata();
+		meta = ParseMetadata();
 		LOGGER_DEBUG("Parsing SearchBy from file => {}", m_FullFilePath);
-		SearchBy search = ParseSearchBy();
+		search = ParseSearchBy();
 		LOGGER_DEBUG("Parsing Difficulty from file => {}", m_FullFilePath);
-		Difficulty diff = ParseDifficulty();
+		diff = ParseDifficulty();
 		// If anything didnt get set, log it  
 		if (general.HasDefaults() || meta.HasDefaults() || search.HasDefaults() || diff.HasDefaults())
 		{
@@ -69,10 +69,10 @@ namespace Parser {
 		m_FileName = "NO FILE GIVEN";
 		auto Folder = "";
 		auto image = "";
-		auto general = General();
-		auto meta = Metadata();
-		auto search = SearchBy();
-		auto diff = Difficulty();
+		general = General();
+		meta = Metadata();
+		search = SearchBy();
+		diff = Difficulty();
 		return std::make_unique<Beatmap>(m_FullFilePath, Folder, image, hitobjects, timings, general, meta, search, diff);
 	}
 
@@ -340,26 +340,39 @@ namespace Parser {
 
 				std::vector<std::string> parts = split(line, ',');
 				
+				auto x = stoi(parts.at(0));
+				auto y = stoi(parts.at(1));
+				auto offset = stoi(parts.at(2));
+				auto type = stoi(parts.at(3));
+				auto hitsound = stoi(parts.at(4));
+
 				if (stoi(parts.at(3)) & HITOBJECT_TYPE::HITCIRCLE)
 				{
 					std::vector<std::string> extras = split(parts.at(5), ':');
-					hitobjects.emplace_back(new Hitcircle(stoi(parts.at(0)), stoi(parts.at(1)), stol(parts.at(2)), stoi(parts.at(3)), stoi(parts.at(4)), extras));
+					hitobjects.emplace_back(new Hitcircle(x,y,offset,type,hitsound, extras));
 					
 				}
 				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SLIDER)
 				{
 					// TODO: IMPLEMENT SLIDER
+					unsigned int repeat = stoi(parts.at(6));
+					unsigned int pixelLength = stoi(parts.at(7)); 
+					float durationWithoutBeatLength = pixelLength / (100.0 * diff.GetSliderMultiplier());
+					std::vector<std::string> edgeHitsounds = split(parts.at(8), '|'); // Format: 2|0 Meaning SliderHead = 2, SliderEnd = 0 // Always Repeat + 1 Long
+					std::vector<std::string> edgeAdditions = split(parts.at(9), '|'); // Format: 0:0|1:0 Meaning SampleSet:Addition|SampleSet2:Addition2 // Always Repeat + 1 long
+					std::vector<std::string> extras = split(parts.at(10), ':');
 					
+					hitobjects.emplace_back(new Slider(x,y,offset,type,hitsound, repeat, edgeHitsounds, edgeAdditions, extras, durationWithoutBeatLength));
 				}
 				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SPINNER)
 				{
 					std::vector<std::string> extras = split(parts.at(6), ':');
-					hitobjects.emplace_back(new Spinner(stoi(parts.at(0)), stoi(parts.at(1)), stol(parts.at(2)), stoi(parts.at(3)), stoi(parts.at(4)), stoi(parts.at(5)), extras));
+					hitobjects.emplace_back(new Spinner(x,y,offset,type,hitsound, stoi(parts.at(5)), extras));
 					
 				}
 				else // Invalid Object
 				{
-					LOGGER_WARN("Hitobject not supported => {}", line);
+					LOGGER_WARN("Hitobject not supported (most likely 128 = ManiaHoldNote) => {}", line);
 				}
 
 			}
