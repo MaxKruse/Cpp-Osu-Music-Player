@@ -163,6 +163,7 @@
     <ClInclude Include="src\osu\Hitcircle.h" />
     <ClInclude Include="src\osu\Hitobject.h" />
     <ClInclude Include="src\osu\Parser.h" />
+    <ClInclude Include="src\osu\Slider.h" />
     <ClInclude Include="src\osu\Spinner.h" />
     <ClInclude Include="src\osu\TimingPoint.h" />
     <ClInclude Include="src\pch.h" />
@@ -172,6 +173,7 @@
     <ClCompile Include="src\osu\Beatmap.cpp" />
     <ClCompile Include="src\osu\Hitcircle.cpp" />
     <ClCompile Include="src\osu\Parser.cpp" />
+    <ClCompile Include="src\osu\Slider.cpp" />
     <ClCompile Include="src\osu\Spinner.cpp" />
     <ClCompile Include="src\osu\TimingPoint.cpp" />
     <ClCompile Include="src\pch.cpp">

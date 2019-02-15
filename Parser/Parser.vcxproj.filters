@@ -20,11 +20,16 @@
     <ClInclude Include="src\osu\Parser.h">
       <Filter>osu</Filter>
     </ClInclude>
+    <ClInclude Include="src\osu\Slider.h">
+      <Filter>osu</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Spinner.h">
+      <Filter>osu</Filter>
+    </ClInclude>
     <ClInclude Include="src\osu\TimingPoint.h">
       <Filter>osu</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
-    <ClInclude Include="src\osu\Spinner.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Logger.cpp" />
@@ -37,10 +42,15 @@
     <ClCompile Include="src\osu\Parser.cpp">
       <Filter>osu</Filter>
     </ClCompile>
+    <ClCompile Include="src\osu\Slider.cpp">
+      <Filter>osu</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\Spinner.cpp">
+      <Filter>osu</Filter>
+    </ClCompile>
     <ClCompile Include="src\osu\TimingPoint.cpp">
       <Filter>osu</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
-    <ClCompile Include="src\osu\Spinner.cpp" />
   </ItemGroup>
 </Project>

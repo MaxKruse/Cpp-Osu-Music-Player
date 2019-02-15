@@ -36,12 +36,16 @@ namespace Parser {
 		LOGGER_DEBUG("Parsing Background Image from file => {}", m_FullFilePath);
 		auto image = ParseBackgroundImage();
 		LOGGER_DEBUG("Parsing General from file => {}", m_FullFilePath);
+		general = General();
 		general = ParseGeneral();
 		LOGGER_DEBUG("Parsing Metadata from file => {}", m_FullFilePath);
+		meta = Metadata();
 		meta = ParseMetadata();
 		LOGGER_DEBUG("Parsing SearchBy from file => {}", m_FullFilePath);
+		search = SearchBy();
 		search = ParseSearchBy();
 		LOGGER_DEBUG("Parsing Difficulty from file => {}", m_FullFilePath);
+		diff = Difficulty();
 		diff = ParseDifficulty();
 		// If anything didnt get set, log it  
 		if (general.HasDefaults() || meta.HasDefaults() || search.HasDefaults() || diff.HasDefaults())
@@ -354,6 +358,13 @@ namespace Parser {
 				}
 				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SLIDER)
 				{
+					if (parts.size() != 11)
+					{
+						LOGGER_WARN("Hitobject has invalid Parts. Expected 11 Parts (10x ',', got {})", parts.size());
+						LOGGER_INFO("{}", line);
+						continue;
+					}
+
 					// TODO: IMPLEMENT SLIDER
 					unsigned int repeat = stoi(parts.at(6));
 					unsigned int pixelLength = stoi(parts.at(7)); 
