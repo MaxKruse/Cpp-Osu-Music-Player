@@ -40,13 +40,15 @@
 
 ✔ Implement Spinners @low @started(19-02-10 16:37) @done(19-02-10 16:46) @lasted(9m1s)
     ✔ Spinner Hitsounds @started(19-02-10 16:46) @done(19-02-10 17:32) @lasted(46m40s)
-☐ Implement Sliders @low
+✔ Implement Sliders @low @started(19-02-15 12:46) @done(19-02-15 13:20) @lasted(34m36s)
     ☐ Slider Hitsound @low
         ☐ SliderHead @low
         ☐ SliderTick @low
         ☐ SliderEnd @low
+✔ Refactor GetHitsounds() to give back a vector of Pairs instead @created(19-02-15 13:21) @done(19-02-15 13:30)
+        I need this for sliders to give their correct hitsounds
 
-☐ Play sounds of Hitobjects when offset is reached @created(19-01-21 14:21)
+✔ Play sounds of Hitobjects when offset is reached @created(19-01-21 14:21) @done(19-02-15 13:20)
         ✔ make sure to remove the already played elements, otherwise we would have unwanted behaviour @created(19-01-21 14:22) @done(19-01-25 17:52)
 ✔ Beatmaps Know about their Own Channels @created(19-02-03 12:36) @done(19-02-03 15:46)
         ✔ Beatmap.GetChannel() @created(19-02-03 12:38) @started(19-02-03 12:45) @done(19-02-03 12:49) @lasted(4m49s)
