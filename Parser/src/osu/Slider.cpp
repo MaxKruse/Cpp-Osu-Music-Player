@@ -86,8 +86,10 @@ namespace Parser {
 			s.emplace_back(sampleSetString + "hitclap" + customIndex + ".wav");
 		}
 
+		std::vector<std::pair<long, std::vector<std::string>>>;
 		std::pair<long, std::vector<std::string>> m(m_Offset.at(0), s);
-		return m;
+		r.emplace(m);
+		return r;
 	}
 
 }
