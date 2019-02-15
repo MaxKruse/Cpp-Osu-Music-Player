@@ -12,40 +12,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vendor\ImGui\imconfig.h">
-      <Filter>vendor\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\ImGui\imgui.h">
-      <Filter>vendor\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\ImGui\imgui_internal.h">
-      <Filter>vendor\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\ImGui\imstb_rectpack.h">
-      <Filter>vendor\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\ImGui\imstb_textedit.h">
-      <Filter>vendor\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="vendor\ImGui\imstb_truetype.h">
-      <Filter>vendor\ImGui</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="src\Player.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\ImGui\imgui.cpp">
-      <Filter>vendor\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\ImGui\imgui_demo.cpp">
-      <Filter>vendor\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\ImGui\imgui_draw.cpp">
-      <Filter>vendor\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="vendor\ImGui\imgui_widgets.cpp">
-      <Filter>vendor\ImGui</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -54,8 +54,7 @@ project "Parser"
 	links
 	{
 		"bass.lib",
-		"bass_fx.lib",
-		"SimpleIni"
+		"bass_fx.lib"
 	}
 
 	defines
@@ -129,7 +128,8 @@ project "Player"
 	{
 		"Parser",
 		"bass.lib",
-		"bass_fx.lib"
+		"bass_fx.lib",
+		"SimpleIni"
 	}
 
 	filter "system:windows"

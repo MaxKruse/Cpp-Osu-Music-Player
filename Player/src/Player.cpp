@@ -1,6 +1,10 @@
 ﻿#include "pch.h"
 #include "Core.h"
 #include "osu/Parser.h"
+
+#define SI_CONVERT_WIN32
+#include "SimpleIni.h"
+
 #include "cxxtimer.hpp"
 
 int main(int argc, const char * argv[])
@@ -26,6 +30,24 @@ int main(int argc, const char * argv[])
 	if (!BASS_Init(-1, 48000, 0, NULL, NULL)) {
 		LOGGER_ERROR("Can't initialize Bass device");
 		return 0;
+	}
+
+	// Settings Manager
+	CSimpleIni Settings;
+	std::ifstream readFile;
+	readFile.open("settings.ini");
+
+	// File doesnt Exist
+	if (readFile.is_open())
+	{
+		readFile.close();
+		Settings.LoadFile("settings.ini");
+	}
+	else
+	{
+		readFile.close();
+		LOGGER_INFO("Couldn't open => {}", "settings.ini");
+		LOGGER_INFO("Creating now...");
 	}
 
 	Parser::Parser p("D:/osu/Songs/");
