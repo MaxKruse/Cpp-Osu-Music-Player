@@ -88,7 +88,7 @@ namespace Parser {
 
 		std::vector<std::pair<long, std::vector<std::string>>> r;
 		std::pair<long, std::vector<std::string>> m(m_Offset.at(0), s);
-		r.emplace(m);
+		r.emplace_back(m);
 		return r;
 	}
 
