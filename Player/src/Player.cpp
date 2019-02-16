@@ -1,8 +1,6 @@
 ﻿#include "pch.h"
 
 #define OPPAI_IMPLEMENTATION
-#define OPPAI_NOPARSER
-#define OPPAI_NOPP
 #include "oppai.c"
 
 #include "Core.h"
@@ -65,6 +63,7 @@ int main(int argc, const char * argv[])
 		Settings.SetValue("General", "SongsFolder", "C:/Program Files(x86)/osu!/Songs/");
 		Settings.SetDoubleValue("General", "MinStars", 5.0);
 		Settings.SetLongValue("General", "CPU_Sleep", 200);
+		Settings.SetLongValue("General", "SpeedUp", 0);
 		Settings.SetLongValue("Audio", "MasterVolume", 5);
 		Settings.SetLongValue("Audio", "SongVolume", 6);
 		Settings.SetLongValue("Audio", "HitsoundVolume", 7);
@@ -74,6 +73,7 @@ int main(int argc, const char * argv[])
 	auto folder       = Settings.GetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/");
 	auto minStar      = Settings.GetDoubleValue("General", "MinStars", 5.0);
 	auto cpuSleep     = Settings.GetLongValue("General", "CPU_Sleep", 200);
+	auto speedup	  = Settings.GetLongValue("General", "SpeedUp", 0);
 	auto masterVolume = Settings.GetLongValue("Audio", "MasterVolume", 5);
 	auto songVolume   = Settings.GetLongValue("Audio", "SongVolume", 6);
 	auto sampleVolume = Settings.GetLongValue("Audio", "HitsoundVolume", 7);
@@ -88,16 +88,39 @@ int main(int argc, const char * argv[])
 	int Offset;
 	std::vector<std::vector<long>> offsets;
 
+	
+
 	do // Music Playing Loop
 	{
 		// Get Beatmap and load it
 		auto index = Parser::Random(list);
 		auto beatmap = p.BeatmapFromFile(list.at(index));
+		
+		// Oppai stuff
+		FILE* bm;
+		struct parser pstate;
+		struct beatmap map;
+
+		struct diff_calc stars;
+
+		bm = fopen((folder + list.at(index)).c_str(), "r");
+
+		p_init(&pstate);
+		p_map(&pstate, &map, bm);
+		d_init(&stars);
+		d_calc(&stars, &map, 0);
+		LOGGER_DEBUG("{} stars\n", stars.total);
 
 		// Check if beatmap is supported
 		if (!beatmap->IsPlayable())
 		{
-			LOGGER_WARN("Cant Play => {}", beatmap->GetMetadataText());
+			LOGGER_WARN("Cant Play (Wrong Mode or FileVersion) => {}", beatmap->GetMetadataText());
+			continue;
+		}
+
+		if (stars.total < minStar)
+		{
+			LOGGER_WARN("Cant Play (low star rating) => {}", beatmap->GetMetadataText());
 			continue;
 		}
 
@@ -118,6 +141,7 @@ int main(int argc, const char * argv[])
 		beatmap->SetGlobalVolume(masterVolume);
 		beatmap->SetSongVolume(songVolume);
 		beatmap->SetSampleVolume(sampleVolume);
+		beatmap->SetSpeedup(speedup);
 		offsets = beatmap->GetOffsets();
 		beatmap->Play();
 

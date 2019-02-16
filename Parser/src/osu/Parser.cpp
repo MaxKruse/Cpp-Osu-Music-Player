@@ -363,20 +363,38 @@ namespace Parser {
 				}
 				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SLIDER)
 				{
-					if (parts.size() != 11)
+					if (parts.size() != 8 && parts.size() != 11)
 					{
-						LOGGER_WARN("Hitobject has invalid Parts. Expected 11 Parts (10x ',', got {})", parts.size());
+						LOGGER_WARN("Hitobject has invalid Parts. Expected 11 or 8 Parts (got {})", parts.size());
 						LOGGER_INFO("{}", line);
 						continue;
 					}
 
-					// TODO: IMPLEMENT SLIDER
 					unsigned int repeat = stoi(parts.at(6));
 					unsigned int pixelLength = stoi(parts.at(7)); 
 					float durationWithoutBeatLength = pixelLength / (100.0 * diff.GetSliderMultiplier());
-					std::vector<std::string> edgeHitsounds = split(parts.at(8), '|'); // Format: 2|0 Meaning SliderHead = 2, SliderEnd = 0 // Always Repeat + 1 Long
-					std::vector<std::string> edgeAdditions = split(parts.at(9), '|'); // Format: 0:0|1:0 Meaning SampleSet:Addition|SampleSet2:Addition2 // Always Repeat + 1 long
-					std::vector<std::string> extras = split(parts.at(10), ':');
+
+					std::vector<std::string> edgeHitsounds;
+					std::vector<std::string> edgeAdditions;
+					std::vector<std::string> extras;
+
+					if (parts.size() == 11)
+					{
+						edgeHitsounds = split(parts.at(8), '|'); // Format: 2|0 Meaning SliderHead = 2, SliderEnd = 0 // Always Repeat + 1 Long
+						edgeAdditions = split(parts.at(9), '|'); // Format: 0:0|1:0 Meaning SampleSet:Addition|SampleSet2:Addition2 // Always Repeat + 1 long
+						extras = split(parts.at(10), ':');
+					}
+					else
+					{
+						edgeHitsounds.emplace_back("0"); // Format: 2|0 Meaning SliderHead = 2, SliderEnd = 0 // Always Repeat + 1 Long
+						edgeHitsounds.emplace_back("0");
+						edgeAdditions.emplace_back("0:0");// Format: 0:0|1:0 Meaning SampleSet:Addition|SampleSet2:Addition2 // Always Repeat + 1 long
+						edgeAdditions.emplace_back("0:0"); 
+						extras.emplace_back("0");
+						extras.emplace_back("0");
+						extras.emplace_back("0");
+						extras.emplace_back("0");
+					}
 					
 					hitobjects.emplace_back(new Slider(x,y,offset,type,hitsound, repeat, edgeHitsounds, edgeAdditions, extras, durationWithoutBeatLength));
 				}
