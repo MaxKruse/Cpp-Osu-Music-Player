@@ -2,7 +2,7 @@
 ☐ Add Option Parser
     See: https://github.com/jarro2783/cxxopts
 ☐ Make GUI @low
-    ☐ TurboBadger
+    ☐ I still dont know...
 
 ✔ Add sound lib @high @done(19-01-25 17:52)
     ✔ Un4Seen Bass @high @done(19-01-15 18:50)
@@ -25,7 +25,7 @@
             ✔ 2. Review/Cleanup @done(19-01-23 22:13)
             Clang Tidy - Mainly Parser cleanup
             Friendly reminder from M4-Dev to add more comments to the code.
-        ☐ 30.01.2019
+        - 30.01.2019
             ✔ 3. Review/Cleanup @started(19-02-01 18:28) @done(19-02-01 18:35) @lasted(7m43s)
             Clang Tidy - Nothing
         - 10.02.2019
@@ -70,9 +70,9 @@
 
 ☐ For Search purposes, create SortBy-Only objects of Beatmaps @created(19-01-12 15:09)
 
-☐ Settings file @created(19-01-20 21:33)
+✔ Settings file @created(19-01-20 21:33) @done(19-02-16 22:54)
 
-☐ Support Custom Hitsound Files + Indicies @low 
+✔ Support Custom Hitsound Files + Indicies @low @done(19-02-16 22:54)
 ✔ Figure out why deleting a Beatmap doesnt give back all the memory @high @started(19-01-03 23:21) @done(19-01-03 23:23) @lasted(2m25s)
     See commit.
     Basically, I deleted all my deconstructors and let the compiler handle things for me. Smart pointers delete themselves when out of scope. We now have no memory leaks when (potentially) reading maps as needed and deleting them when we are done with them
