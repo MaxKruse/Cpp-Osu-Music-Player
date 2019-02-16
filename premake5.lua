@@ -105,7 +105,8 @@ project "Player"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/oppai-ng/oppai.c"
 
 	}
 
