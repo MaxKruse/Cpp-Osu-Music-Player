@@ -1,6 +1,8 @@
 ﻿#include "pch.h"
 
 #define OPPAI_IMPLEMENTATION
+#define OPPAI_NOPARSER
+#define OPPAI_NOPP
 #include "oppai.c"
 
 #include "Core.h"
