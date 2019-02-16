@@ -1,4 +1,8 @@
 ﻿#include "pch.h"
+
+#define OPPAI_IMPLEMENTATION
+#include "oppai.c"
+
 #include "Core.h"
 #include "osu/Parser.h"
 
