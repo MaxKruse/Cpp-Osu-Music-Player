@@ -114,6 +114,7 @@ project "Player"
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/Un4Seen_bass",
 		"%{prj.name}/vendor/SimpleIni",
+		"%{prj.name}/vendor/oppai-ng",
 		"Parser/src",
 		"Parser/vendor/cxxtimer",
 		"Parser/vendor/spdlog/include"
