@@ -7,13 +7,16 @@
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
-    <Filter Include="vendor\ImGui">
-      <UniqueIdentifier>{1DA38CEE-0906-1C93-B28B-54499ECDE715}</UniqueIdentifier>
+    <Filter Include="vendor\oppai-ng">
+      <UniqueIdentifier>{5D5F6CA3-C9EA-D967-D2FB-5C5C3E063668}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Player.cpp">
       <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\oppai-ng\oppai.c">
+      <Filter>vendor\oppai-ng</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
