@@ -33,7 +33,9 @@ int main(int argc, const char * argv[])
 	}
 
 	// Settings Manager
-	CSimpleIni Settings;
+	CSimpleIniA Settings;
+	Settings.LoadFile("settings.ini");
+
 	std::ifstream readFile;
 	readFile.open("settings.ini");
 
@@ -41,16 +43,28 @@ int main(int argc, const char * argv[])
 	if (readFile.is_open())
 	{
 		readFile.close();
-		Settings.LoadFile("settings.ini");
 	}
 	else
 	{
 		readFile.close();
 		LOGGER_INFO("Couldn't open => {}", "settings.ini");
 		LOGGER_INFO("Creating now...");
+		Settings.SetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/", "Absolute Path to Songs Folder with trailing '/'", true);
+		Settings.SetDoubleValue("General", "MinStars", 5.0, "The Minimum Star Rating to play");
+		Settings.SetLongValue("General", "CPU_Sleep", 200, "Time the cpu will wait to check for new hitsounds, in microseconds");
+		Settings.SetLongValue("Audio", "MasterVolume", 5, "The Master Volume, from 0-100");
+		Settings.SetLongValue("Audio", "SongVolume", 6, "The Song Volume, from 0-100");
+		Settings.SetLongValue("Audio", "HitsoundVolume", 7, "The Hitsound Volume, from 0-100");
 	}
 
-	Parser::Parser p("D:/osu/Songs/");
+	auto folder       = Settings.GetValue("General", "SongsFolder");
+	auto minStar      = Settings.GetDoubleValue("General", "MinStars");
+	auto cpuSleep     = Settings.GetLongValue("General", "CPU_Sleep");
+	auto masterVolume = Settings.GetLongValue("Audio", "MasterVolume");
+	auto songVolume   = Settings.GetLongValue("Audio", "SongVolume");
+	auto sampleVolume = Settings.GetLongValue("Audio", "HitsoundVolume");
+
+	Parser::Parser p(folder);
 	auto list = p.GetListOfFiles();
 
 	double bpm;
@@ -87,12 +101,11 @@ int main(int argc, const char * argv[])
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
 		
 		LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
-		beatmap->SetGlobalVolume(15);
-		beatmap->SetSongVolume(20);
-		beatmap->SetSampleVolume(30);
-		beatmap->Play();
-
+		beatmap->SetGlobalVolume(masterVolume);
+		beatmap->SetSongVolume(songVolume);
+		beatmap->SetSampleVolume(sampleVolume);
 		offsets = beatmap->GetOffsets();
+		beatmap->Play();
 
 		while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
 			// Check for the current Position in the channel
@@ -100,7 +113,7 @@ int main(int argc, const char * argv[])
 			{
 				beatmap->PlaySamples(Offset);
 			}
-			std::this_thread::sleep_for(std::chrono::microseconds(200));
+			std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
 		}
 		
 	}
