@@ -35,6 +35,7 @@ int main(int argc, const char * argv[])
 	// Settings Manager
 	CSimpleIniA Settings;
 	Settings.LoadFile("settings.ini");
+	Settings.SetSpaces(false);
 
 	std::ifstream readFile;
 	readFile.open("settings.ini");
@@ -47,14 +48,21 @@ int main(int argc, const char * argv[])
 	else
 	{
 		readFile.close();
+
+		std::ofstream writeFile;
+		writeFile.open("settings.ini");
+		writeFile.close();
+
 		LOGGER_INFO("Couldn't open => {}", "settings.ini");
 		LOGGER_INFO("Creating now...");
-		Settings.SetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/", "Absolute Path to Songs Folder with trailing '/'", true);
-		Settings.SetDoubleValue("General", "MinStars", 5.0, "The Minimum Star Rating to play");
-		Settings.SetLongValue("General", "CPU_Sleep", 200, "Time the cpu will wait to check for new hitsounds, in microseconds");
-		Settings.SetLongValue("Audio", "MasterVolume", 5, "The Master Volume, from 0-100");
-		Settings.SetLongValue("Audio", "SongVolume", 6, "The Song Volume, from 0-100");
-		Settings.SetLongValue("Audio", "HitsoundVolume", 7, "The Hitsound Volume, from 0-100");
+
+		Settings.SetValue("General", "SongsFolder", "C:/Program Files(x86)/osu!/Songs/");
+		Settings.SetDoubleValue("General", "MinStars", 5.0);
+		Settings.SetLongValue("General", "CPU_Sleep", 200);
+		Settings.SetLongValue("Audio", "MasterVolume", 5);
+		Settings.SetLongValue("Audio", "SongVolume", 6);
+		Settings.SetLongValue("Audio", "HitsoundVolume", 7);
+		Settings.SaveFile("settings.ini", true);
 	}
 
 	auto folder       = Settings.GetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/");
