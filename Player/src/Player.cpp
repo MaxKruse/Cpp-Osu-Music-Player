@@ -57,12 +57,12 @@ int main(int argc, const char * argv[])
 		Settings.SetLongValue("Audio", "HitsoundVolume", 7, "The Hitsound Volume, from 0-100");
 	}
 
-	auto folder       = Settings.GetValue("General", "SongsFolder");
-	auto minStar      = Settings.GetDoubleValue("General", "MinStars");
-	auto cpuSleep     = Settings.GetLongValue("General", "CPU_Sleep");
-	auto masterVolume = Settings.GetLongValue("Audio", "MasterVolume");
-	auto songVolume   = Settings.GetLongValue("Audio", "SongVolume");
-	auto sampleVolume = Settings.GetLongValue("Audio", "HitsoundVolume");
+	auto folder       = Settings.GetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/");
+	auto minStar      = Settings.GetDoubleValue("General", "MinStars", 5.0);
+	auto cpuSleep     = Settings.GetLongValue("General", "CPU_Sleep", 200);
+	auto masterVolume = Settings.GetLongValue("Audio", "MasterVolume", 5);
+	auto songVolume   = Settings.GetLongValue("Audio", "SongVolume", 6);
+	auto sampleVolume = Settings.GetLongValue("Audio", "HitsoundVolume", 7);
 
 	Parser::Parser p(folder);
 	auto list = p.GetListOfFiles();
