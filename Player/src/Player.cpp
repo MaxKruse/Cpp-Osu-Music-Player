@@ -98,29 +98,35 @@ int main(int argc, const char * argv[])
 	p_init(&pstate);
 	d_init(&stars);
 
+	size_t index;
+	std::unique_ptr<Parser::Beatmap> beatmap;
+
 	do // Music Playing Loop
 	{
+
 		// Get Beatmap and load it
-		auto index = Parser::Random(list);
-		auto beatmap = p.BeatmapFromFile(list.at(index));
+		index = Parser::Random(list);
+		beatmap = p.BeatmapFromFile(list.at(index));
 		
 		// Oppai stuff
 		bm = fopen(beatmap->GetFilePath().c_str(), "r");
 
 		p_map(&pstate, &map, bm);
 		d_calc(&stars, &map, 0);
-		LOGGER_DEBUG("{} stars\n", stars.total);
+		LOGGER_DEBUG("{.2f} stars", stars.total);
 
 		// Check if beatmap is supported
 		if (!beatmap->IsPlayable())
 		{
 			LOGGER_WARN("Cant Play (Wrong Mode or FileVersion) => {}", beatmap->GetMetadataText());
+			beatmap.release();
 			continue;
 		}
 
 		if (stars.total < minStar)
 		{
 			LOGGER_WARN("Cant Play (low star rating) => {}", beatmap->GetMetadataText());
+			beatmap.release();
 			continue;
 		}
 
@@ -133,7 +139,7 @@ int main(int argc, const char * argv[])
 		lengthInSeconds = beatmap->GetSongLength();
 
 		// 6. Display Data
-		a = (int)floor(lengthInSeconds / 60);
+		a = (int)floor(lengthInSeconds / 60.0);
 		b = (int)floor(fmod(lengthInSeconds, 60));
 		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
 		
