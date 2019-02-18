@@ -87,8 +87,16 @@ int main(int argc, const char * argv[])
 	QWORD bytePos = 0;
 	int Offset;
 	std::vector<std::vector<long>> offsets;
-
 	
+	struct parser pstate;
+	struct beatmap map;
+
+	struct diff_calc stars;
+
+	FILE* bm;
+
+	p_init(&pstate);
+	d_init(&stars);
 
 	do // Music Playing Loop
 	{
@@ -97,17 +105,9 @@ int main(int argc, const char * argv[])
 		auto beatmap = p.BeatmapFromFile(list.at(index));
 		
 		// Oppai stuff
-		FILE* bm;
-		struct parser pstate;
-		struct beatmap map;
+		bm = fopen(beatmap->GetFilePath().c_str(), "r");
 
-		struct diff_calc stars;
-
-		bm = fopen((folder + list.at(index)).c_str(), "r");
-
-		p_init(&pstate);
 		p_map(&pstate, &map, bm);
-		d_init(&stars);
 		d_calc(&stars, &map, 0);
 		LOGGER_DEBUG("{} stars\n", stars.total);
 
@@ -154,6 +154,8 @@ int main(int argc, const char * argv[])
 			std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
 		}
 		
+		bm = nullptr;
+
 	}
 	while (true); // As long as the user doesnt close the program, we will continue playing forever
 

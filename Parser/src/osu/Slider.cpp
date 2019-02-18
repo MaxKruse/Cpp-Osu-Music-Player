@@ -26,6 +26,10 @@ namespace Parser {
 
 		for(size_t i = 0; i < m_Repeat; i++)
 		{
+			if (m_EdgeAdditions.size() <= i || m_EdgeHitsounds.size() <= i)
+			{
+				LOGGER_WARN("Slider Hitsounds or Additions invalid. skipping object at {}ms", m_Offset.at(i));
+			}
 			auto s = std::vector<std::string>();
 			auto sampleset = t.GetSampleSet();
 			auto sampleindex = t.GetSampleIndex();
