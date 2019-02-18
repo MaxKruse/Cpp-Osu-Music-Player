@@ -18,18 +18,14 @@ namespace Parser {
 		// Set Offsets
 		if (m_Offset.size() == 1)
 		{
-			for (size_t i = 0; i < m_Repeat; i++)
+			for (size_t i = 0; i < m_Repeat - 1; i++)
 			{
 				m_Offset.emplace_back(m_DurationWithoutBeatLength * (i+1) + m_Offset.at(0));
 			}
 		}
 
-		for(size_t i = 0; i < m_Repeat; i++)
+		for(size_t i = 0; i < m_Repeat - 1; i++)
 		{
-			if (m_EdgeAdditions.size() <= i || m_EdgeHitsounds.size() <= i)
-			{
-				LOGGER_WARN("Slider Hitsounds or Additions invalid. skipping object at {}ms", m_Offset.at(i));
-			}
 			auto s = std::vector<std::string>();
 			auto sampleset = t.GetSampleSet();
 			auto sampleindex = t.GetSampleIndex();
