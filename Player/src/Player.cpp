@@ -1,15 +1,15 @@
 ﻿#include "pch.h"
 
-#define OPPAI_IMPLEMENTATION
-#include "oppai.c"
-
 #include "Core.h"
 #include "osu/Parser.h"
+#include "cxxtimer.hpp"
+
+#define OPPAI_IMPLEMENTATION
+#include "oppai.c"
 
 #define SI_CONVERT_WIN32
 #include "SimpleIni.h"
 
-#include "cxxtimer.hpp"
 
 int main(int argc, const char * argv[])
 {
@@ -37,12 +37,12 @@ int main(int argc, const char * argv[])
 	}
 
 	// Settings Manager
-	CSimpleIniA Settings;
-	Settings.LoadFile("settings.ini");
-	Settings.SetSpaces(false);
+	CSimpleIniA* Settings;
+	Settings->LoadFile("Settings->ini");
+	Settings->SetSpaces(false);
 
 	std::ifstream readFile;
-	readFile.open("settings.ini");
+	readFile.open("Settings->ini");
 
 	// File doesnt Exist
 	if (readFile.is_open())
@@ -54,29 +54,29 @@ int main(int argc, const char * argv[])
 		readFile.close();
 
 		std::ofstream writeFile;
-		writeFile.open("settings.ini");
+		writeFile.open("Settings->ini");
 		writeFile.close();
 
-		LOGGER_INFO("Couldn't open => {}", "settings.ini");
+		LOGGER_INFO("Couldn't open => {}", "Settings->ini");
 		LOGGER_INFO("Creating now...");
 
-		Settings.SetValue("General", "SongsFolder", "C:/Program Files(x86)/osu!/Songs/");
-		Settings.SetDoubleValue("General", "MinStars", 5.0);
-		Settings.SetLongValue("General", "CPU_Sleep", 200);
-		Settings.SetLongValue("General", "SpeedUp", 0);
-		Settings.SetLongValue("Audio", "MasterVolume", 5);
-		Settings.SetLongValue("Audio", "SongVolume", 6);
-		Settings.SetLongValue("Audio", "HitsoundVolume", 7);
-		Settings.SaveFile("settings.ini", true);
+		Settings->SetValue("General", "SongsFolder", "C:/Program Files(x86)/osu!/Songs/");
+		Settings->SetDoubleValue("General", "MinStars", 5.0);
+		Settings->SetLongValue("General", "CPU_Sleep", 200);
+		Settings->SetLongValue("General", "SpeedUp", 0);
+		Settings->SetLongValue("Audio", "MasterVolume", 5);
+		Settings->SetLongValue("Audio", "SongVolume", 6);
+		Settings->SetLongValue("Audio", "HitsoundVolume", 7);
+		Settings->SaveFile("Settings->ini", true);
 	}
 
-	auto folder       = Settings.GetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/");
-	auto minStar      = Settings.GetDoubleValue("General", "MinStars", 5.0);
-	auto cpuSleep     = Settings.GetLongValue("General", "CPU_Sleep", 200);
-	auto speedup	  = Settings.GetLongValue("General", "SpeedUp", 0);
-	auto masterVolume = Settings.GetLongValue("Audio", "MasterVolume", 5);
-	auto songVolume   = Settings.GetLongValue("Audio", "SongVolume", 6);
-	auto sampleVolume = Settings.GetLongValue("Audio", "HitsoundVolume", 7);
+	auto folder       = Settings->GetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/");
+	auto minStar      = Settings->GetDoubleValue("General", "MinStars", 5.0);
+	auto cpuSleep     = Settings->GetLongValue("General", "CPU_Sleep", 200);
+	auto speedup	  = Settings->GetLongValue("General", "SpeedUp", 0);
+	auto masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 5);
+	auto songVolume   = Settings->GetLongValue("Audio", "SongVolume", 6);
+	auto sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 7);
 
 	Parser::Parser p(folder);
 	auto list = p.GetListOfFiles();
@@ -113,7 +113,7 @@ int main(int argc, const char * argv[])
 
 		p_map(&pstate, &map, bm);
 		d_calc(&stars, &map, 0);
-		LOGGER_DEBUG("{.2f} stars", stars.total);
+		LOGGER_DEBUG("{:2f} stars", stars.total);
 
 		// Check if beatmap is supported
 		if (!beatmap->IsPlayable())
