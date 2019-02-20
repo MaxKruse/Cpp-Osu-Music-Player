@@ -36,7 +36,15 @@
         - 01.03.2019
             ☐ 6. Review/Cleanup
     People that checked the code will be noted as well, for later reference.
-        
+    
+☐ Investigate Memoryleak when a map isnt playable @created(19-02-20 18:04)
+
+☐ Reimagine Hitsounds as their own Classes @created(19-02-20 18:01)
+☐ Split hitsounds up into "Custom" and "Default"@created(19-02-20 18:01)
+        Example:    Hitsound.GetOffset() == 500
+                    Hitsound.GetType() == HITSOUND_TYPE::CUSTOM || HITSOUND_TYPE::DEFAULT
+                    Hitsound.GetVolume() == 40
+                    Hitsound.Play()
 
 ✔ Implement Spinners @low @started(19-02-10 16:37) @done(19-02-10 16:46) @lasted(9m1s)
     ✔ Spinner Hitsounds @started(19-02-10 16:46) @done(19-02-10 17:32) @lasted(46m40s)
