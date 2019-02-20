@@ -9,7 +9,7 @@ namespace Parser {
 	{
 	public:
 		Slider(unsigned short x, unsigned short y, long offset, unsigned short type, int hitsound, unsigned int repeat, std::vector<std::string> edgeHitsounds, std::vector<std::string> edgeAdditions, std::vector<std::string> extras, float durationWithoutBeatLength);
-
+		
 		std::vector<std::pair<long, std::vector<std::string>>> GetHitsounds(const TimingPoint& t) override;
 
 	private:

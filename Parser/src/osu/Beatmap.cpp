@@ -143,6 +143,15 @@ namespace Parser {
 		}
 	}
 
+	Beatmap::~Beatmap()
+	{
+		for (size_t i = 0; i < m_HitObjects.size(); i++)
+		{
+			delete m_HitObjects.at(i);
+		}
+		LOGGER_INFO("Destroyed beatmap => {}", GetMetadataText());
+	}
+
 	void Beatmap::GetMissedHitsounds()
 	{
 		for (const auto& pair : m_HitsoundsOnTimingDeleteable)

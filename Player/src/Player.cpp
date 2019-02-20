@@ -10,6 +10,79 @@
 #define SI_CONVERT_WIN32
 #include "SimpleIni.h"
 
+void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, long & speedup, long & masterVolume, long & songVolume, long & sampleVolume, Parser::Parser & p)
+{
+	double bpm;
+	QWORD lengthInSeconds;
+	QWORD a, b;
+	int Offset;
+	std::vector<std::vector<long>> offsets;
+
+	struct parser pstate;
+	struct beatmap map;
+
+	struct diff_calc stars;
+
+	FILE* bm;
+
+	p_init(&pstate);
+	d_init(&stars);
+
+	size_t index;
+
+	auto beatmap = p.BeatmapFromFile(path);
+
+	// Check if beatmap is supported
+	if (!beatmap->IsPlayable())
+	{
+		LOGGER_WARN("Cant Play (Wrong Mode or FileVersion) => {}", beatmap->GetMetadataText());
+		return;
+	}
+
+	// Oppai stuff
+	bm = fopen(beatmap->GetFilePath().c_str(), "r");
+
+	p_map(&pstate, &map, bm);
+	d_calc(&stars, &map, 0);
+	LOGGER_DEBUG("{:2f} stars", stars.total);
+
+	if (stars.total < minStar)
+	{
+		LOGGER_WARN("Cant Play (low star rating) => {}", beatmap->GetMetadataText());
+		return;
+	}
+
+	// Debug logs
+	LOGGER_DEBUG("MP3 for {} => {}", path, beatmap->GetMp3());
+	LOGGER_DEBUG("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
+
+	// 5. Get Song Length to Display change later
+	bpm = beatmap->GetBPM();
+	lengthInSeconds = beatmap->GetSongLength();
+
+	// 6. Display Data
+	a = (int)floor(lengthInSeconds / 60.0);
+	b = (int)floor(fmod(lengthInSeconds, 60));
+	LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
+
+	LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
+	beatmap->SetGlobalVolume(masterVolume);
+	beatmap->SetSongVolume(songVolume);
+	beatmap->SetSampleVolume(sampleVolume);
+	beatmap->SetSpeedup(speedup);
+	offsets = beatmap->GetOffsets();
+	beatmap->Play();
+
+	while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
+		// Check for the current Position in the channel
+		if (Offset = beatmap->GetCurrentOffset())
+		{
+			beatmap->PlaySamples(Offset);
+		}
+		std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
+	}	
+}
+
 
 int main(int argc, const char * argv[])
 {
@@ -37,12 +110,12 @@ int main(int argc, const char * argv[])
 	}
 
 	// Settings Manager
-	CSimpleIniA* Settings;
-	Settings->LoadFile("Settings->ini");
+	CSimpleIniA* Settings = new CSimpleIniA(false, false, false);
+	Settings->LoadFile("Settings.ini");
 	Settings->SetSpaces(false);
 
 	std::ifstream readFile;
-	readFile.open("Settings->ini");
+	readFile.open("Settings.ini");
 
 	// File doesnt Exist
 	if (readFile.is_open())
@@ -54,10 +127,10 @@ int main(int argc, const char * argv[])
 		readFile.close();
 
 		std::ofstream writeFile;
-		writeFile.open("Settings->ini");
+		writeFile.open("Settings.ini");
 		writeFile.close();
 
-		LOGGER_INFO("Couldn't open => {}", "Settings->ini");
+		LOGGER_INFO("Couldn't open => {}", "Settings.ini");
 		LOGGER_INFO("Creating now...");
 
 		Settings->SetValue("General", "SongsFolder", "C:/Program Files(x86)/osu!/Songs/");
@@ -67,7 +140,7 @@ int main(int argc, const char * argv[])
 		Settings->SetLongValue("Audio", "MasterVolume", 5);
 		Settings->SetLongValue("Audio", "SongVolume", 6);
 		Settings->SetLongValue("Audio", "HitsoundVolume", 7);
-		Settings->SaveFile("Settings->ini", true);
+		Settings->SaveFile("settings.ini", true);
 	}
 
 	auto folder       = Settings->GetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/");
@@ -81,89 +154,25 @@ int main(int argc, const char * argv[])
 	Parser::Parser p(folder);
 	auto list = p.GetListOfFiles();
 
-	double bpm;
-	QWORD lengthInSeconds;
-	int a, b;
-	QWORD bytePos = 0;
-	int Offset;
-	std::vector<std::vector<long>> offsets;
-	
-	struct parser pstate;
-	struct beatmap map;
-
-	struct diff_calc stars;
-
-	FILE* bm;
-
-	p_init(&pstate);
-	d_init(&stars);
-
-	size_t index;
-	std::unique_ptr<Parser::Beatmap> beatmap;
 
 	do // Music Playing Loop
 	{
+		// Get Beatmap
+		auto index = Parser::Random(list);
 
-		// Get Beatmap and load it
-		index = Parser::Random(list);
-		beatmap = p.BeatmapFromFile(list.at(index));
-		
-		// Oppai stuff
-		bm = fopen(beatmap->GetFilePath().c_str(), "r");
+		// Re-Read values for every beatmap to allow for changes between songs
+		folder = Settings->GetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/");
+		minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);
+		cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
+		speedup = Settings->GetLongValue("General", "SpeedUp", 0);
+		masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 5);
+		songVolume = Settings->GetLongValue("Audio", "SongVolume", 6);
+		sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 7);
 
-		p_map(&pstate, &map, bm);
-		d_calc(&stars, &map, 0);
-		LOGGER_DEBUG("{:2f} stars", stars.total);
+		// Play beatmap in its own function to **hopefully** fix the memory leak
+		PlayBeatmap(list.at(index), minStar, cpuSleep, speedup, masterVolume, songVolume, sampleVolume, p);
 
-		// Check if beatmap is supported
-		if (!beatmap->IsPlayable())
-		{
-			LOGGER_WARN("Cant Play (Wrong Mode or FileVersion) => {}", beatmap->GetMetadataText());
-			beatmap.release();
-			continue;
-		}
-
-		if (stars.total < minStar)
-		{
-			LOGGER_WARN("Cant Play (low star rating) => {}", beatmap->GetMetadataText());
-			beatmap.release();
-			continue;
-		}
-
-		// Debug logs
-		LOGGER_DEBUG("MP3 for {} => {}", list.at(index), beatmap->GetMp3());
-		LOGGER_DEBUG("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
-
-		// 5. Get Song Length to Display change later
-		bpm = beatmap->GetBPM();
-		lengthInSeconds = beatmap->GetSongLength();
-
-		// 6. Display Data
-		a = (int)floor(lengthInSeconds / 60.0);
-		b = (int)floor(fmod(lengthInSeconds, 60));
-		LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
-		
-		LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
-		beatmap->SetGlobalVolume(masterVolume);
-		beatmap->SetSongVolume(songVolume);
-		beatmap->SetSampleVolume(sampleVolume);
-		beatmap->SetSpeedup(speedup);
-		offsets = beatmap->GetOffsets();
-		beatmap->Play();
-
-		while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
-			// Check for the current Position in the channel
-			if (Offset = beatmap->GetCurrentOffset())
-			{
-				beatmap->PlaySamples(Offset);
-			}
-			std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
-		}
-		
-		bm = nullptr;
-
-	}
-	while (true); // As long as the user doesnt close the program, we will continue playing forever
+	} while (true);
 
 	// On Exit, flush all debug output to logfile
 	LOGGER_FLUSH();

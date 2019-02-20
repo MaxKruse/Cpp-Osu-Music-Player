@@ -151,6 +151,8 @@ namespace Parser {
 		writeFile.write(m_SongsFolder.c_str(), strlen(m_SongsFolder.c_str()));
 		writeFile.write("\n", 1);
 
+		std::string totalStr("");
+
 		// Because some filenames can be UTF-8, we have to use experimental filesystem. Its also slow, maybe change to BOOST (really big lib tho)
 		for (std::experimental::filesystem::recursive_directory_iterator i(m_SongsFolder), end; i != end; ++i)
 		{
@@ -162,20 +164,20 @@ namespace Parser {
 				// We find a .osu file
 				if (i->path().extension() == ".osu")
 				{
-					// Filepath formating and writing to file
+					// Filepath formating and adding to variable
+					// Doing this to prevent thousands of harddrive writes
 					LOGGER_TRACE("Found file => {}", i->path().string());
 					std::string RelativeFilePath(i->path().string().erase(0, m_SongsFolder.size()));
 					replaceAll(RelativeFilePath, "\\", "/");
 					m_ListOfFiles.emplace_back(RelativeFilePath);
-					writeFile.write(RelativeFilePath.c_str(), strlen(RelativeFilePath.c_str()));
-					writeFile.write("\n", 1);
-					// In case of crash, always write to disk after finding an element
-					writeFile.flush();
+					totalStr += RelativeFilePath;
+					totalStr += "\n";
 				}
 			}
 		}
 
-		// Final flush for anything that has been missed by accident
+		// Write the whole string into file
+		writeFile.write(totalStr.c_str(), strlen(totalStr.c_str()));
 		writeFile.flush();
 		writeFile.close();
 		LOGGER_INFO("Cached all beatmaps");
