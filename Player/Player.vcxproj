@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\Un4Seen_bass;vendor\SimpleIni;vendor\oppai-ng;..\Parser\src;..\Parser\vendor\cxxtimer;..\Parser\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\Un4Seen_bass;vendor\SimpleIni;vendor\oppai-ng;vendor\Win32xx\include;..\Parser\src;..\Parser\vendor\cxxtimer;..\Parser\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -98,7 +98,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\Un4Seen_bass;vendor\SimpleIni;vendor\oppai-ng;..\Parser\src;..\Parser\vendor\cxxtimer;..\Parser\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\Un4Seen_bass;vendor\SimpleIni;vendor\oppai-ng;vendor\Win32xx\include;..\Parser\src;..\Parser\vendor\cxxtimer;..\Parser\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -123,7 +123,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor\Un4Seen_bass;vendor\SimpleIni;vendor\oppai-ng;..\Parser\src;..\Parser\vendor\cxxtimer;..\Parser\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor\Un4Seen_bass;vendor\SimpleIni;vendor\oppai-ng;vendor\Win32xx\include;..\Parser\src;..\Parser\vendor\cxxtimer;..\Parser\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>MinSpace</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -143,7 +143,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Player.cpp" />
-    <ClCompile Include="vendor\oppai-ng\oppai.c" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Parser\Parser.vcxproj">
