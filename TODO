@@ -38,13 +38,14 @@
     People that checked the code will be noted as well, for later reference.
     
 ☐ Investigate Memoryleak when a map isnt playable @created(19-02-20 18:04)
+     My suspission is that i need to use pointers for all member variables to properly delete them. currently i get between 2 and 4mb per map, which doesnt get deleted automatically. I assumed this is the case since i use std::unique_ptr<Parser::Beatmap> & no extra defined ~dtor() for any class. This has me believe the compiler handles things for stack allocated variables, which it apparently doesnt.
 
 ☐ Reimagine Hitsounds as their own Classes @created(19-02-20 18:01)
 ☐ Split hitsounds up into "Custom" and "Default"@created(19-02-20 18:01)
-        Example:    Hitsound.GetOffset() == 500
-                    Hitsound.GetType() == HITSOUND_TYPE::CUSTOM || HITSOUND_TYPE::DEFAULT
-                    Hitsound.GetVolume() == 40
-                    Hitsound.Play()
+    Example:    Hitsound.GetOffset() == 500
+                Hitsound.GetType() == HITSOUND_TYPE::CUSTOM || HITSOUND_TYPE::DEFAULT
+                Hitsound.GetVolume() == 40
+                Hitsound.Play()
 
 ✔ Implement Spinners @low @started(19-02-10 16:37) @done(19-02-10 16:46) @lasted(9m1s)
     ✔ Spinner Hitsounds @started(19-02-10 16:46) @done(19-02-10 17:32) @lasted(46m40s)
