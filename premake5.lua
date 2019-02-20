@@ -105,8 +105,7 @@ project "Player"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
-		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/vendor/oppai-ng/oppai.c"
+		"%{prj.name}/src/**.cpp"
 
 	}
 
@@ -116,6 +115,7 @@ project "Player"
 		"%{prj.name}/vendor/Un4Seen_bass",
 		"%{prj.name}/vendor/SimpleIni",
 		"%{prj.name}/vendor/oppai-ng",
+		"%{prj.name}/vendor/Win32xx/include",
 		"Parser/src",
 		"Parser/vendor/cxxtimer",
 		"Parser/vendor/spdlog/include"
