@@ -37,12 +37,12 @@ namespace Parser {
 					break;
 				}
 
-				if (object->GetOffsets().at(0) < timingpoint.GetOffset() && found == false)
+				if (object->GetOffsets().at(0) <= timingpoint.GetOffset() && found == false)
 				{
 					timingpoint_to_use = timingpoint;
 					found = true;
 				}
-				else if (object->GetOffsets().at(0) > timingpoint.GetOffset())
+				else if (object->GetOffsets().at(0) >= timingpoint.GetOffset())
 				{
 					timingpoint_to_use = timingpoint;
 					found = true;
