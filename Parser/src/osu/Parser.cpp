@@ -55,9 +55,9 @@ namespace Parser {
 
 		// TODO: Parsing TimingsPoints, Then Hitobjects
 		LOGGER_DEBUG("Parsing TimingsPoints from file => {}", m_FullFilePath);
-		timings = ParseTimingPoints();
+		ParseTimingPoints();
 		LOGGER_DEBUG("Parsing Hitobjects from file => {}", m_FullFilePath);
-		hitobjects = ParseHitobjects();
+		ParseHitobjects();
 
 		// Empty the Text for RAM-Usage purposes
 		m_Text.clear();
@@ -209,105 +209,16 @@ namespace Parser {
 		return image;
 	}
 
-	// Parse TimingPoints from a file
-	std::vector<TimingPoint> Parser::ParseTimingPoints()
+	void Parser::ParseHitobjects()
 	{
-		std::vector<TimingPoint> timingpoints;
-
-		// We only support v13 and v14, older versions have legacy file-formats that are a pain to support
-		if (m_TempVersion != "v14" && m_TempVersion != "v13")
-		{
-			LOGGER_WARN("File Version too old. Cant parse timingpoints.");
-			// In case of old file, return empty vector
-			return timingpoints;
-		}
-
-		bool timingpoints_start = false;
-		size_t counter = 0;
-
-		// Get Amount of Timingpoints to resize vector (efficient memory)
-		for (auto& line : m_Text)
-		{
-
-			if (line.find("[TimingPoints]") != std::string::npos) // We found timingpoints
-			{
-				timingpoints_start = true;
-				continue;
-			}
-
-			if (timingpoints_start && line.length() <= 15) // There is 2 Empty lines after the last timingpoint
-			{
-				timingpoints_start = false;
-				break;
-			}
-
-			if (timingpoints_start && line.length() >= 15) // Its actually a timingpoint, not just an invalid line
-			{
-				counter++;
-			}
-		}
-
-		// Reserve memory
-		timingpoints.reserve(counter);
-
-		for (auto& line : m_Text)
-		{
-			if (line.find("[TimingPoints]") != std::string::npos)
-			{
-				LOGGER_TRACE("TIMINGPOINTS LOCATED");
-				timingpoints_start = true;
-				continue;
-			}
-
-			if (line.length() <= 15 && timingpoints_start) // There is 2 Empty lines after the last timingpoint
-			{
-				timingpoints_start = false;
-				break;
-			}
-
-			if (timingpoints_start) // If the next lines are timingpoints, parse them
-			{
-				LOGGER_TRACE("FOUND TIMINGPOINT => {}", line);
-				LOGGER_TRACE("Parsing Now...");
-
-				std::vector<std::string> parts = split(line, ',');
-
-				long offset = stol(parts.at(0));
-				if (parts.at(1).find(".") != std::string::npos)
-				{
-					auto pos = parts.at(1).find(".");
-					parts.at(1).erase(pos);
-				}
-				unsigned int milliseconds_per_beat = stoi(parts.at(1));
-				unsigned short sampleset = stoi(parts.at(3));
-				unsigned short sampleindex = stoi(parts.at(4));
-				unsigned short volume = stoi(parts.at(5));
-				
-				bool inherited = false;
-
-				if (stoi(parts.at(6)) & 1) // If its Inherited (this means you can inherit from it, not that it inherited from somewhere), the first bit is flipped (1 in Base10)
-				{
-					inherited = true;
-				}
-				// emplace_back is a modern push_back
-				timingpoints.emplace_back(TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
-			}
-
-		}
-
-		return timingpoints;
-	}
-
-	std::vector<Hitobject*> Parser::ParseHitobjects()
-	{
-		std::vector<Hitobject*> hitobjects;
+		hitobjects.clear();
 
 		// We only support v13 and v14, older versions have legacy file-formats that are a pain to support
 		if (m_TempVersion != "v14" && m_TempVersion != "v13")
 		{
 			LOGGER_WARN("File Version too old. Cant parse hitobjects.");
 			// In case of old file, return empty vector
-			return hitobjects;
+			return;
 		}
 
 		bool hitobjects_start = false;
@@ -350,7 +261,7 @@ namespace Parser {
 				LOGGER_TRACE("Parsing Now...");
 
 				std::vector<std::string> parts = split(line, ',');
-				
+
 				auto x = stoi(parts.at(0));
 				auto y = stoi(parts.at(1));
 				auto offset = stoi(parts.at(2));
@@ -360,8 +271,8 @@ namespace Parser {
 				if (stoi(parts.at(3)) & HITOBJECT_TYPE::HITCIRCLE)
 				{
 					std::vector<std::string> extras = split(parts.at(5), ':');
-					hitobjects.emplace_back(std::make_unique<Hitcircle>(x,y,offset,type,hitsound, extras));
-					
+					hitobjects.emplace_back(std::make_shared<Hitcircle>(x, y, offset, type, hitsound, extras));
+
 				}
 				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SLIDER)
 				{
@@ -373,7 +284,7 @@ namespace Parser {
 					}
 
 					unsigned int repeat = stoi(parts.at(6));
-					unsigned int pixelLength = stoi(parts.at(7)); 
+					unsigned int pixelLength = stoi(parts.at(7));
 					float durationWithoutBeatLength = pixelLength / (100.0 * diff.GetSliderMultiplier());
 
 					std::vector<std::string> edgeHitsounds;
@@ -391,20 +302,20 @@ namespace Parser {
 						edgeHitsounds.emplace_back("0"); // Format: 2|0 Meaning SliderHead = 2, SliderEnd = 0 // Always Repeat + 1 Long
 						edgeHitsounds.emplace_back("0");
 						edgeAdditions.emplace_back("0:0");// Format: 0:0|1:0 Meaning SampleSet:Addition|SampleSet2:Addition2 // Always Repeat + 1 long
-						edgeAdditions.emplace_back("0:0"); 
+						edgeAdditions.emplace_back("0:0");
 						extras.emplace_back("0");
 						extras.emplace_back("0");
 						extras.emplace_back("0");
 						extras.emplace_back("0");
 					}
-					
-					hitobjects.emplace_back(new Slider(x,y,offset,type,hitsound, repeat, edgeHitsounds, edgeAdditions, extras, durationWithoutBeatLength));
+
+					hitobjects.emplace_back(std::make_shared<Slider>(x, y, offset, type, hitsound, repeat, edgeHitsounds, edgeAdditions, extras, durationWithoutBeatLength));
 				}
 				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SPINNER)
 				{
 					std::vector<std::string> extras = split(parts.at(6), ':');
-					hitobjects.emplace_back(new Spinner(x,y,offset,type,hitsound, stoi(parts.at(5)), extras));
-					
+					hitobjects.emplace_back(std::make_shared<Spinner>(x, y, offset, type, hitsound, stoi(parts.at(5)), extras));
+
 				}
 				else // Invalid Object
 				{
@@ -413,10 +324,92 @@ namespace Parser {
 
 			}
 		}
-		
-		return hitobjects;
 	}
 
+	// Parse TimingPoints from a file
+	void Parser::ParseTimingPoints()
+	{
+		// We only support v13 and v14, older versions have legacy file-formats that are a pain to support
+		if (m_TempVersion != "v14" && m_TempVersion != "v13")
+		{
+			LOGGER_WARN("File Version too old. Cant parse timingpoints.");
+			// In case of old file, return empty vector
+			return;
+		}
+
+		bool timingpoints_start = false;
+		size_t counter = 0;
+
+		// Get Amount of Timingpoints to resize vector (efficient memory)
+		for (auto& line : m_Text)
+		{
+
+			if (line.find("[TimingPoints]") != std::string::npos) // We found timingpoints
+			{
+				timingpoints_start = true;
+				continue;
+			}
+
+			if (timingpoints_start && line.length() <= 15) // There is 2 Empty lines after the last timingpoint
+			{
+				timingpoints_start = false;
+				break;
+			}
+
+			if (timingpoints_start && line.length() >= 15) // Its actually a timingpoint, not just an invalid line
+			{
+				counter++;
+			}
+		}
+
+		// Reserve memory
+		timings.reserve(counter);
+
+		for (auto& line : m_Text)
+		{
+			if (line.find("[TimingPoints]") != std::string::npos)
+			{
+				LOGGER_TRACE("TIMINGPOINTS LOCATED");
+				timingpoints_start = true;
+				continue;
+			}
+
+			if (line.length() <= 15 && timingpoints_start) // There is 2 Empty lines after the last timingpoint
+			{
+				timingpoints_start = false;
+				break;
+			}
+
+			if (timingpoints_start) // If the next lines are timingpoints, parse them
+			{
+				LOGGER_TRACE("FOUND TIMINGPOINT => {}", line);
+				LOGGER_TRACE("Parsing Now...");
+
+				std::vector<std::string> parts = split(line, ',');
+
+				long offset = stol(parts.at(0));
+				if (parts.at(1).find(".") != std::string::npos)
+				{
+					auto pos = parts.at(1).find(".");
+					parts.at(1).erase(pos);
+				}
+				unsigned int milliseconds_per_beat = stoi(parts.at(1));
+				unsigned short sampleset = stoi(parts.at(3));
+				unsigned short sampleindex = stoi(parts.at(4));
+				unsigned short volume = stoi(parts.at(5));
+				
+				bool inherited = false;
+
+				if (stoi(parts.at(6)) & 1) // If its Inherited (this means you can inherit from it, not that it inherited from somewhere), the first bit is flipped (1 in Base10)
+				{
+					inherited = true;
+				}
+				// emplace_back is a modern push_back
+				timings.emplace_back(TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
+			}
+
+		}
+	}
 	// Parse the General Section from a file
 	// Logger-messages are self-explanatory
 	General Parser::ParseGeneral()

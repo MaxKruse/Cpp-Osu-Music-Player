@@ -35,7 +35,7 @@ namespace Parser {
 		std::ifstream m_FileHandle;
 		
 		std::vector<TimingPoint> timings;
-		std::vector<Hitobject*> hitobjects;
+		std::vector<std::shared_ptr<Hitobject>> hitobjects;
 
 		General general;
 		Metadata meta;
@@ -44,8 +44,8 @@ namespace Parser {
 
 	private:
 		std::string ParseBackgroundImage();
-		std::vector<Hitobject*> ParseHitobjects();
-		std::vector<TimingPoint> ParseTimingPoints();
+		void		ParseHitobjects();
+		void		ParseTimingPoints();
 
 		std::string m_TempVersion;
 
