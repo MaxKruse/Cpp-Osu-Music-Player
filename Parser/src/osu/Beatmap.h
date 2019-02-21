@@ -194,7 +194,7 @@ namespace Parser {
 	class API Beatmap
 	{
 	public:
-		Beatmap(const std::string & FilePath, const std::string & Folder, const std::string & BackgroundImage, std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint> Timingpoints, General g, Metadata m, SearchBy s, Difficulty d);
+		Beatmap(const std::string & FilePath, const std::string & Folder, const std::string & BackgroundImage, std::vector<std::unique_ptr<Hitobject>>, std::vector<TimingPoint> Timingpoints, General g, Metadata m, SearchBy s, Difficulty d);
 		~Beatmap();
 
 		inline const std::map<long, std::vector<std::string>> GetHitsoundsOfTimings() const { return m_HitsoundsOnTiming; }

@@ -15,7 +15,7 @@ namespace Parser {
 	/// <param name="d">Object-specific difficulty settings</param>
 	Beatmap::Beatmap(
 		const std::string & FilePath, const std::string & Folder, const std::string & BackgroundImage, 
-		std::vector<Hitobject*> Hitobjects, std::vector<TimingPoint> Timingpoints, 
+		std::vector<std::unique_ptr<Hitobject>> Hitobjects, std::vector<TimingPoint> Timingpoints, 
 		General g, Metadata m, SearchBy s, Difficulty d
 	)
 		: m_FilePath(FilePath), m_Folder(Folder), m_BackgroundImage(BackgroundImage), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d), m_Paused(false), m_BaseChannel(0), m_FXChannel(0), m_ChannelPos(0)
@@ -145,10 +145,6 @@ namespace Parser {
 
 	Beatmap::~Beatmap()
 	{
-		for (size_t i = 0; i < m_HitObjects.size(); i++)
-		{
-			delete m_HitObjects.at(i);
-		}
 		LOGGER_INFO("Destroyed beatmap => {}", GetMetadataText());
 	}
 
