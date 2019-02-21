@@ -271,12 +271,12 @@ namespace Parser {
 		std::string ToString() const;
 		
 	private:
-		std::string                           m_FilePath;
-		std::string                           m_Folder;
-		std::string                           m_BackgroundImage;
-		std::vector<Hitobject*>               m_HitObjects;
-		std::vector<TimingPoint>              m_TimingPoints;
-		std::vector<std::vector<long>>		  m_Offsets;
+		std::string                                           m_FilePath;
+		std::string                                           m_Folder;
+		std::string                                           m_BackgroundImage;
+		std::vector<std::unique_ptr<Hitobject>>               m_HitObjects;
+		std::vector<TimingPoint>                              m_TimingPoints;
+		std::vector<std::vector<long>>		                  m_Offsets;
 
 		HSTREAM m_BaseChannel;
 		HSTREAM m_FXChannel;

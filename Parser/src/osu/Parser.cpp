@@ -360,7 +360,7 @@ namespace Parser {
 				if (stoi(parts.at(3)) & HITOBJECT_TYPE::HITCIRCLE)
 				{
 					std::vector<std::string> extras = split(parts.at(5), ':');
-					hitobjects.emplace_back(new Hitcircle(x,y,offset,type,hitsound, extras));
+					hitobjects.emplace_back(std::make_unique<Hitcircle>(x,y,offset,type,hitsound, extras));
 					
 				}
 				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SLIDER)
