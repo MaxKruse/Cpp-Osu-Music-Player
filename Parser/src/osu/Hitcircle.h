@@ -9,7 +9,10 @@ namespace Parser {
 	{
 	public:
 		Hitcircle(unsigned short x, unsigned short y, long offset, unsigned short type, int hitsound, std::vector<std::string> extras);
-
+		~Hitcircle()
+		{
+			LOGGER_DEBUG("\tHitcircle Destroyed");
+		}
 		std::vector<std::pair<long, std::vector<std::string>>> GetHitsounds(const TimingPoint& t) override;
 
 	private:

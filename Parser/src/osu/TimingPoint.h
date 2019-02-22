@@ -8,7 +8,10 @@ namespace Parser
 	{
 	public:
 		TimingPoint(long offset, double milliseconds_per_beat, unsigned short sampleset, unsigned short sampleindex, unsigned short volume, bool inherited);
-
+		~TimingPoint()
+		{
+			LOGGER_DEBUG("TimingPoint Destroyed");
+		}
 		inline const long GetOffset() const { return m_Offset; }
 		inline const double GetMillisecondsPerBeat() const { return m_MillisecondsPerBeat; }
 		inline const unsigned short GetSampleSet() const { return m_SampleSet; }
