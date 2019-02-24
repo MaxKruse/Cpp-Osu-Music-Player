@@ -6,6 +6,10 @@ namespace Parser {
 	Parser::Parser(const std::string SongsFolderPath, bool GetListOfFiles)
 		: m_SongsFolder(std::move(SongsFolderPath))
 	{
+		general = Beatmap::General();
+		meta = Beatmap::Metadata();
+		search = Beatmap::SearchBy();
+		diff = Beatmap::Difficulty();
 		LOGGER_INFO("Songs folder set => {}", m_SongsFolder);
 		// Seed random
 		srand(time(nullptr));
@@ -14,7 +18,7 @@ namespace Parser {
 	}
 
 	// Return unique_ptr for auto-deconstruction on out-of-scope
-	std::unique_ptr<Beatmap> Parser::BeatmapFromFile(const std::string & FilePath)
+	std::unique_ptr<Beatmap::Beatmap> Parser::BeatmapFromFile(const std::string & FilePath)
 	{
 		// Setting the filename for debug purposes and formating it to only use /
 		auto Fullpath = std::string(m_SongsFolder + FilePath);
@@ -36,16 +40,12 @@ namespace Parser {
 		LOGGER_DEBUG("Parsing Background Image from file => {}", m_FullFilePath);
 		auto image = ParseBackgroundImage();
 		LOGGER_DEBUG("Parsing General from file => {}", m_FullFilePath);
-		general = General();
 		general = ParseGeneral();
 		LOGGER_DEBUG("Parsing Metadata from file => {}", m_FullFilePath);
-		meta = Metadata();
 		meta = ParseMetadata();
 		LOGGER_DEBUG("Parsing SearchBy from file => {}", m_FullFilePath);
-		search = SearchBy();
 		search = ParseSearchBy();
 		LOGGER_DEBUG("Parsing Difficulty from file => {}", m_FullFilePath);
-		diff = Difficulty();
 		diff = ParseDifficulty();
 		// If anything didnt get set, log it  
 		if (general.HasDefaults() || meta.HasDefaults() || search.HasDefaults() || diff.HasDefaults())
@@ -61,11 +61,11 @@ namespace Parser {
 
 		// Empty the Text for RAM-Usage purposes
 		m_Text.clear();
-		return std::make_unique<Beatmap>(m_FullFilePath, Folder, image, hitobjects, timings, general, meta, search, diff);
+		return std::make_unique<Beatmap::Beatmap>(m_FullFilePath, Folder, image, hitobjects, timings, general, meta, search, diff);
 	}
 
 	// This is intended to do the same thing as above, except just reading from a vector itself (API purposes for other programs)
-	std::unique_ptr<Beatmap> Parser::BeatmapFromString(const std::vector<std::string> & Text)
+	std::unique_ptr<Beatmap::Beatmap> Parser::BeatmapFromString(const std::vector<std::string> & Text)
 	{
 		LOGGER_DEBUG("Parsing from StringVector");
 		m_Text = Text;
@@ -73,11 +73,11 @@ namespace Parser {
 		m_FileName = "NO FILE GIVEN";
 		auto Folder = "";
 		auto image = "";
-		general = General();
-		meta = Metadata();
-		search = SearchBy();
-		diff = Difficulty();
-		return std::make_unique<Beatmap>(m_FullFilePath, Folder, image, hitobjects, timings, general, meta, search, diff);
+		general = Beatmap::General();
+		meta = Beatmap::Metadata();
+		search = Beatmap::SearchBy();
+		diff = Beatmap::Difficulty();
+		return std::make_unique<Beatmap::Beatmap>(m_FullFilePath, Folder, image, hitobjects, timings, general, meta, search, diff);
 	}
 
 	// Cache files if needed
@@ -268,13 +268,13 @@ namespace Parser {
 				auto type = stoi(parts.at(3));
 				auto hitsound = stoi(parts.at(4));
 
-				if (stoi(parts.at(3)) & HITOBJECT_TYPE::HITCIRCLE)
+				if (stoi(parts.at(3)) & Beatmap::HITOBJECT_TYPE::HITCIRCLE)
 				{
 					std::vector<std::string> extras = split(parts.at(5), ':');
-					hitobjects.emplace_back(std::make_shared<Hitcircle>(x, y, offset, type, hitsound, extras));
+					hitobjects.emplace_back(std::make_shared<Beatmap::Hitcircle>(x, y, offset, type, hitsound, extras));
 
 				}
-				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SLIDER)
+				else if (stoi(parts.at(3)) & Beatmap::HITOBJECT_TYPE::SLIDER)
 				{
 					if (parts.size() != 8 && parts.size() != 11)
 					{
@@ -309,12 +309,12 @@ namespace Parser {
 						extras.emplace_back("0");
 					}
 
-					hitobjects.emplace_back(std::make_shared<Slider>(x, y, offset, type, hitsound, repeat, edgeHitsounds, edgeAdditions, extras, durationWithoutBeatLength));
+					hitobjects.emplace_back(std::make_shared<Beatmap::Slider>(x, y, offset, type, hitsound, repeat, edgeHitsounds, edgeAdditions, extras, durationWithoutBeatLength));
 				}
-				else if (stoi(parts.at(3)) & HITOBJECT_TYPE::SPINNER)
+				else if (stoi(parts.at(3)) & Beatmap::HITOBJECT_TYPE::SPINNER)
 				{
 					std::vector<std::string> extras = split(parts.at(6), ':');
-					hitobjects.emplace_back(std::make_shared<Spinner>(x, y, offset, type, hitsound, stoi(parts.at(5)), extras));
+					hitobjects.emplace_back(std::make_shared<Beatmap::Spinner>(x, y, offset, type, hitsound, stoi(parts.at(5)), extras));
 
 				}
 				else // Invalid Object
@@ -405,14 +405,14 @@ namespace Parser {
 					inherited = true;
 				}
 				// emplace_back is a modern push_back
-				timings.emplace_back(TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
+				timings.emplace_back(Beatmap::TimingPoint(offset, milliseconds_per_beat, sampleset, sampleindex, volume, inherited));
 			}
 
 		}
 	}
 	// Parse the General Section from a file
 	// Logger-messages are self-explanatory
-	General Parser::ParseGeneral()
+	Beatmap::General Parser::ParseGeneral()
 	{
 		// Set defaults to compare later on
 		std::string FileFormatVersion = "-1";
@@ -467,12 +467,12 @@ namespace Parser {
 			}
 		}
 
-		return General(FileFormatVersion, AudioFilename, SampleSet, Mode, AudioLeadIn);
+		return Beatmap::General(FileFormatVersion, AudioFilename, SampleSet, Mode, AudioLeadIn);
 	}
 
 	// Parse the Metadata Section from a file
 	// Logger-messages are self-explanatory
-	Metadata Parser::ParseMetadata()
+	Beatmap::Metadata Parser::ParseMetadata()
 	{
 		// Set defaults to compare later on
 		std::string Artist = "-1";
@@ -535,12 +535,12 @@ namespace Parser {
 			}
 		}
 
-		return Metadata(Artist, ArtistUnicode, Title, TitleUnicode, Creator, Version);
+		return Beatmap::Metadata(Artist, ArtistUnicode, Title, TitleUnicode, Creator, Version);
 	}
 
 	// Parse the file for information that can be used for additional searches later on
 	// Logger-messages are self-explanatory
-	SearchBy Parser::ParseSearchBy()
+	Beatmap::SearchBy Parser::ParseSearchBy()
 	{
 		// Set defaults to compare later on
 		std::string Source = "-1";
@@ -587,13 +587,13 @@ namespace Parser {
 			}
 		}
 
-		return SearchBy(Source, Tags, BeatmapID, BeatmapSetID);
+		return Beatmap::SearchBy(Source, Tags, BeatmapID, BeatmapSetID);
 	}
 
 	// Parse the Difficulty Section from a file
 	// Logger-messages are self-explanatory
 	// Note: This is actually rather useless for a music player, but here for completeness
-	Difficulty Parser::ParseDifficulty()
+	Beatmap::Difficulty Parser::ParseDifficulty()
 	{
 		// Set defaults to compare later on
 		unsigned short HPDrainRate = 255;
@@ -656,7 +656,7 @@ namespace Parser {
 			}
 		}
 
-		return Difficulty(HPDrainRate, CircleSize, OverallDifficulty, ApproachRate, SliderMultiplier, SliderTickRate);
+		return Beatmap::Difficulty(HPDrainRate, CircleSize, OverallDifficulty, ApproachRate, SliderMultiplier, SliderTickRate);
 	}
 
 	// Internal function to read a file into a vector to avoid constant harddisk access

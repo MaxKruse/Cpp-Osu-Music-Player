@@ -1,10 +1,10 @@
 #pragma once
 #include "Core.h"
-#include "Beatmap.h"
+#include "Beatmap/Beatmap.h"
 
-#include "Hitcircle.h"
-#include "Slider.h"
-#include "Spinner.h"
+#include "Beatmap/Hitcircle.h"
+#include "Beatmap/Slider.h"
+#include "Beatmap/Spinner.h"
 
 namespace Parser {
 	time_t x;
@@ -15,8 +15,8 @@ namespace Parser {
 	public:
 		Parser(const std::string SongsFolderPath, bool GetListOfFiles = true);
 
-		std::unique_ptr<Beatmap> BeatmapFromFile(const std::string & FilePath);
-		std::unique_ptr<Beatmap> BeatmapFromString(const std::vector<std::string> & Text);
+		std::unique_ptr<Beatmap::Beatmap> BeatmapFromFile(const std::string & FilePath);
+		std::unique_ptr<Beatmap::Beatmap> BeatmapFromString(const std::vector<std::string> & Text);
 
 		void GetAllFiles();
 
@@ -34,13 +34,13 @@ namespace Parser {
 
 		std::ifstream m_FileHandle;
 		
-		std::vector<TimingPoint> timings;
-		std::vector<std::shared_ptr<Hitobject>> hitobjects;
+		std::vector<Beatmap::TimingPoint> timings;
+		std::vector<std::shared_ptr<Beatmap::Hitobject>> hitobjects;
 
-		General general;
-		Metadata meta;
-		SearchBy search;
-		Difficulty diff;
+		Beatmap::General general;
+		Beatmap::Metadata meta;
+		Beatmap::SearchBy search;
+		Beatmap::Difficulty diff;
 
 	private:
 		std::string ParseBackgroundImage();
@@ -49,10 +49,10 @@ namespace Parser {
 
 		std::string m_TempVersion;
 
-		General    ParseGeneral();
-		Metadata   ParseMetadata();
-		SearchBy   ParseSearchBy();
-		Difficulty ParseDifficulty();
+		Beatmap::General    ParseGeneral();
+		Beatmap::Metadata   ParseMetadata();
+		Beatmap::SearchBy   ParseSearchBy();
+		Beatmap::Difficulty ParseDifficulty();
 
 		int CacheBeatmaps();
 

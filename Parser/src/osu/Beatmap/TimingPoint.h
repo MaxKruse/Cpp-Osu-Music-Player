@@ -1,8 +1,8 @@
 #pragma once
 #include "Core.h"
 
-namespace Parser
-{
+namespace Parser {
+	namespace Beatmap {
 	// Timingpoints are basic timings that affect hitsounds played and the speed of the map, as well as volume.
 	class API TimingPoint
 	{
@@ -28,4 +28,5 @@ namespace Parser
 		bool m_Inherited;
 
 	};
-}  // namespace Parser
+	} // namespace Beatmap
+} // namespace Parser

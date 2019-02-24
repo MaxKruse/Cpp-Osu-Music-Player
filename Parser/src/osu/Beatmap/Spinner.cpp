@@ -1,16 +1,17 @@
 #include "pch.h"
-#include "Hitcircle.h"
+#include "Spinner.h"
 
 namespace Parser {
+	namespace Beatmap {
 
-	Hitcircle::Hitcircle(unsigned short x, unsigned short y, long offset, unsigned short type, int hitsound, std::vector<std::string> extras)
-		: Hitobject(x,y,offset,type), m_Hitsound(hitsound), m_Extras(extras)
+	Spinner::Spinner(unsigned short x, unsigned short y, long offset, unsigned short type, int hitsound, long end_offset, std::vector<std::string> extras)
+		: Hitobject(x, y, offset, type), m_Hitsound(hitsound), m_Extras(extras), m_EndOffset(end_offset)
 	{
 	}
 
-	// For the timingpoint that affects this Hitcircle, give a vector pair of:
+	// For the timingpoint that affects this Spinner, give a vector pair of:
 	// [Offset] = vector("sound1", "sound2")
-	std::vector<std::pair<long, std::vector<std::string>>> Hitcircle::GetHitsounds(const TimingPoint& t)
+	std::vector<std::pair<long, std::vector<std::string>>> Spinner::GetHitsounds(const TimingPoint& t)
 	{
 		auto s = std::vector<std::string>();
 		auto sampleset = t.GetSampleSet();
@@ -81,10 +82,12 @@ namespace Parser {
 		{
 			s.emplace_back(sampleSetString + "hitclap" + customIndex + ".wav");
 		}
+
 		std::vector<std::pair<long, std::vector<std::string>>> r;
-		std::pair<long, std::vector<std::string>> m(m_Offset.at(0), s);
+		std::pair<long, std::vector<std::string>> m(m_EndOffset, s);
 		r.emplace_back(m);
 		return r;
 	}
 
-}
+	} // namespace Beatmap
+} // namespace Parser

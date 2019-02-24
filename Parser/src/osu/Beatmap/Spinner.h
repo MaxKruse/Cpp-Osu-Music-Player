@@ -2,6 +2,7 @@
 #include "Hitobject.h"
 
 namespace Parser {
+	namespace Beatmap {
 
 	// A Spinner is the simplest Hitobject
 	// One offset, Duration, a maximum of 4 possible hitsounds (including default)
@@ -22,4 +23,5 @@ namespace Parser {
 		std::vector<std::string> m_Extras;
 	};
 
-}  // namespace Parser
+	} // namespace Beatmap
+} // namespace Parser

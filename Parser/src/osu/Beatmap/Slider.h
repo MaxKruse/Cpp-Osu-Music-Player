@@ -2,6 +2,7 @@
 #include "Hitobject.h"
 
 namespace Parser {
+	namespace Beatmap {
 
 	// A Slider is the most complex Hitobject
 	// lots of sounds possible due to repeats having their own sounds
@@ -39,4 +40,5 @@ namespace Parser {
 		}
 	};
 
-}  // namespace Parser
+	} // namespace Beatmap
+} // namespace Parser
