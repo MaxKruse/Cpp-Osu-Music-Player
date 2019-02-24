@@ -22,7 +22,7 @@ namespace Parser {
 		public:
 			General()
 			{
-				LOGGER_WARN("General hasnt been set!");
+				LOGGER_WARN("General initialized with default values.");
 			}
 
 			General(std::string FileFormatVersion, std::string AudioFilename, std::string SampleSet, int Mode, int AudioLeadIn)
@@ -69,7 +69,7 @@ namespace Parser {
 		public:
 			Metadata()
 			{
-				LOGGER_WARN("Metadata hasnt been set!");
+				LOGGER_WARN("Metadata initialized with default values.");
 			}
 
 			Metadata(std::string Artist, std::string ArtistUnicode, std::string Title, std::string TitleUnicode, std::string Creator, std::string Version)
@@ -114,7 +114,7 @@ namespace Parser {
 		public:
 			SearchBy()
 			{
-				LOGGER_WARN("SearchBy hasnt been set!");
+				LOGGER_WARN("SearchBy initialized with default values.");
 			}
 
 			SearchBy(std::string Source, std::string Tags, int BeatmapID, int BeatmapSetID)
@@ -162,7 +162,7 @@ namespace Parser {
 		public:
 			Difficulty()
 			{
-				LOGGER_WARN("Difficulty hasnt been set!");
+				LOGGER_WARN("Difficulty initialized with default values.");
 			}
 
 			Difficulty(unsigned short HPDrainRate, unsigned short CircleSize, unsigned short OverallDifficulty, unsigned short ApproachRate, float SliderMultiplier, unsigned short SliderTickRate)

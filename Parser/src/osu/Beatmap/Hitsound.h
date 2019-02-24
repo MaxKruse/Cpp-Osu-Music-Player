@@ -1,12 +1,21 @@
 #pragma once
+#include "Logger.h"
+
 namespace Parser {
 	namespace Beatmap {
 
 		class Hitsound
 		{
 		public:
-			Hitsound();
+			Hitsound(long & offset, std::vector<std::string> sampleFiles);
 			~Hitsound();
+
+			inline const std::vector<std::string> GetSampleNames() const { return m_SampleFiles; }
+			inline const long GetOffset() const { return m_Offset; }
+
+		private:
+			long m_Offset;
+			std::vector<std::string> m_SampleFiles;
 		};
 	} // namespace Beatmap
 }  // namespace Parser

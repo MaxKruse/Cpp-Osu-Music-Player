@@ -146,6 +146,8 @@ namespace Parser {
 
 		Beatmap::~Beatmap()
 		{
+			m_HitObjects.clear();
+			m_TimingPoints.clear();
 			LOGGER_INFO("Destroyed beatmap => {}", GetMetadataText());
 		}
 
