@@ -44,6 +44,7 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 
 	p_map(&pstate, &map, bm);
 	d_calc(&stars, &map, 0);
+	fclose(bm);
 	LOGGER_DEBUG("{:2f} stars", stars.total);
 
 	if (stars.total < minStar)
@@ -80,7 +81,9 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 			beatmap->PlaySamples(Offset);
 		}
 		std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
-	}	
+	}
+
+	beatmap.reset();
 }
 
 
