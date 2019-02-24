@@ -15,62 +15,23 @@ namespace Parser {
 		/// <param name="s">Data thats used to Search for a specific object later on</param>
 		/// <param name="d">Object-specific difficulty settings</param>
 		Beatmap::Beatmap(
-			const std::string & FilePath, const std::string & Folder, const std::string & BackgroundImage,
+			const std::string & FilePath, const std::string & Folder, const std::string & hitsoundFolder, const std::string & BackgroundImage,
 			std::vector<std::shared_ptr<Hitobject>> Hitobjects, std::vector<TimingPoint> Timingpoints,
 			General g, Metadata m, SearchBy s, Difficulty d
 		)
 			: m_FilePath(FilePath), m_Folder(Folder), m_BackgroundImage(BackgroundImage), m_HitObjects(Hitobjects), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d), m_Paused(false), m_BaseChannel(0), m_FXChannel(0), m_ChannelPos(0)
 		{
 			LOGGER_INFO("Creating Beatmap From File => {}", FilePath);
-
-			// Pre-parsing all hitsounds for all hitobjects
-			m_HitsoundsOnTiming = std::map<long, std::vector<std::string>>();
-
-			for (auto& object : m_HitObjects)
+			
+			// creating list of hitsounds to play
+			for (const auto& object : m_HitObjects)
 			{
-				TimingPoint timingpoint_to_use = TimingPoint(1, 2, 3, 4, 5, true);
-				bool found = false;
-
-				for (auto& timingpoint : m_TimingPoints)
+				auto Hitsounds = object->GetHitsounds();
+				for (const auto& hitsound : Hitsounds)
 				{
-					if (found)
-					{
-						break;
-					}
-
-					if (object->GetOffsets().at(0) <= timingpoint.GetOffset() && found == false)
-					{
-						timingpoint_to_use = timingpoint;
-						found = true;
-					}
-					else if (object->GetOffsets().at(0) >= timingpoint.GetOffset())
-					{
-						timingpoint_to_use = timingpoint;
-						found = true;
-					}
+					m_HitsoundsOnTiming.emplace(hitsound.GetOffset(), hitsound.GetSampleNames());
 				}
-
-				if (!found)
-				{
-					LOGGER_DEBUG("Hitobject at {} doesnt seem to have a Timingpoint that affects it.", object->GetOffsets().at(0));
-					LOGGER_DEBUG("Giving it default hitsounds...");
-					std::vector<std::string> temp = std::vector<std::string>();
-					temp.emplace_back("normal-hitnormal.wav");
-					// Since its not supported, give it a hitsound on its only guaranteed Offset
-					m_HitsoundsOnTiming.emplace(object->GetOffsets().at(0), temp);
-					m_Offsets.emplace_back(object->GetOffsets());
-					continue;
-				}
-
-				auto hitsoundsVector = object->GetHitsounds(timingpoint_to_use);
-
-				for (auto const& pair : hitsoundsVector)
-				{
-					m_HitsoundsOnTiming.emplace(pair);
-				}
-				m_Offsets.emplace_back(object->GetOffsets());
 			}
-
 			m_HitsoundsOnTimingDeleteable = m_HitsoundsOnTiming;
 
 			// Creating BASS Channels
@@ -85,7 +46,7 @@ namespace Parser {
 			}
 
 			// Load Hitsound Samples and add them to the Map
-			std::string DefaultHitsoundFolder("C:/Dev/C++ Osu Music Player/default_sounds/");
+			std::string DefaultHitsoundFolder(hitsoundFolder);
 
 
 			// First Priority: Folder Path itself

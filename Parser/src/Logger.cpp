@@ -6,6 +6,8 @@ namespace Parser {
 	std::shared_ptr<spdlog::logger> Logger::s_FileLogger;
 	std::shared_ptr<spdlog::logger> Logger::s_ConsoleLogger;
 
+	bool Logger::m_IsInit = false;
+
 	void Logger::Init()
 	{
 		if (m_IsInit)

@@ -139,21 +139,23 @@ int main(int argc, const char * argv[])
 		Settings->SetDoubleValue("General", "MinStars", 5.0);
 		Settings->SetLongValue("General", "CPU_Sleep", 200);
 		Settings->SetLongValue("General", "SpeedUp", 0);
+		Settings->SetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds\\");
 		Settings->SetLongValue("Audio", "MasterVolume", 5);
 		Settings->SetLongValue("Audio", "SongVolume", 6);
 		Settings->SetLongValue("Audio", "HitsoundVolume", 7);
 		Settings->SaveFile("settings.ini", true);
 	}
 
-	auto folder       = Settings->GetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/");
-	auto minStar      = Settings->GetDoubleValue("General", "MinStars", 5.0);
-	auto cpuSleep     = Settings->GetLongValue("General", "CPU_Sleep", 200);
-	auto speedup	  = Settings->GetLongValue("General", "SpeedUp", 0);
-	auto masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 5);
-	auto songVolume   = Settings->GetLongValue("Audio", "SongVolume", 6);
-	auto sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 7);
+	auto folder         = Settings->GetValue("General", "SongsFolder", "C:/Program Files(x86)/osu!/Songs/");
+	auto minStar        = Settings->GetDoubleValue("General", "MinStars", 5.0);
+	auto cpuSleep       = Settings->GetLongValue("General", "CPU_Sleep", 200);
+	auto speedup	    = Settings->GetLongValue("General", "SpeedUp", 0);
+	auto hitsoundFolder = Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
+	auto masterVolume   = Settings->GetLongValue("Audio", "MasterVolume", 5);
+	auto songVolume     = Settings->GetLongValue("Audio", "SongVolume", 6);
+	auto sampleVolume   = Settings->GetLongValue("Audio", "HitsoundVolume", 7);
 
-	Parser::Parser p(folder);
+	Parser::Parser p(folder, hitsoundFolder);
 	auto list = p.GetListOfFiles();
 
 

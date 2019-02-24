@@ -3,8 +3,8 @@
 
 namespace Parser {
 
-	Parser::Parser(const std::string SongsFolderPath, bool GetListOfFiles)
-		: m_SongsFolder(std::move(SongsFolderPath))
+	Parser::Parser(const std::string SongsFolderPath, const std::string hitsoundsFolder, bool GetListOfFiles)
+		: m_SongsFolder(std::move(SongsFolderPath)), m_HitsoundsFolder(hitsoundsFolder)
 	{
 		general = Beatmap::General();
 		meta = Beatmap::Metadata();
@@ -61,7 +61,7 @@ namespace Parser {
 
 		// Empty the Text for RAM-Usage purposes
 		m_Text.clear();
-		return std::make_unique<Beatmap::Beatmap>(m_FullFilePath, Folder, image, hitobjects, timings, general, meta, search, diff);
+		return std::make_unique<Beatmap::Beatmap>(m_FullFilePath, Folder, m_HitsoundsFolder, image, hitobjects, timings, general, meta, search, diff);
 	}
 
 	// This is intended to do the same thing as above, except just reading from a vector itself (API purposes for other programs)
@@ -77,7 +77,7 @@ namespace Parser {
 		meta = Beatmap::Metadata();
 		search = Beatmap::SearchBy();
 		diff = Beatmap::Difficulty();
-		return std::make_unique<Beatmap::Beatmap>(m_FullFilePath, Folder, image, hitobjects, timings, general, meta, search, diff);
+		return std::make_unique<Beatmap::Beatmap>(m_FullFilePath, Folder, m_HitsoundsFolder, image, hitobjects, timings, general, meta, search, diff);
 	}
 
 	// Cache files if needed
@@ -271,7 +271,9 @@ namespace Parser {
 				if (stoi(parts.at(3)) & Beatmap::HITOBJECT_TYPE::HITCIRCLE)
 				{
 					std::vector<std::string> extras = split(parts.at(5), ':');
-					hitobjects.emplace_back(std::make_shared<Beatmap::Hitcircle>(x, y, offset, type, hitsound, extras));
+
+					std::vector<Beatmap::Hitsound> hitsounds;
+					hitobjects.emplace_back(std::make_shared<Beatmap::Hitcircle>(x, y, offset, type, hitsounds));
 
 				}
 				else if (stoi(parts.at(3)) & Beatmap::HITOBJECT_TYPE::SLIDER)
@@ -308,13 +310,14 @@ namespace Parser {
 						extras.emplace_back("0");
 						extras.emplace_back("0");
 					}
-
-					hitobjects.emplace_back(std::make_shared<Beatmap::Slider>(x, y, offset, type, hitsound, repeat, edgeHitsounds, edgeAdditions, extras, durationWithoutBeatLength));
+					std::vector<Beatmap::Hitsound> hitsounds;
+					hitobjects.emplace_back(std::make_shared<Beatmap::Slider>(x, y, offset, type, hitsounds));
 				}
 				else if (stoi(parts.at(3)) & Beatmap::HITOBJECT_TYPE::SPINNER)
 				{
 					std::vector<std::string> extras = split(parts.at(6), ':');
-					hitobjects.emplace_back(std::make_shared<Beatmap::Spinner>(x, y, offset, type, hitsound, stoi(parts.at(5)), extras));
+					std::vector<Beatmap::Hitsound> hitsounds;
+					hitobjects.emplace_back(std::make_shared<Beatmap::Spinner>(x, y, offset, type, hitsounds));
 
 				}
 				else // Invalid Object

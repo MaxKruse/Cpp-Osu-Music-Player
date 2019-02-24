@@ -1,6 +1,7 @@
 #pragma once
 #include "Core.h"
 #include "TimingPoint.h"
+#include "Hitsound.h"
 
 namespace Parser {
 	namespace Beatmap {
@@ -27,8 +28,8 @@ namespace Parser {
 		class API Hitobject
 		{
 		public:
-			Hitobject(unsigned short x, unsigned short y, long offset, unsigned short type)
-				: m_Position(x, y), m_Type(type)
+			Hitobject(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<Hitsound> hitsounds)
+				: m_Position(x, y), m_Type(type), m_Hitsounds(std::move(hitsounds))
 			{
 				// Hitobjects always have a starting offset, BUT different types might have other Offsets
 				m_Offset.emplace_back(offset);
@@ -38,17 +39,17 @@ namespace Parser {
 				LOGGER_DEBUG("Hitobject destroyed");
 			}
 
-			virtual std::vector<std::pair<long, std::vector<std::string>>> GetHitsounds(const TimingPoint& t) = 0;
-
 			inline const unsigned short    GetX() const { return m_Position.X; }
 			inline const unsigned short    GetY() const { return m_Position.Y; }
 			inline const std::vector<long> GetOffsets() const { return m_Offset; }
 			inline const unsigned short    GetType() const { return m_Type; }
+			const std::vector<Hitsound>    GetHitsounds() const { return m_Hitsounds; }
 
 		protected:
 			Position                    m_Position;
 			std::vector<long>           m_Offset;
 			unsigned short              m_Type;
+			std::vector<Hitsound>		m_Hitsounds;
 		};
 
 	} // namespace Beatmap

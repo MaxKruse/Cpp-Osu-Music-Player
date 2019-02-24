@@ -9,15 +9,13 @@ namespace Parser {
 		class API Hitcircle : public Hitobject
 		{
 		public:
-			Hitcircle(unsigned short x, unsigned short y, long offset, unsigned short type, int hitsound, std::vector<std::string> extras);
+			Hitcircle(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<Hitsound> hitsounds);
 			~Hitcircle()
 			{
 				LOGGER_DEBUG("\tHitcircle Destroyed");
 			}
-			std::vector<std::pair<long, std::vector<std::string>>> GetHitsounds(const TimingPoint& t) override;
 
 		private:
-			unsigned short m_Hitsound;
 			std::vector<std::string> m_Extras;
 		};
 	} // namespace Beatmap
