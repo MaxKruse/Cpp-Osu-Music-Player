@@ -251,7 +251,7 @@ namespace Parser {
 		const QWORD GetSongLength() const
 		{
 			QWORD bytePos = BASS_ChannelGetLength(m_FXChannel, BASS_POS_BYTE);
-			return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos) * 1000.0);
+			return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos));
 		}
 
 		void GetMissedHitsounds();
