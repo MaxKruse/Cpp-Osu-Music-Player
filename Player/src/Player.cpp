@@ -30,17 +30,8 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 
 	size_t index;
 
-	auto beatmap = p.BeatmapFromFile(path);
-
-	// Check if beatmap is supported
-	if (!beatmap->IsPlayable())
-	{
-		LOGGER_WARN("Cant Play (Wrong Mode or FileVersion) => {}", beatmap->GetMetadataText());
-		return;
-	}
-
 	// Oppai stuff
-	bm = fopen(beatmap->GetFilePath().c_str(), "r");
+	bm = fopen((p.GetFolderPath() + path).c_str(), "r");
 
 	p_map(&pstate, &map, bm);
 	d_calc(&stars, &map, 0);
@@ -49,7 +40,16 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 
 	if (stars.total < minStar)
 	{
-		LOGGER_WARN("Cant Play (low star rating) => {}", beatmap->GetMetadataText());
+		LOGGER_WARN("Cant Play (low star rating) => {}", p.GetFolderPath() + path);
+		return;
+	}
+
+	auto beatmap = p.BeatmapFromFile(path);
+
+	// Check if beatmap is supported
+	if (!beatmap->IsPlayable())
+	{
+		LOGGER_WARN("Cant Play (Wrong Mode or FileVersion) => {}", beatmap->GetMetadataText());
 		return;
 	}
 

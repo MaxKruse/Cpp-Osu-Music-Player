@@ -20,8 +20,9 @@ namespace Parser {
 
 		void GetAllFiles();
 
-		inline std::string const GetFilePath() const { return m_FullFilePath; }
-		inline std::string const GetFileName() const { return m_FileName; }
+		const inline std::string const GetFolderPath() const { return m_SongsFolder; }
+		const inline std::string const GetFilePath() const { return m_FullFilePath; }
+		const inline std::string const GetFileName() const { return m_FileName; }
 		std::vector<std::string> const GetText() const { return m_Text; }
 		std::vector<std::string> const GetListOfFiles() const { return m_ListOfFiles; };
 	private:
