@@ -215,13 +215,22 @@ namespace Parser {
 			inline const std::vector<std::vector<long>> GetOffsets() const { return m_Offsets; }
 			const double GetBPM() const
 			{
-				return (60000.0 / m_TimingPoints.at(0).GetMillisecondsPerBeat());
+				TimingPoint redLine;
+				for (const auto& timing : m_TimingPoints)
+				{
+					if (timing.IsInherited())
+					{
+						redLine = timing;
+						break;
+					}
+				}
+				return redLine.GetBPM();
 			}
 
 			const QWORD GetCurrentOffset() const
 			{
 				QWORD bytePos = BASS_ChannelGetPosition(m_FXChannel, BASS_POS_BYTE);
-				return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos) * 1000.0) + 21;
+				return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos) * 1000.0) + 21; // 21ms offset because bass buffering
 			}
 
 			bool IsPlaying() { return BASS_ChannelIsActive(m_FXChannel); }

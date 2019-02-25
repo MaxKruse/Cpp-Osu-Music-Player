@@ -273,6 +273,32 @@ namespace Parser {
 					std::vector<std::string> extras = split(parts.at(5), ':');
 
 					std::vector<Beatmap::Hitsound> hitsounds;
+					Beatmap::TimingPoint redLine, greenLine;
+					unsigned char counter = 0;
+
+					for (const auto& timingpoint : timings)
+					{
+						if (timingpoint.GetOffset() <= offset && timingpoint.IsInherited())
+						{
+							redLine = timingpoint;
+						}
+						else if (timingpoint.GetOffset() >= offset && timingpoint.IsInherited() && redLine.HasDefaults())
+						{
+							redLine = timingpoint;
+						}
+						else if(timingpoint.GetOffset() <= offset)
+						{
+							greenLine = timingpoint;
+						}
+					}
+
+					LOGGER_DEBUG("Timingpoints for Hitcircle found!");
+					LOGGER_DEBUG("RedLine => {}", redLine);
+					if (!greenLine.HasDefaults())
+					{
+						LOGGER_DEBUG("GreenLine => {}", greenLine);
+					}
+
 					hitobjects.emplace_back(std::make_shared<Beatmap::Hitcircle>(x, y, offset, type, hitsounds));
 
 				}
@@ -391,12 +417,7 @@ namespace Parser {
 				std::vector<std::string> parts = split(line, ',');
 
 				long offset = stol(parts.at(0));
-				if (parts.at(1).find(".") != std::string::npos)
-				{
-					auto pos = parts.at(1).find(".");
-					parts.at(1).erase(pos);
-				}
-				unsigned int milliseconds_per_beat = stoi(parts.at(1));
+				float milliseconds_per_beat = atof(parts.at(1).c_str());
 				unsigned short sampleset = stoi(parts.at(3));
 				unsigned short sampleindex = stoi(parts.at(4));
 				unsigned short volume = stoi(parts.at(5));
