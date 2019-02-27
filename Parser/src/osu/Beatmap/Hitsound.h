@@ -35,6 +35,7 @@ namespace Parser {
 
 			inline const std::vector<std::string> GetSampleNames() const { return m_SampleFiles; }
 			inline const long GetOffset() const { return m_Offset; }
+			inline const unsigned char GetVolume() const { return m_Volume; }
 
 			void Play();
 

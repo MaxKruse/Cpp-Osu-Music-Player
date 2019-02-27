@@ -46,75 +46,32 @@ namespace Parser {
 			}
 
 			// Load Hitsound Samples and add them to the Map
-			std::string DefaultHitsoundFolder(hitsoundFolder);
-
-
-			// First Priority: Folder Path itself
-			for (std::experimental::filesystem::recursive_directory_iterator i(m_Folder), end; i != end; ++i)
+			for (const auto& obj : m_HitObjects)
 			{
-				// Skip Directories
-				if (!is_directory(i->path()))
+				for (const auto& hs : obj->GetHitsounds())
 				{
-					LOGGER_TRACE("Element => {}", i->path().string());
-					// See: https://stackoverflow.com/a/23658737
-					if (i->path().extension() == ".wav")
+					for (const auto& samplename : hs.GetSampleNames())
 					{
-						// Filepath formating and writing to file
-						LOGGER_DEBUG("Found file => {}", i->path().string());
-						std::string SampleLocation = i->path().string();
-						std::string Index = i->path().string().erase(0, m_Folder.size());
-						m_SampleChannels.emplace(Index, BASS_StreamCreateFile(0, SampleLocation.c_str(), 0, 0, 0));
+						// Load Sample
+						m_SampleChannels.emplace(std::pair<std::string, QWORD>(samplename, BASS_StreamCreateFile(FALSE, samplename.c_str(), 0,0,0)));
+
+						// Set Volume
+						BASS_ChannelSetAttribute(m_SampleChannels[samplename], BASS_ATTRIB_VOL, hs.GetVolume() / 100.0);
 					}
 				}
 			}
-
-			// Second Priority: Default Path
-			for (std::experimental::filesystem::recursive_directory_iterator i(DefaultHitsoundFolder), end; i != end; ++i)
-			{
-				// Skip Directories
-				if (!is_directory(i->path()))
-				{
-					LOGGER_TRACE("Element => {}", i->path().string());
-					// See: https://stackoverflow.com/a/23658737
-					if (i->path().extension() == ".wav")
-					{
-						// Filepath formating and writing to file
-						LOGGER_DEBUG("Found file => {}", i->path().string());
-						std::string SampleLocation = i->path().string();
-						std::string Index = i->path().string().erase(0, DefaultHitsoundFolder.size());
-						if (m_SampleChannels.find(Index) == m_SampleChannels.end()) // cant find this Index, therefore loading
-						{
-							m_SampleChannels.emplace(Index, BASS_StreamCreateFile(0, SampleLocation.c_str(), 0, 0, 0));
-						}
-					}
-				}
-			}
-
-			// Set Volume
-			float TotalVol = 0.08f;
-
-			BASS_ChannelSetAttribute(m_HandleFX, BASS_ATTRIB_VOL, TotalVol);
-
-			// Volume Change for all Hitsounds based on base Channel
-			float multi = 0.6f;
-
-			for (const auto& Sample : m_SampleChannels)
-			{
-				BASS_ChannelSetAttribute(Sample.second, BASS_ATTRIB_VOL, TotalVol * multi);
-				LOGGER_INFO("Changed volume of sample {} to {}%", Sample.first, TotalVol * multi);
-			}
+			
 		}
-
+    
 		Beatmap::~Beatmap()
 		{
-			BASS_StreamFree(m_HandleBase);
-			BASS_StreamFree(m_HandleFX);
+			BASS_StreamFree(m_BaseChannel);
+			BASS_StreamFree(m_FXChannel);
 
 			for (const auto& sample : m_SampleChannels)
 			{
 				BASS_StreamFree(sample.second);
 			}
-
 			LOGGER_INFO("Destroyed beatmap => {}", GetMetadataText());
 		}
 

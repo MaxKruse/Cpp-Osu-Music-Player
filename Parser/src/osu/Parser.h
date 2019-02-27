@@ -25,6 +25,7 @@ namespace Parser {
 		const inline std::string const GetFileName() const { return m_FileName; }
 		std::vector<std::string> const GetText() const { return m_Text; }
 		std::vector<std::string> const GetListOfFiles() const { return m_ListOfFiles; };
+
 	private:
 		std::string m_SongsFolder;
 		std::string m_FullFilePath;
@@ -58,6 +59,7 @@ namespace Parser {
 
 		int CacheBeatmaps();
 
+		std::string GetFolder();
 		std::vector<std::string> FileToStringVector(const std::string & filename);
 
 
