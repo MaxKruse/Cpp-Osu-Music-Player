@@ -17,8 +17,26 @@ namespace Parser {
 			}
 			inline const long GetOffset() const { return m_Offset; }
 			inline const double GetMillisecondsPerBeat() const { return m_MillisecondsPerBeat; }
-			inline const unsigned short GetSampleSet() const { return m_SampleSet; }
-			inline const unsigned short GetSampleIndex() const { return m_SampleIndex; }
+			const std::string GetSampleSet() const
+			{
+				if (m_SampleSet == 2)
+				{
+					return "soft";
+				}
+
+				if (m_SampleSet == 3)
+				{
+					return "drum";
+				}
+
+				return "normal";
+			}
+
+			const std::string GetSampleIndex() const
+			{
+				return std::to_string(m_SampleIndex);
+			}
+
 			inline const unsigned short GetVolume() const { return m_Volume; }
 			inline const bool IsInherited() const { return m_Inherited; }
 			inline const double GetBPM() const { return 60000.0 / GetMillisecondsPerBeat(); }

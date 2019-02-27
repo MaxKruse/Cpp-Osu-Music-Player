@@ -169,6 +169,7 @@ int main(int argc, const char * argv[])
 		minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);
 		cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
 		speedup = Settings->GetLongValue("General", "SpeedUp", 0);
+		hitsoundFolder = Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
 		masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 5);
 		songVolume = Settings->GetLongValue("Audio", "SongVolume", 6);
 		sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 7);
