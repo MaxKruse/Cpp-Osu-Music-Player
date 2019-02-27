@@ -320,7 +320,11 @@ namespace Parser {
 						set = "drum";
 					}
 
-					if (extras.at(2) != "0" || sampleindex != "0")
+					if (extras.at(2) == "0" && sampleindex != "0")
+					{
+						sampleindex = sampleindex;
+					}
+					else if(extras.at(2) != "0" && sampleindex == "0")
 					{
 						sampleindex = extras.at(2);
 					}
@@ -333,7 +337,14 @@ namespace Parser {
 					}
 					else
 					{
-						if (sampleindex != "2")
+						std::ifstream f(GetFolder() + set + "-hitnormal" + sampleindex + ".wav");
+						
+						if (!f.good())
+						{
+							hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hitnormal.wav");
+						}
+
+						else if (sampleindex != "2")
 						{
 							// Default index, still map relevant file though
 							hitsoundFileNames.emplace_back(GetFolder() + set + "-hitnormal.wav");
@@ -373,7 +384,7 @@ namespace Parser {
 					if (hitsound & Beatmap::HITSOUND_WHISTLE)
 					{
 						sound = "whistle";
-						if (extras.at(2) != "0" || sampleindex != "0")
+						if (extras.at(2) != "0" && sampleindex != "0")
 						{
 							sampleindex = extras.at(2);
 						}							
@@ -385,15 +396,22 @@ namespace Parser {
 						}
 						else
 						{
-							if (sampleindex != "2")
+							std::ifstream f(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
+
+							if (!f.good())
+							{
+								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
+							}
+
+							else if (sampleindex != "2")
 							{
 								// Default index, still map relevant file though
-								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + ".wav");
+								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
 							}
 							else
 							{
 								// Custom Index
-								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
+								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + ".wav");
 							}
 						}
 					}
@@ -425,7 +443,7 @@ namespace Parser {
 					if (hitsound & Beatmap::HITSOUND_FINISH)
 					{
 						sound = "finish";
-						if (extras.at(2) != "0" || sampleindex != "0")
+						if (extras.at(2) != "0" && sampleindex != "0")
 						{
 							sampleindex = extras.at(2);
 						}
@@ -437,15 +455,22 @@ namespace Parser {
 						}
 						else
 						{
-							if (sampleindex != "2")
+							std::ifstream f(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
+
+							if (!f.good())
+							{
+								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
+							}
+
+							else if (sampleindex != "2")
 							{
 								// Default index, still map relevant file though
-								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + ".wav");
+								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
 							}
 							else
 							{
 								// Custom Index
-								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
+								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + ".wav");
 							}
 						}
 					}
@@ -477,7 +502,7 @@ namespace Parser {
 					if (hitsound & Beatmap::HITSOUND_CLAP)
 					{
 						sound = "clap";
-						if (extras.at(2) != "0" || sampleindex != "0")
+						if (extras.at(2) != "0" && sampleindex != "0")
 						{
 							sampleindex = extras.at(2);
 						}
@@ -489,15 +514,22 @@ namespace Parser {
 						}
 						else
 						{
-							if (sampleindex != "2")
+							std::ifstream f(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
+
+							if (!f.good())
+							{
+								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
+							}
+
+							else if (sampleindex != "2")
 							{
 								// Default index, still map relevant file though
-								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + ".wav");
+								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
 							}
 							else
 							{
 								// Custom Index
-								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
+								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + ".wav");
 							}
 						}
 					}

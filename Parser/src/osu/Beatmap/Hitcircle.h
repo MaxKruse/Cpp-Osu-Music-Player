@@ -10,10 +10,6 @@ namespace Parser {
 		{
 		public:
 			Hitcircle(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<Hitsound> hitsounds);
-			~Hitcircle()
-			{
-				LOGGER_DEBUG("\tHitcircle Destroyed");
-			}
 
 		private:
 			std::vector<std::string> m_Extras;

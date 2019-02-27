@@ -31,7 +31,6 @@ namespace Parser {
 		{
 		public:
 			Hitsound(long offset, std::vector<std::string> sampleFiles, unsigned char volume);
-			~Hitsound();
 
 			inline const std::vector<std::string> GetSampleNames() const { return m_SampleFiles; }
 			inline const long GetOffset() const { return m_Offset; }

@@ -52,6 +52,11 @@ namespace Parser {
 				{
 					for (const auto& samplename : hs.GetSampleNames())
 					{
+						if (m_SampleChannels.find(samplename) != m_SampleChannels.end())
+						{
+							continue;
+						}
+
 						// Load Sample
 						m_SampleChannels.emplace(std::pair<std::string, QWORD>(samplename, BASS_StreamCreateFile(FALSE, samplename.c_str(), 0,0,0)));
 
@@ -62,11 +67,11 @@ namespace Parser {
 			}
 			
 		}
-    
+	
 		Beatmap::~Beatmap()
 		{
-			BASS_StreamFree(m_BaseChannel);
-			BASS_StreamFree(m_FXChannel);
+			BASS_StreamFree(m_HandleBase);
+			BASS_StreamFree(m_HandleFX);
 
 			for (const auto& sample : m_SampleChannels)
 			{
@@ -138,12 +143,19 @@ namespace Parser {
 
 		void Beatmap::SetSampleVolume(unsigned char Vol)
 		{
-			float TotalVol = Vol / 100.0f * (float)(m_GlobalVolume / 100.0f);
+			float TotalVol;
 
-			for (const auto& Sample : m_SampleChannels)
+			for (const auto& obj : m_HitObjects)
 			{
-				BASS_ChannelSetAttribute(Sample.second, BASS_ATTRIB_VOL, TotalVol);
-				LOGGER_INFO("Changed volume of sample {} to {}%", Sample.first, TotalVol);
+				for (const auto& hs : obj->GetHitsounds())
+				{
+					TotalVol = Vol / 100.0f * (float)(m_GlobalVolume / 100.0f) * hs.GetVolume() / 100.0;
+					for (const auto& samplename : hs.GetSampleNames())
+					{
+						// Set Volume
+						BASS_ChannelSetAttribute(m_SampleChannels[samplename], BASS_ATTRIB_VOL, TotalVol);
+					}
+				}
 			}
 		}
 

@@ -8,13 +8,6 @@ namespace Parser {
 		{
 		}
 
-
-		Hitsound::~Hitsound()
-		{
-			m_SampleFiles.clear();
-			LOGGER_DEBUG("Hitsound Destroyed");
-		}
-
 		void Hitsound::Play()
 		{
 			std::string files;

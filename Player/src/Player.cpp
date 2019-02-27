@@ -32,12 +32,6 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	bm = fopen((p.GetFolderPath() + path).c_str(), "r");
 	p_map(&pstate, &map, bm);
 	fclose(bm);
-
-	if (map.mode != MODE_STD)
-	{
-		LOGGER_WARN("Mode not supported: {}", map.mode);
-		return;
-	}
 	d_calc(&stars, &map, 0);
 	LOGGER_DEBUG("{:2f} stars", stars.total);
 
@@ -74,7 +68,7 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	beatmap->SetSongVolume(songVolume);
 	beatmap->SetSampleVolume(sampleVolume);
 	beatmap->SetSpeedup(speedup);
-	//beatmap->Play();
+	beatmap->Play();
 
 	while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
 		// Check for the current Position in the channel
@@ -158,12 +152,14 @@ int main(int argc, const char * argv[])
 
 	Parser::Parser p(folder, hitsoundFolder);
 	auto list = p.GetListOfFiles();
+	// RAISE MY SWORD = 15411
 
 
 	do // Music Playing Loop
 	{
 		// Get Beatmap
-		auto index = Parser::Random(list);
+		//auto index = Parser::Random(list);
+		auto index = 15411;
 
 		// Re-Read values for every beatmap to allow for changes between songs
 		folder = Settings->GetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/");
