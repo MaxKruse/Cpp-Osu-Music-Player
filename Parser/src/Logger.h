@@ -22,6 +22,8 @@ namespace Parser {
 		static std::shared_ptr<spdlog::logger> s_FileLogger;
 		static std::shared_ptr<spdlog::logger> s_ConsoleLogger;
 
+		static bool m_IsInit;
+
 	};
 
 }  // namespace Parser

@@ -6,8 +6,13 @@ namespace Parser {
 	std::shared_ptr<spdlog::logger> Logger::s_FileLogger;
 	std::shared_ptr<spdlog::logger> Logger::s_ConsoleLogger;
 
+	bool Logger::m_IsInit = false;
+
 	void Logger::Init()
 	{
+		if (m_IsInit)
+			return;
+
 		SetConsoleCP(65001);
 		spdlog::set_pattern("%^[%H:%M:%S:%e] [%n] %v%$");
 
@@ -47,5 +52,6 @@ namespace Parser {
 #endif
 		LOGGER_ERROR("This program will crash when encountering invalid/UTF-8 filenames, such as \"öÈÉlé¥é®éþüAÄÎûéé­éÀéÚé╠éµ\".");
 		LOGGER_ERROR("If you cannot see this string, check the Log File => {}", str);
+		m_IsInit = true;
 	}
 }

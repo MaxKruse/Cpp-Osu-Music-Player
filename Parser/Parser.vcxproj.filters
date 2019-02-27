@@ -4,51 +4,60 @@
     <Filter Include="osu">
       <UniqueIdentifier>{5C9A880B-C8A3-887C-511F-9F7CBD27947C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="osu\Beatmap">
+      <UniqueIdentifier>{65BE8AF7-D173-03ED-5A68-FDC3C61CFAF0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core.h" />
     <ClInclude Include="src\Logger.h" />
-    <ClInclude Include="src\osu\Beatmap.h">
-      <Filter>osu</Filter>
+    <ClInclude Include="src\osu\Beatmap\Beatmap.h">
+      <Filter>osu\Beatmap</Filter>
     </ClInclude>
-    <ClInclude Include="src\osu\Hitcircle.h">
-      <Filter>osu</Filter>
+    <ClInclude Include="src\osu\Beatmap\Hitcircle.h">
+      <Filter>osu\Beatmap</Filter>
     </ClInclude>
-    <ClInclude Include="src\osu\Hitobject.h">
-      <Filter>osu</Filter>
+    <ClInclude Include="src\osu\Beatmap\Hitobject.h">
+      <Filter>osu\Beatmap</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Beatmap\Hitsound.h">
+      <Filter>osu\Beatmap</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Beatmap\Slider.h">
+      <Filter>osu\Beatmap</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Beatmap\Spinner.h">
+      <Filter>osu\Beatmap</Filter>
+    </ClInclude>
+    <ClInclude Include="src\osu\Beatmap\TimingPoint.h">
+      <Filter>osu\Beatmap</Filter>
     </ClInclude>
     <ClInclude Include="src\osu\Parser.h">
-      <Filter>osu</Filter>
-    </ClInclude>
-    <ClInclude Include="src\osu\Slider.h">
-      <Filter>osu</Filter>
-    </ClInclude>
-    <ClInclude Include="src\osu\Spinner.h">
-      <Filter>osu</Filter>
-    </ClInclude>
-    <ClInclude Include="src\osu\TimingPoint.h">
       <Filter>osu</Filter>
     </ClInclude>
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Logger.cpp" />
-    <ClCompile Include="src\osu\Beatmap.cpp">
-      <Filter>osu</Filter>
+    <ClCompile Include="src\osu\Beatmap\Beatmap.cpp">
+      <Filter>osu\Beatmap</Filter>
     </ClCompile>
-    <ClCompile Include="src\osu\Hitcircle.cpp">
-      <Filter>osu</Filter>
+    <ClCompile Include="src\osu\Beatmap\Hitcircle.cpp">
+      <Filter>osu\Beatmap</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\Beatmap\Hitsound.cpp">
+      <Filter>osu\Beatmap</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\Beatmap\Slider.cpp">
+      <Filter>osu\Beatmap</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\Beatmap\Spinner.cpp">
+      <Filter>osu\Beatmap</Filter>
+    </ClCompile>
+    <ClCompile Include="src\osu\Beatmap\TimingPoint.cpp">
+      <Filter>osu\Beatmap</Filter>
     </ClCompile>
     <ClCompile Include="src\osu\Parser.cpp">
-      <Filter>osu</Filter>
-    </ClCompile>
-    <ClCompile Include="src\osu\Slider.cpp">
-      <Filter>osu</Filter>
-    </ClCompile>
-    <ClCompile Include="src\osu\Spinner.cpp">
-      <Filter>osu</Filter>
-    </ClCompile>
-    <ClCompile Include="src\osu\TimingPoint.cpp">
       <Filter>osu</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp" />
