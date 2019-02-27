@@ -140,9 +140,9 @@ int main(int argc, const char * argv[])
 		Settings->SetLongValue("General", "CPU_Sleep", 200);
 		Settings->SetLongValue("General", "SpeedUp", 0);
 		Settings->SetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds\\");
-		Settings->SetLongValue("Audio", "MasterVolume", 5);
-		Settings->SetLongValue("Audio", "SongVolume", 6);
-		Settings->SetLongValue("Audio", "HitsoundVolume", 7);
+		Settings->SetLongValue("Audio", "MasterVolume", 14);
+		Settings->SetLongValue("Audio", "SongVolume", 8);
+		Settings->SetLongValue("Audio", "HitsoundVolume", 10);
 		Settings->SaveFile("settings.ini", true);
 	}
 
@@ -151,9 +151,9 @@ int main(int argc, const char * argv[])
 	auto cpuSleep       = Settings->GetLongValue("General", "CPU_Sleep", 200);
 	auto speedup	    = Settings->GetLongValue("General", "SpeedUp", 0);
 	auto hitsoundFolder = Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
-	auto masterVolume   = Settings->GetLongValue("Audio", "MasterVolume", 5);
-	auto songVolume     = Settings->GetLongValue("Audio", "SongVolume", 6);
-	auto sampleVolume   = Settings->GetLongValue("Audio", "HitsoundVolume", 7);
+	auto masterVolume   = Settings->GetLongValue("Audio", "MasterVolume", 14);
+	auto songVolume     = Settings->GetLongValue("Audio", "SongVolume", 8);
+	auto sampleVolume   = Settings->GetLongValue("Audio", "HitsoundVolume", 10);
 
 	Parser::Parser p(folder, hitsoundFolder);
 	auto list = p.GetListOfFiles();
@@ -170,9 +170,9 @@ int main(int argc, const char * argv[])
 		cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
 		speedup = Settings->GetLongValue("General", "SpeedUp", 0);
 		hitsoundFolder = Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
-		masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 5);
-		songVolume = Settings->GetLongValue("Audio", "SongVolume", 6);
-		sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 7);
+		masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 14);
+		songVolume = Settings->GetLongValue("Audio", "SongVolume", 8);
+		sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 10);
 
 		// Play beatmap in its own function to **hopefully** fix the memory leak
 		PlayBeatmap(list.at(index), minStar, cpuSleep, speedup, masterVolume, songVolume, sampleVolume, p);

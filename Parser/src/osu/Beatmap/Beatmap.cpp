@@ -65,8 +65,14 @@ namespace Parser {
 
 		Beatmap::~Beatmap()
 		{
-			m_HitObjects.clear();
-			m_TimingPoints.clear();
+			BASS_StreamFree(m_BaseChannel);
+			BASS_StreamFree(m_FXChannel);
+
+			for (const auto& sample : m_SampleChannels)
+			{
+				BASS_StreamFree(sample.second);
+			}
+
 			LOGGER_INFO("Destroyed beatmap => {}", GetMetadataText());
 		}
 
