@@ -229,11 +229,11 @@ namespace Parser {
 
 			const QWORD GetCurrentOffset() const
 			{
-				QWORD bytePos = BASS_ChannelGetPosition(m_FXChannel, BASS_POS_BYTE);
-				return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos) * 1000.0) + 21; // 21ms offset because bass buffering
+				QWORD bytePos = BASS_ChannelGetPosition(m_HandleFX, BASS_POS_BYTE);
+				return (QWORD)floor(BASS_ChannelBytes2Seconds(m_HandleFX, bytePos) * 1000.0) + 21; // 21ms offset because bass buffering
 			}
 
-			bool IsPlaying() { return BASS_ChannelIsActive(m_FXChannel); }
+			bool IsPlaying() { return BASS_ChannelIsActive(m_HandleFX); }
 
 			const bool IsPlayable() const // Only make supported files playable
 			{
@@ -255,13 +255,13 @@ namespace Parser {
 				return false;
 			}
 
-			inline const HSTREAM GetChannel() const { return m_BaseChannel; }
-			inline const HSTREAM GetFXChannel() const { return m_FXChannel; }
+			inline const HSTREAM GetChannel() const { return m_HandleBase; }
+			inline const HSTREAM GetFXChannel() const { return m_HandleFX; }
 
 			const QWORD GetSongLength() const
 			{
-				QWORD bytePos = BASS_ChannelGetLength(m_FXChannel, BASS_POS_BYTE);
-				return (QWORD)floor(BASS_ChannelBytes2Seconds(m_FXChannel, bytePos));
+				QWORD bytePos = BASS_ChannelGetLength(m_HandleFX, BASS_POS_BYTE);
+				return (QWORD)floor(BASS_ChannelBytes2Seconds(m_HandleFX, bytePos));
 			}
 
 			void GetMissedHitsounds();
@@ -288,8 +288,8 @@ namespace Parser {
 			std::vector<TimingPoint>                              m_TimingPoints;
 			std::vector<std::vector<long>>		                  m_Offsets;
 
-			HSTREAM m_BaseChannel;
-			HSTREAM m_FXChannel;
+			HSTREAM m_HandleBase;
+			HSTREAM m_HandleFX;
 			bool    m_Paused;
 			QWORD	m_ChannelPos;
 			unsigned char m_GlobalVolume;

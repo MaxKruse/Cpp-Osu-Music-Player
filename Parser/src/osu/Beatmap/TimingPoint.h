@@ -11,10 +11,7 @@ namespace Parser {
 				: m_Offset(-1), m_MillisecondsPerBeat(-1.0), m_SampleIndex(5), m_SampleSet(5), m_Volume(150)
 			{}
 			TimingPoint(long offset, float milliseconds_per_beat, unsigned short sampleset, unsigned short sampleindex, unsigned short volume, bool inherited);
-			~TimingPoint()
-			{
-				LOGGER_DEBUG("TimingPoint Destroyed");
-			}
+
 			inline const long GetOffset() const { return m_Offset; }
 			inline const double GetMillisecondsPerBeat() const { return m_MillisecondsPerBeat; }
 			const std::string GetSampleSet() const

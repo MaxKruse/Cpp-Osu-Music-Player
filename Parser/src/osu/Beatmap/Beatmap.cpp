@@ -19,7 +19,7 @@ namespace Parser {
 			std::vector<std::shared_ptr<Hitobject>> Hitobjects, std::vector<TimingPoint> Timingpoints,
 			General g, Metadata m, SearchBy s, Difficulty d
 		)
-			: m_FilePath(FilePath), m_Folder(Folder), m_BackgroundImage(BackgroundImage), m_HitObjects(std::move(Hitobjects)), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d), m_Paused(false), m_BaseChannel(0), m_FXChannel(0), m_ChannelPos(0)
+			: m_FilePath(FilePath), m_Folder(Folder), m_BackgroundImage(BackgroundImage), m_HitObjects(Hitobjects), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d), m_Paused(false), m_HandleBase(0), m_HandleFX(0), m_ChannelPos(0)
 		{
 			LOGGER_INFO("Creating Beatmap From File => {}", FilePath);
 			
@@ -35,12 +35,12 @@ namespace Parser {
 			m_HitsoundsOnTimingDeleteable = m_HitsoundsOnTiming;
 
 			// Creating BASS Channels
-			if (!(m_BaseChannel = BASS_StreamCreateFile(FALSE, GetFullMp3Path().c_str(), 0, 0, BASS_STREAM_DECODE)) && !(m_BaseChannel = BASS_MusicLoad(FALSE, GetFullMp3Path().c_str(), 0, 0, BASS_MUSIC_RAMP | BASS_MUSIC_PRESCAN, 0)))
+			if (!(m_HandleBase = BASS_StreamCreateFile(FALSE, GetFullMp3Path().c_str(), 0, 0, BASS_STREAM_DECODE)))
 			{
 				LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());
 			}
 
-			if (!(m_FXChannel = BASS_FX_TempoCreate(m_BaseChannel, BASS_FX_FREESOURCE)))
+			if (!(m_HandleFX = BASS_FX_TempoCreate(m_HandleBase, BASS_FX_FREESOURCE)))
 			{
 				LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());
 			}
@@ -62,7 +62,7 @@ namespace Parser {
 			}
 			
 		}
-
+    
 		Beatmap::~Beatmap()
 		{
 			BASS_StreamFree(m_BaseChannel);
@@ -72,7 +72,6 @@ namespace Parser {
 			{
 				BASS_StreamFree(sample.second);
 			}
-
 			LOGGER_INFO("Destroyed beatmap => {}", GetMetadataText());
 		}
 
@@ -94,27 +93,27 @@ namespace Parser {
 			if (!m_Paused)
 			{
 				Sleep(m_General.GetAudioLeadIn() + 1000);
-				BASS_ChannelPlay(m_FXChannel, true);
+				BASS_ChannelPlay(m_HandleFX, true);
 			}
 			else
 			{
-				BASS_ChannelSetPosition(m_FXChannel, m_ChannelPos, BASS_POS_BYTE);
-				BASS_ChannelPlay(m_FXChannel, false);
+				BASS_ChannelSetPosition(m_HandleFX, m_ChannelPos, BASS_POS_BYTE);
+				BASS_ChannelPlay(m_HandleFX, false);
 			}
 			m_Paused = false;
 		}
 
 		void Beatmap::Pause()
 		{
-			m_ChannelPos = BASS_ChannelGetPosition(m_FXChannel, BASS_POS_BYTE);
-			BASS_ChannelStop(m_FXChannel);
+			m_ChannelPos = BASS_ChannelGetPosition(m_HandleFX, BASS_POS_BYTE);
+			BASS_ChannelStop(m_HandleFX);
 			m_Paused = true;
 		}
 
 		void Beatmap::Stop()
 		{
-			BASS_ChannelStop(m_FXChannel);
-			LOGGER_INFO("Stopping FXChannel {}", m_FXChannel);
+			BASS_ChannelStop(m_HandleFX);
+			LOGGER_INFO("Stopping FXChannel {}", m_HandleFX);
 		}
 
 		void Beatmap::Reset()
@@ -132,7 +131,7 @@ namespace Parser {
 		void Beatmap::SetSongVolume(unsigned char Vol)
 		{
 			float TotalVol = Vol / 100.0f * (float)(m_GlobalVolume / 100.0f);
-			BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_VOL, TotalVol);
+			BASS_ChannelSetAttribute(m_HandleFX, BASS_ATTRIB_VOL, TotalVol);
 
 			LOGGER_INFO("Changed volume to {}%", Vol);
 		}
@@ -150,7 +149,7 @@ namespace Parser {
 
 		void Beatmap::SetSpeedup(char Speed)
 		{
-			BASS_ChannelSetAttribute(m_FXChannel, BASS_ATTRIB_TEMPO, (float)(Speed));
+			BASS_ChannelSetAttribute(m_HandleFX, BASS_ATTRIB_TEMPO, (float)(Speed));
 		}
 
 		void Beatmap::PlaySamples(long offset)

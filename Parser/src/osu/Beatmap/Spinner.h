@@ -10,10 +10,6 @@ namespace Parser {
 	{
 	public:
 		Spinner(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<Hitsound> hitsounds);
-		~Spinner()
-		{
-			LOGGER_DEBUG("\tSpinner Destroyed");
-		}
 	};
 
 	} // namespace Beatmap
