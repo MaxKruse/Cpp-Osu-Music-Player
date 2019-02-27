@@ -28,14 +28,17 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	p_init(&pstate);
 	d_init(&stars);
 
-	size_t index;
-
 	// Oppai stuff
 	bm = fopen((p.GetFolderPath() + path).c_str(), "r");
-
 	p_map(&pstate, &map, bm);
-	d_calc(&stars, &map, 0);
 	fclose(bm);
+
+	if (map.mode != MODE_STD)
+	{
+		LOGGER_WARN("Mode not supported: {}", map.mode);
+		return;
+	}
+	d_calc(&stars, &map, 0);
 	LOGGER_DEBUG("{:2f} stars", stars.total);
 
 	if (stars.total < minStar)
@@ -49,7 +52,7 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	// Check if beatmap is supported
 	if (!beatmap->IsPlayable())
 	{
-		LOGGER_WARN("Cant Play (Wrong Mode or FileVersion) => {}", beatmap->GetMetadataText());
+		LOGGER_WARN("Cant Play (Wrong FileVersion) => {}", beatmap->GetMetadataText());
 		return;
 	}
 
@@ -71,7 +74,7 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	beatmap->SetSongVolume(songVolume);
 	beatmap->SetSampleVolume(sampleVolume);
 	beatmap->SetSpeedup(speedup);
-	beatmap->Play();
+	//beatmap->Play();
 
 	while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
 		// Check for the current Position in the channel
@@ -81,8 +84,6 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 		}
 		std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
 	}
-
-	beatmap.reset();
 }
 
 

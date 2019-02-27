@@ -10,10 +10,6 @@ namespace Parser {
 		{
 		public:
 			Slider(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<Hitsound> hitsounds);
-			~Slider()
-			{
-				LOGGER_DEBUG("\tSlider Destroyed");
-			}
 
 		};
 	} // namespace Beatmap
