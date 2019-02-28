@@ -337,7 +337,7 @@ namespace Parser {
 					}
 					else
 					{
-						if (!std::filesystem::exists(GetFolder() + set + "-hitnormal" + sampleindex + ".wav"))
+						if (!std::filesystem::exists(GetFolder() + set + "-hit" + sound + sampleindex + ".wav"))
 						{
 							hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hitnormal.wav");
 						}
@@ -394,7 +394,7 @@ namespace Parser {
 						}
 						else
 						{
-							if (!std::filesystem::exists(GetFolder() + set + "-hitnormal" + sampleindex + ".wav"))
+							if (!std::filesystem::exists(GetFolder() + set + "-hit" + sound + sampleindex + ".wav"))
 							{
 								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
 							}
@@ -451,7 +451,7 @@ namespace Parser {
 						}
 						else
 						{
-							if (!std::filesystem::exists(GetFolder() + set + "-hitnormal" + sampleindex + ".wav"))
+							if (!std::filesystem::exists(GetFolder() + set + "-hit" + sound + sampleindex + ".wav"))
 							{
 								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
 							}
@@ -508,7 +508,7 @@ namespace Parser {
 						}
 						else
 						{
-							if (!std::filesystem::exists(GetFolder() + set + "-hitnormal" + sampleindex + ".wav"))
+							if (!std::filesystem::exists(GetFolder() + set + "-hit" + sound + sampleindex + ".wav"))
 							{
 								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
 							}

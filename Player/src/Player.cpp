@@ -10,6 +10,11 @@
 #define SI_CONVERT_WIN32
 #include "SimpleIni.h"
 
+struct parser pstate;
+struct beatmap map;
+
+struct diff_calc stars;
+
 void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, long & speedup, long & masterVolume, long & songVolume, long & sampleVolume, Parser::Parser & p)
 {
 	double bpm;
@@ -18,22 +23,13 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	int Offset;
 	std::vector<std::vector<long>> offsets;
 
-	struct parser pstate;
-	struct beatmap map;
-
-	struct diff_calc stars;
-
 	FILE* bm;
-
-	p_init(&pstate);
-	d_init(&stars);
 
 	// Oppai stuff
 	bm = fopen((p.GetFolderPath() + path).c_str(), "r");
 	p_map(&pstate, &map, bm);
 	fclose(bm);
 	d_calc(&stars, &map, 0);
-	LOGGER_DEBUG("{:2f} stars", stars.total);
 
 	if (stars.total < minStar)
 	{
@@ -51,8 +47,8 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	}
 
 	// Debug logs
-	LOGGER_DEBUG("MP3 for {} => {}", path, beatmap->GetMp3());
-	LOGGER_DEBUG("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
+	LOGGER_TRACE("MP3 for {} => {}", path, beatmap->GetMp3());
+	LOGGER_TRACE("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
 
 	// 5. Get Song Length to Display change later
 	bpm = beatmap->GetBPM();
@@ -61,9 +57,11 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	// 6. Display Data
 	a = (int)floor(lengthInSeconds / 60.0);
 	b = (int)floor(fmod(lengthInSeconds, 60));
-	LOGGER_DEBUG("Original Length: {:02d}:{:02d}", a, b);
+	LOGGER_INFO("Original Length: {:02d}:{:02d}", a, b);
 
 	LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
+	LOGGER_DEBUG("{:2f} stars", stars.total);
+
 	beatmap->SetGlobalVolume(masterVolume);
 	beatmap->SetSongVolume(songVolume);
 	beatmap->SetSampleVolume(sampleVolume);
@@ -85,6 +83,10 @@ int main(int argc, const char * argv[])
 {
 	// Init the Logger for the whole Program
 	Parser::Logger::Init();
+
+	// Oppai Inits
+	p_init(&pstate);
+	d_init(&stars);
 
 	LOGGER_INFO("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
 	
@@ -108,21 +110,12 @@ int main(int argc, const char * argv[])
 
 	// Settings Manager
 	CSimpleIniA* Settings = new CSimpleIniA(false, false, false);
-	Settings->LoadFile("Settings.ini");
+	Settings->LoadFile("settings.ini");
 	Settings->SetSpaces(false);
 
-	std::ifstream readFile;
-	readFile.open("Settings.ini");
-
 	// File doesnt Exist
-	if (readFile.is_open())
+	if (!std::filesystem::exists("settings.ini"))
 	{
-		readFile.close();
-	}
-	else
-	{
-		readFile.close();
-
 		std::ofstream writeFile;
 		writeFile.open("Settings.ini");
 		writeFile.close();
@@ -134,21 +127,24 @@ int main(int argc, const char * argv[])
 		Settings->SetDoubleValue("General", "MinStars", 5.0);
 		Settings->SetLongValue("General", "CPU_Sleep", 200);
 		Settings->SetLongValue("General", "SpeedUp", 0);
-		Settings->SetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds\\");
+		Settings->SetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
 		Settings->SetLongValue("Audio", "MasterVolume", 14);
 		Settings->SetLongValue("Audio", "SongVolume", 8);
 		Settings->SetLongValue("Audio", "HitsoundVolume", 10);
 		Settings->SaveFile("settings.ini", true);
+		LOGGER_ERROR("Settings.ini created. Make sure you set the Songs Folder before starting this program again.");
+		return 1;
 	}
 
 	auto folder         = Settings->GetValue("General", "SongsFolder", "C:/Program Files(x86)/osu!/Songs/");
-	auto minStar        = Settings->GetDoubleValue("General", "MinStars", 5.0);
-	auto cpuSleep       = Settings->GetLongValue("General", "CPU_Sleep", 200);
-	auto speedup	    = Settings->GetLongValue("General", "SpeedUp", 0);
 	auto hitsoundFolder = Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
-	auto masterVolume   = Settings->GetLongValue("Audio", "MasterVolume", 14);
-	auto songVolume     = Settings->GetLongValue("Audio", "SongVolume", 8);
-	auto sampleVolume   = Settings->GetLongValue("Audio", "HitsoundVolume", 10);
+
+	double minStar;
+	long cpuSleep;
+	long speedup;
+	long masterVolume;
+	long songVolume;
+	long sampleVolume;
 
 	Parser::Parser p(folder, hitsoundFolder);
 	auto list = p.GetListOfFiles();
@@ -162,7 +158,6 @@ int main(int argc, const char * argv[])
 		auto index = 15411;
 
 		// Re-Read values for every beatmap to allow for changes between songs
-		folder = Settings->GetValue("General", "SongsFolder", "%Appdata%/osu!/Songs/");
 		minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);
 		cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
 		speedup = Settings->GetLongValue("General", "SpeedUp", 0);
@@ -178,5 +173,5 @@ int main(int argc, const char * argv[])
 
 	// On Exit, flush all debug output to logfile
 	LOGGER_FLUSH();
-	return 1;
+	return 0;
 }

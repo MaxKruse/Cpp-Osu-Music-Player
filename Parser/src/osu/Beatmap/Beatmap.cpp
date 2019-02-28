@@ -190,7 +190,6 @@ namespace Parser {
 			{
 				for (const auto& pair : m_HitsoundsOnTimingDeleteable)
 				{
-					LOGGER_DEBUG("pair.first = {}", pair.first);
 					if (offset >= pair.first)
 					{
 						for (const auto& sound : m_HitsoundsOnTimingDeleteable.at(pair.first))
