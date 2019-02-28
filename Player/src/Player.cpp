@@ -60,7 +60,7 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	LOGGER_INFO("Original Length: {:02d}:{:02d}", a, b);
 
 	LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
-	LOGGER_DEBUG("{:2f} stars", stars.total);
+	LOGGER_DEBUG("{:.2f} stars", stars.total);
 
 	beatmap->SetGlobalVolume(masterVolume);
 	beatmap->SetSongVolume(songVolume);
@@ -149,13 +149,14 @@ int main(int argc, const char * argv[])
 	Parser::Parser p(folder, hitsoundFolder);
 	auto list = p.GetListOfFiles();
 	// RAISE MY SWORD = 15411
+	// FELY SEX = 3898
 
 
 	do // Music Playing Loop
 	{
 		// Get Beatmap
 		//auto index = Parser::Random(list);
-		auto index = 15411;
+		auto index = 3898;
 
 		// Re-Read values for every beatmap to allow for changes between songs
 		minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);
