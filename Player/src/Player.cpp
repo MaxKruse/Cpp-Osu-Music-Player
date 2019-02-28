@@ -15,7 +15,7 @@ struct beatmap map;
 
 struct diff_calc stars;
 
-void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, long & speedup, long & masterVolume, long & songVolume, long & sampleVolume, Parser::Parser & p)
+void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, long & speedup, long & masterVolume, long & songVolume, long & sampleVolume, std::string& criteria, Parser::Parser & p)
 {
 	double bpm;
 	QWORD lengthInSeconds;
@@ -45,6 +45,13 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 		LOGGER_WARN("Cant Play (Wrong FileVersion) => {}", beatmap->GetMetadataText());
 		return;
 	}
+
+	if (!beatmap->Search(criteria))
+	{
+		LOGGER_WARN("Search Criteria werent met => {}", criteria);
+	}
+
+	beatmap->Load();
 
 	// Debug logs
 	LOGGER_TRACE("MP3 for {} => {}", path, beatmap->GetMp3());
@@ -127,6 +134,7 @@ int main(int argc, const char * argv[])
 		Settings->SetDoubleValue("General", "MinStars", 5.0);
 		Settings->SetLongValue("General", "CPU_Sleep", 200);
 		Settings->SetLongValue("General", "SpeedUp", 0);
+		Settings->SetValue("Search", "SearchText", "bpm>=140");
 		Settings->SetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
 		Settings->SetLongValue("Audio", "MasterVolume", 14);
 		Settings->SetLongValue("Audio", "SongVolume", 8);
@@ -138,6 +146,7 @@ int main(int argc, const char * argv[])
 
 	auto folder         = Settings->GetValue("General", "SongsFolder", "C:/Program Files(x86)/osu!/Songs/");
 	auto hitsoundFolder = Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
+	auto criteria		= Settings->GetValue("Search", "SearchText", "bpm>=140");
 
 	double minStar;
 	long cpuSleep;
@@ -163,12 +172,13 @@ int main(int argc, const char * argv[])
 		cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
 		speedup = Settings->GetLongValue("General", "SpeedUp", 0);
 		hitsoundFolder = Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
+		criteria = Settings->GetValue("Search", "SearchText", "bpm>=140");
 		masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 14);
 		songVolume = Settings->GetLongValue("Audio", "SongVolume", 8);
 		sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 10);
 
 		// Play beatmap in its own function to **hopefully** fix the memory leak
-		PlayBeatmap(list.at(index), minStar, cpuSleep, speedup, masterVolume, songVolume, sampleVolume, p);
+		PlayBeatmap(list.at(index), minStar, cpuSleep, speedup, masterVolume, songVolume, sampleVolume, std::string(criteria), p);
 
 	} while (true);
 

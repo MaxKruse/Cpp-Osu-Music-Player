@@ -267,6 +267,11 @@ namespace Parser {
 				auto hitsound = stoi(parts.at(4));
 				auto Folder = GetFolder();
 
+				if (offset >= 88078)
+				{
+					int hsdrf = 1;
+				}
+
 				if (stoi(parts.at(3)) & Beatmap::HITCIRCLE)
 				{
 					// Hitsound calc
@@ -282,10 +287,12 @@ namespace Parser {
 						if (timingpoint.GetOffset() <= offset && timingpoint.IsInherited())
 						{
 							redLine = timingpoint;
+							greenLine = Beatmap::TimingPoint();
 						}
 						else if (timingpoint.GetOffset() >= offset && timingpoint.IsInherited() && redLine.HasDefaults())
 						{
 							redLine = timingpoint;
+							greenLine = Beatmap::TimingPoint();
 						}
 						else if(timingpoint.GetOffset() <= offset)
 						{

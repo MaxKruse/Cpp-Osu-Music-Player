@@ -62,7 +62,6 @@ namespace Parser {
 		std::string GetFolder();
 		std::vector<std::string> FileToStringVector(const std::string & filename);
 
-
 		// Taken from: https://stackoverflow.com/a/46931770
 		std::vector<std::string> split(const std::string & s, const char & delim) {
 			std::vector<std::string> result;
@@ -77,6 +76,7 @@ namespace Parser {
 		}
 	};
 
+	
 
 	// Random Functions using Low/High or a vector of sorts, to return a random index between given low and high
 	size_t Random(size_t low = 0, size_t high = 0xFFFFFFF)

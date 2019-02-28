@@ -195,8 +195,10 @@ namespace Parser {
 		class API Beatmap
 		{
 		public:
-			Beatmap(const std::string & FilePath, const std::string & Folder, const std::string & hitsoundFolder, const std::string & BackgroundImage, std::vector<std::shared_ptr<Hitobject>> hitobjects, std::vector<TimingPoint> Timingpoints, General g, Metadata m, SearchBy s, Difficulty d);
+			Beatmap(const std::string &, const std::string &, const std::string &, const std::string &, std::vector<std::shared_ptr<Hitobject>>, std::vector<TimingPoint>, General, Metadata, SearchBy, Difficulty);
 			~Beatmap();
+
+			void Load();
 
 			inline const std::map<long, std::vector<std::string>> GetHitsoundsOfTimings() const { return m_HitsoundsOnTiming; }
 			const long GetLastOffset() const
@@ -271,14 +273,16 @@ namespace Parser {
 			void Pause();
 			void Stop();
 			void Reset();
-			void SetGlobalVolume(unsigned char Vol);
-			void SetSongVolume(unsigned char Vol);
-			void SetSampleVolume(unsigned char Vol);
-			void SetSpeedup(char Speed);
+			void SetGlobalVolume(unsigned char);
+			void SetSongVolume(unsigned char);
+			void SetSampleVolume(unsigned char);
+			void SetSpeedup(char);
 
-			void PlaySamples(long offset);
+			void PlaySamples(long);
 
 			std::string ToString() const;
+
+			bool Search(std::string);
 
 		private:
 			std::string                                           m_FilePath;
@@ -302,6 +306,19 @@ namespace Parser {
 			Metadata   m_Metadata;
 			SearchBy   m_SearchBy;
 			Difficulty m_Difficulty;
+
+			std::vector<std::string> split(const std::string & s, const char & delim) {
+				std::vector<std::string> result;
+				std::stringstream ss(s);
+				std::string item;
+
+				while (std::getline(ss, item, delim)) {
+					result.push_back(item);
+				}
+
+				return result;
+			}
+
 		};
 
 		// These are operators for the Logger to use, they tell it how to insert objects and print their info (see the Class' ".ToString()" function for more info)

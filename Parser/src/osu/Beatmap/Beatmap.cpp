@@ -22,7 +22,22 @@ namespace Parser {
 			: m_FilePath(FilePath), m_Folder(Folder), m_BackgroundImage(BackgroundImage), m_HitObjects(Hitobjects), m_TimingPoints(std::move(Timingpoints)), m_General(std::move(g)), m_Metadata(std::move(m)), m_SearchBy(std::move(s)), m_Difficulty(d), m_Paused(false), m_HandleBase(0), m_HandleFX(0), m_ChannelPos(0)
 		{
 			LOGGER_INFO("Creating Beatmap From File => {}", FilePath);
-			
+		}
+	
+		Beatmap::~Beatmap()
+		{
+			BASS_StreamFree(m_HandleBase);
+			BASS_StreamFree(m_HandleFX);
+
+			for (const auto& sample : m_SampleChannels)
+			{
+				BASS_StreamFree(sample.second);
+			}
+			LOGGER_INFO("Destroyed beatmap => {}", GetMetadataText());
+		}
+
+		void Beatmap::Load()
+		{
 			// creating list of hitsounds to play
 			for (const auto& object : m_HitObjects)
 			{
@@ -58,26 +73,13 @@ namespace Parser {
 						}
 
 						// Load Sample
-						m_SampleChannels.emplace(std::pair<std::string, QWORD>(samplename, BASS_StreamCreateFile(FALSE, samplename.c_str(), 0,0,0)));
+						m_SampleChannels.emplace(std::pair<std::string, QWORD>(samplename, BASS_StreamCreateFile(FALSE, samplename.c_str(), 0, 0, 0)));
 
 						// Set Volume
 						BASS_ChannelSetAttribute(m_SampleChannels[samplename], BASS_ATTRIB_VOL, hs.GetVolume() / 100.0);
 					}
 				}
 			}
-			
-		}
-	
-		Beatmap::~Beatmap()
-		{
-			BASS_StreamFree(m_HandleBase);
-			BASS_StreamFree(m_HandleFX);
-
-			for (const auto& sample : m_SampleChannels)
-			{
-				BASS_StreamFree(sample.second);
-			}
-			LOGGER_INFO("Destroyed beatmap => {}", GetMetadataText());
 		}
 
 		void Beatmap::GetMissedHitsounds()
@@ -230,6 +232,12 @@ namespace Parser {
 			ss << m_Difficulty << '\n';
 
 			return ss.str();
+		}
+
+		bool Beatmap::Search(std::string criteria)
+		{
+			auto items = split(criteria, ' ');
+			return false;
 		}
 
 	} // namespace Beatmap
