@@ -2,7 +2,7 @@
 ☐ Add Option Parser
     See: https://github.com/jarro2783/cxxopts
 ☐ Make GUI @low
-    ☐ I still dont know...
+    I still dont know...
 
 ✔ Add sound lib @high @done(19-01-25 17:52)
     ✔ Un4Seen Bass @high @done(19-01-15 18:50)
@@ -32,16 +32,21 @@
             ✔ 4. Review/Cleanup @started(19-02-10 16:24) @done(19-02-10 16:35) @lasted(11m44s)
             Clang Tidy - See Commit
         - 20.02.2019
-            ☐ 5. Review/Cleanup
+            ✘ 5. Review/Cleanup @cancelled(19-03-01 15:15)
+            nothing to do
         - 01.03.2019
             ☐ 6. Review/Cleanup
     People that checked the code will be noted as well, for later reference.
     
-☐ Investigate Memoryleak when a map isnt playable @created(19-02-20 18:04)
+✔ Investigate Memoryleak when a map isnt playable @created(19-02-20 18:04) @done(19-03-01 15:16)
      My suspission is that i need to use pointers for all member variables to properly delete them. currently i get between 2 and 4mb per map, which doesnt get deleted automatically. I assumed this is the case since i use std::unique_ptr<Parser::Beatmap> & no extra defined ~dtor() for any class. This has me believe the compiler handles things for stack allocated variables, which it apparently doesnt.
 
-☐ Reimagine Hitsounds as their own Classes @created(19-02-20 18:01)
-☐ Split hitsounds up into "Custom" and "Default"@created(19-02-20 18:01)
+     Didnt free any Bass streams
+
+✔ Reimagine Hitsounds as their own Classes @created(19-02-20 18:01) @done(19-03-01 15:16)
+✘ Split hitsounds up into "Custom" and "Default"@created(19-02-20 18:01) @cancelled(19-03-01 15:16)
+    No need for this, just gave them their own full paths respectivly
+
     Example:    Hitsound.GetOffset() == 500
                 Hitsound.GetType() == HITSOUND_TYPE::CUSTOM || HITSOUND_TYPE::DEFAULT
                 Hitsound.GetVolume() == 40
@@ -52,7 +57,7 @@
 ✔ Implement Sliders @low @started(19-02-15 12:46) @done(19-02-15 13:20) @lasted(34m36s)
    ✔ Slider Hitsound @low @done(19-02-15 19:00)
         ✔ SliderHead @low @done(19-02-15 19:00)
-        ☐ SliderTick @low
+        ✔ SliderTick @low @done(19-03-01 15:17)
         ✔ SliderEnd @low @done(19-02-15 19:00)
 ✔ Refactor GetHitsounds() to give back a vector of Pairs instead @created(19-02-15 13:21) @done(19-02-15 13:30)
         I need this for sliders to give their correct hitsounds
@@ -77,7 +82,10 @@
         Currently, im parsing over the same array of strings (the file) for different things. combining this would probably reduce cpu usage
 ☐ Parse files multi-threaded @low
 
-☐ For Search purposes, create SortBy-Only objects of Beatmaps @created(19-01-12 15:09)
+✔ For Search purposes, create SortBy-Only objects of Beatmaps @created(19-01-12 15:09) @done(19-03-01 15:17)
+    This is somewhat done?
+    Beatmaps parse their general stuff, can be asked isPlayable() etc
+    Beatmap::Load() now loads the rest of the data needed
 
 ✔ Settings file @created(19-01-20 21:33) @done(19-02-16 22:54)
 
