@@ -272,13 +272,6 @@ namespace Parser {
 				unsigned char vol;
 				Beatmap::TimingPoint redLine, greenLine;
 
-#if _DEBUG
-				if (offset >= 121100)
-				{
-					int hsdrf = 1;
-				}
-#endif
-
 				if (stoi(parts.at(3)) & Beatmap::HITCIRCLE)
 				{
 					// Hitsound calc
@@ -370,6 +363,7 @@ namespace Parser {
 					{
 						set = greenLine.GetSampleSet();
 						sampleindex = greenLine.GetSampleIndex();
+						vol = greenLine.GetVolume();
 					}
 
 					// Addition hitsound
@@ -441,6 +435,7 @@ namespace Parser {
 					{
 						set = greenLine.GetSampleSet();
 						sampleindex = greenLine.GetSampleIndex();
+						vol = greenLine.GetVolume();
 					}
 
 					// Addition hitsound
@@ -512,6 +507,7 @@ namespace Parser {
 					{
 						set = greenLine.GetSampleSet();
 						sampleindex = greenLine.GetSampleIndex();
+						vol = greenLine.GetVolume();
 					}
 
 					// Addition hitsound
@@ -626,7 +622,7 @@ namespace Parser {
 						LOGGER_TRACE("GreenLine => {}", greenLine);
 					}
 
-					unsigned int repeat = stoi(parts.at(6));
+					size_t repeat = stoi(parts.at(6));
 					unsigned int pixelLength = stoi(parts.at(7));
 					int duration = (int)(pixelLength / (100.0 * diff.GetSliderMultiplier() * sv) * msPerBeat);
 
@@ -647,7 +643,7 @@ namespace Parser {
 						edgeAdditions.emplace_back("0:0");
 					}
 
-					for (size_t i = 0; i <= repeat; i++)
+					for (size_t i = 0; i < repeat; i++)
 					{
 						hitsoundFileNames = std::vector<std::string>();
 						hitsound = stoi(edgeHitsounds.at(i));
@@ -685,12 +681,12 @@ namespace Parser {
 							LOGGER_TRACE("GreenLine => {}", greenLine);
 						}
 
-						int sliderTickOffset = msPerBeat * (1 / diff.GetSliderTickrate());
-						int durationTemp = duration - sliderTickOffset;
-						int j = 0;
-						while (durationTemp > 0)
+						int sliderTickOffset = floor(msPerBeat * (1 / diff.GetSliderTickrate()));
+						int tempOffset = repeatOffset + sliderTickOffset;
+						double maxAmount = floor(duration / sliderTickOffset);
+
+						for(double j = 1; j < maxAmount + 1; j++)
 						{
-							j++;
 							if (sampleindex == "0")
 							{
 								// Default sound for this set
@@ -714,10 +710,9 @@ namespace Parser {
 								}
 							}
 
-							hitsounds.emplace_back(Beatmap::Hitsound((repeatOffset + (sliderTickOffset * j)), hitsoundFileNames, vol));
+							tempOffset = repeatOffset + (sliderTickOffset * j);
+							hitsounds.emplace_back(Beatmap::Hitsound(tempOffset, hitsoundFileNames, vol));
 							hitsoundFileNames = std::vector<std::string>();
-							
-							durationTemp -= sliderTickOffset;
 						}
 
 						// Base hitsound
@@ -766,6 +761,7 @@ namespace Parser {
 						{
 							set = greenLine.GetSampleSet();
 							sampleindex = greenLine.GetSampleIndex();
+							vol = greenLine.GetVolume();
 						}
 
 						// Addition hitsound
@@ -833,6 +829,7 @@ namespace Parser {
 						{
 							set = greenLine.GetSampleSet();
 							sampleindex = greenLine.GetSampleIndex();
+							vol = greenLine.GetVolume();
 						}
 
 						// Addition hitsound
@@ -900,6 +897,7 @@ namespace Parser {
 						{
 							set = greenLine.GetSampleSet();
 							sampleindex = greenLine.GetSampleIndex();
+							vol = greenLine.GetVolume();
 						}
 
 						// Addition hitsound
@@ -962,6 +960,286 @@ namespace Parser {
 						hitsounds.emplace_back(Beatmap::Hitsound(repeatOffset, hitsoundFileNames, vol));
 					}
 
+					int i = repeat;
+					hitsoundFileNames = std::vector<std::string>();
+					hitsound = stoi(edgeHitsounds.at(i));
+					extras = split(edgeAdditions.at(i), ':');
+					repeatOffset = offset + (i * duration);
+
+					for (const auto& timingpoint : timings)
+					{
+						if (timingpoint.GetOffset() <= repeatOffset && timingpoint.IsInherited())
+						{
+							redLine = timingpoint;
+							greenLine = Beatmap::TimingPoint();
+						}
+						else if (timingpoint.GetOffset() >= repeatOffset && timingpoint.IsInherited() && redLine.HasDefaults())
+						{
+							redLine = timingpoint;
+							greenLine = Beatmap::TimingPoint();
+						}
+						else if (timingpoint.GetOffset() <= repeatOffset)
+						{
+							greenLine = timingpoint;
+						}
+					}
+
+					LOGGER_TRACE("Timingpoints for Hitcircle found!");
+					set = redLine.GetSampleSet();
+					sampleindex = redLine.GetSampleIndex();
+					vol = redLine.GetVolume();
+					LOGGER_TRACE("RedLine => {}", redLine);
+					if (!greenLine.HasDefaults())
+					{
+						set = greenLine.GetSampleSet();
+						sampleindex = greenLine.GetSampleIndex();
+						vol = greenLine.GetVolume();
+						LOGGER_TRACE("GreenLine => {}", greenLine);
+					}
+
+					// Base hitsound
+					if (extras.at(0) == "1")
+					{
+						set = "normal";
+					}
+					else if (extras.at(0) == "2")
+					{
+						set = "soft";
+					}
+					else if (extras.at(0) == "3")
+					{
+						set = "drum";
+					}
+
+					// base Hitsound added
+					if (sampleindex == "0")
+					{
+						// Default sound for this set
+						hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hitnormal.wav");
+					}
+					else
+					{
+						if (sampleindex == "1")
+						{
+							sampleindex = "";
+						}
+
+						if (!std::filesystem::exists(GetFolder() + set + "-hitnormal" + sampleindex + ".wav"))
+						{
+							hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hitnormal.wav");
+						}
+						else
+						{
+							// Custom Index
+							hitsoundFileNames.emplace_back(GetFolder() + set + "-hitnormal" + sampleindex + ".wav");
+						}
+					}
+
+
+					set = redLine.GetSampleSet();
+					sampleindex = redLine.GetSampleIndex();
+					vol = redLine.GetVolume();
+					if (!greenLine.HasDefaults())
+					{
+						set = greenLine.GetSampleSet();
+						sampleindex = greenLine.GetSampleIndex();
+						vol = greenLine.GetVolume();
+					}
+
+					// Addition hitsound
+					if (extras.at(1) == "0")
+					{
+						if (extras.at(0) == "1")
+						{
+							set = "normal";
+						}
+						else if (extras.at(0) == "2")
+						{
+							set = "soft";
+						}
+						else if (extras.at(0) == "3")
+						{
+							set = "drum";
+						}
+					}
+					else if (extras.at(1) == "1")
+					{
+						set = "normal";
+					}
+					else if (extras.at(1) == "2")
+					{
+						set = "soft";
+					}
+					else if (extras.at(1) == "3")
+					{
+						set = "drum";
+					}
+
+					// Whistle check
+					if (hitsound & Beatmap::HITSOUND_WHISTLE)
+					{
+						sound = "whistle";
+
+						if (sampleindex == "0")
+						{
+							// Default sound for this set
+							hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
+						}
+						else
+						{
+							if (sampleindex == "1")
+							{
+								sampleindex = "";
+							}
+
+							if (!std::filesystem::exists(GetFolder() + set + "-hit" + sound + sampleindex + ".wav"))
+							{
+								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
+							}
+							else
+							{
+								// Custom Index
+								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
+							}
+						}
+					}
+
+					set = redLine.GetSampleSet();
+					sampleindex = redLine.GetSampleIndex();
+					vol = redLine.GetVolume();
+					if (!greenLine.HasDefaults())
+					{
+						set = greenLine.GetSampleSet();
+						sampleindex = greenLine.GetSampleIndex();
+						vol = greenLine.GetVolume();
+					}
+
+					// Addition hitsound
+					if (extras.at(1) == "0")
+					{
+						if (extras.at(0) == "1")
+						{
+							set = "normal";
+						}
+						else if (extras.at(0) == "2")
+						{
+							set = "soft";
+						}
+						else if (extras.at(0) == "3")
+						{
+							set = "drum";
+						}
+					}
+					else if (extras.at(1) == "1")
+					{
+						set = "normal";
+					}
+					else if (extras.at(1) == "2")
+					{
+						set = "soft";
+					}
+					else if (extras.at(1) == "3")
+					{
+						set = "drum";
+					}
+
+					// Finish check
+					if (hitsound & Beatmap::HITSOUND_FINISH)
+					{
+						sound = "finish";
+
+						if (sampleindex == "0")
+						{
+							// Default sound for this set
+							hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
+						}
+						else
+						{
+							if (sampleindex == "1")
+							{
+								sampleindex = "";
+							}
+
+							if (!std::filesystem::exists(GetFolder() + set + "-hit" + sound + sampleindex + ".wav"))
+							{
+								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
+							}
+							else
+							{
+								// Custom Index
+								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
+							}
+						}
+					}
+
+					set = redLine.GetSampleSet();
+					sampleindex = redLine.GetSampleIndex();
+					vol = redLine.GetVolume();
+					if (!greenLine.HasDefaults())
+					{
+						set = greenLine.GetSampleSet();
+						sampleindex = greenLine.GetSampleIndex();
+						vol = greenLine.GetVolume();
+					}
+
+					// Addition hitsound
+					if (extras.at(1) == "0")
+					{
+						if (extras.at(0) == "1")
+						{
+							set = "normal";
+						}
+						else if (extras.at(0) == "2")
+						{
+							set = "soft";
+						}
+						else if (extras.at(0) == "3")
+						{
+							set = "drum";
+						}
+					}
+					else if (extras.at(1) == "1")
+					{
+						set = "normal";
+					}
+					else if (extras.at(1) == "2")
+					{
+						set = "soft";
+					}
+					else if (extras.at(1) == "3")
+					{
+						set = "drum";
+					}
+
+					// Clap check
+					if (hitsound & Beatmap::HITSOUND_CLAP)
+					{
+						sound = "clap";
+
+						if (sampleindex == "0")
+						{
+							// Default sound for this set
+							hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
+						}
+						else
+						{
+							if (sampleindex == "1")
+							{
+								sampleindex = "";
+							}
+
+							if (!std::filesystem::exists(GetFolder() + set + "-hit" + sound + sampleindex + ".wav"))
+							{
+								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-hit" + sound + ".wav");
+							}
+							else
+							{
+								// Custom Index
+								hitsoundFileNames.emplace_back(GetFolder() + set + "-hit" + sound + sampleindex + ".wav");
+							}
+						}
+					}
+					hitsounds.emplace_back(Beatmap::Hitsound(repeatOffset, hitsoundFileNames, vol));
 					hitobjects.emplace_back(std::make_shared<Beatmap::Slider>(x, y, offset, type, hitsounds));
 				}
 				else if (stoi(parts.at(3)) & Beatmap::SPINNER)
@@ -1045,6 +1323,7 @@ namespace Parser {
 					{
 						set = greenLine.GetSampleSet();
 						sampleindex = greenLine.GetSampleIndex();
+						vol = greenLine.GetVolume();
 					}
 
 					// Addition hitsound
@@ -1116,6 +1395,7 @@ namespace Parser {
 					{
 						set = greenLine.GetSampleSet();
 						sampleindex = greenLine.GetSampleIndex();
+						vol = greenLine.GetVolume();
 					}
 
 					// Addition hitsound
@@ -1187,6 +1467,7 @@ namespace Parser {
 					{
 						set = greenLine.GetSampleSet();
 						sampleindex = greenLine.GetSampleIndex();
+						vol = greenLine.GetVolume();
 					}
 
 					// Addition hitsound
