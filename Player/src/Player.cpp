@@ -165,7 +165,8 @@ int main(int argc, const char * argv[])
 	{
 		// Get Beatmap
 		//auto index = Parser::Random(list);
-		auto index = 3898;
+		//auto index = 3898;
+		auto index = 15411;
 
 		// Re-Read values for every beatmap to allow for changes between songs
 		minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);

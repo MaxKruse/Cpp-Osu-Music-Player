@@ -189,6 +189,7 @@ namespace Parser {
 			}
 
 			inline const float GetSliderMultiplier() const { return m_SliderMultiplier; }
+			inline const unsigned short GetSliderTickrate() const { return m_SliderTickRate; }
 		};
 
 		// A Beatmap is a single Object that knows about all of its contents (see .osu files for contents)

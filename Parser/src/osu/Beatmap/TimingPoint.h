@@ -8,7 +8,7 @@ namespace Parser {
 		{
 		public:
 			TimingPoint()
-				: m_Offset(-1), m_MillisecondsPerBeat(-1.0), m_SampleIndex(5), m_SampleSet(5), m_Volume(150)
+				: m_Offset(-1), m_MillisecondsPerBeat(-1.0), m_SampleIndex(-1), m_SampleSet(5), m_Volume(150)
 			{}
 			TimingPoint(long offset, float milliseconds_per_beat, unsigned short sampleset, unsigned short sampleindex, unsigned short volume, bool inherited);
 
@@ -41,13 +41,13 @@ namespace Parser {
 
 			std::string ToString() const;
 
-			inline const bool HasDefaults() const { return (m_Offset == -1 || m_MillisecondsPerBeat == -1 || m_SampleIndex == 5 || m_SampleSet == 5 || m_Volume == 150); }
+			inline const bool HasDefaults() const { return (m_Offset == -1 || m_MillisecondsPerBeat == -1 || m_SampleIndex == -1 || m_SampleSet == 5 || m_Volume == 150); }
 
 		private:
 			long m_Offset;
 			double m_MillisecondsPerBeat;
 			unsigned short m_SampleSet;
-			unsigned short m_SampleIndex;
+			int m_SampleIndex;
 			unsigned short m_Volume;
 			bool m_Inherited;
 
