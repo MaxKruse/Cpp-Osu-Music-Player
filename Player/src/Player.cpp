@@ -9,6 +9,7 @@
 
 #define SI_CONVERT_WIN32
 #include "SimpleIni.h"
+#include "Player.h"
 
 struct parser pstate;
 struct beatmap map;
@@ -17,6 +18,14 @@ struct diff_calc stars;
 
 void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, long & speedup, long & masterVolume, long & songVolume, long & sampleVolume, std::string& criteria, Parser::Parser & p)
 {
+	// skip if file no longer exists
+	if (!std::filesystem::exists(p.GetFolderPath() + path))
+	{
+		LOGGER_ERROR("File doesnt exist => {}", p.GetFolderPath() + path);
+		LOGGER_ERROR("Consider resetting/deleting your Beatmaps.prs file");
+		return;
+	}
+
 	double bpm;
 	QWORD lengthInSeconds;
 	QWORD a, b;
@@ -29,6 +38,13 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	bm = fopen((p.GetFolderPath() + path).c_str(), "r");
 	p_map(&pstate, &map, bm);
 	fclose(bm);
+
+	if (map.original_mode != MODE_STD)
+	{
+		LOGGER_WARN("Cant Play (wrong mode) => {}", p.GetFolderPath() + path);
+		return;
+	}
+
 	d_calc(&stars, &map, 0);
 
 	if (stars.total < minStar)
@@ -73,7 +89,7 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	beatmap->SetSongVolume(songVolume);
 	beatmap->SetSampleVolume(sampleVolume);
 	beatmap->SetSpeedup(speedup);
-	beatmap->Play();
+	//beatmap->Play();
 
 	while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
 		// Check for the current Position in the channel
@@ -164,9 +180,9 @@ int main(int argc, const char * argv[])
 	do // Music Playing Loop
 	{
 		// Get Beatmap
-		//auto index = Parser::Random(list);
+		auto index = Parser::Random(list);
 		//auto index = 3898;
-		auto index = 15411;
+		//auto index = 15411;
 
 		// Re-Read values for every beatmap to allow for changes between songs
 		minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);

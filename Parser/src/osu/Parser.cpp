@@ -639,10 +639,13 @@ namespace Parser {
 					}
 					else
 					{
-						edgeHitsounds.emplace_back("0"); // Format: 2|0 Meaning SliderHead = 2, SliderEnd = 0 // Always Repeat + 1 Long
-						edgeHitsounds.emplace_back("0");
-						edgeAdditions.emplace_back("0:0");// Format: 0:0|1:0 Meaning SampleSet:Addition|SampleSet2:Addition2 // Always Repeat + 1 long
-						edgeAdditions.emplace_back("0:0");
+						for (size_t i = 0; i < repeat; i++)
+						{
+							edgeHitsounds.emplace_back("0"); // Format: 2|0 Meaning SliderHead = 2, SliderEnd = 0 // Always Repeat + 1 Long
+							edgeHitsounds.emplace_back("0");
+							edgeAdditions.emplace_back("0:0");// Format: 0:0|1:0 Meaning SampleSet:Addition|SampleSet2:Addition2 // Always Repeat + 1 long
+							edgeAdditions.emplace_back("0:0");
+						}
 					}
 
 					for (size_t i = 0; i < repeat; i++)
@@ -683,7 +686,7 @@ namespace Parser {
 							LOGGER_TRACE("GreenLine => {}", greenLine);
 						}
 
-						int sliderTickOffset = floor(msPerBeat * (1 / diff.GetSliderTickrate()));
+						double sliderTickOffset = msPerBeat * (1.0 / diff.GetSliderTickrate());
 						int tempOffset = repeatOffset + sliderTickOffset;
 						double maxAmount = floor(duration / sliderTickOffset);
 
@@ -1816,7 +1819,7 @@ namespace Parser {
 		unsigned short CircleSize = 255;
 		unsigned short OverallDifficulty = 255;
 		unsigned short ApproachRate = 255;
-		float SliderMultiplier = 255.0f;
+		float SliderMultiplier = -1.0;
 		unsigned short SliderTickRate = 255;
 
 		int found = 0;
