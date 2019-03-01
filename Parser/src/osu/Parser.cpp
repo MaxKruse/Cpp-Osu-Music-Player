@@ -606,6 +606,8 @@ namespace Parser {
 					}
 
 					LOGGER_TRACE("Timingpoints for Hitcircle found!");
+
+					// Always update and get Timingpoint Data between hitsounds
 					set = redLine.GetSampleSet();
 					sampleindex = redLine.GetSampleIndex();
 					vol = redLine.GetVolume();
