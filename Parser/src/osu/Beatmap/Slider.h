@@ -9,7 +9,7 @@ namespace Parser {
 		class API Slider : public Hitobject
 		{
 		public:
-			Slider(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<Hitsound> hitsounds);
+			Slider(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<Hitsound*> hitsounds);
 
 		};
 	} // namespace Beatmap

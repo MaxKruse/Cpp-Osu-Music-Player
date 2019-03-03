@@ -29,25 +29,52 @@ namespace Parser {
 			BASS_StreamFree(m_HandleBase);
 			BASS_StreamFree(m_HandleFX);
 
-			for (const auto& sample : m_SampleChannels)
+			for (const auto& pair : m_HitsoundChannels)
 			{
-				BASS_StreamFree(sample.second);
+				BASS_StreamFree(pair.second);
 			}
+
+			for (const auto& hs : m_Hitsounds)
+			{
+				delete hs;
+			}
+
+			for (const auto& hs : m_HitsoundsDeleteable)
+			{
+				delete hs;
+			}
+			
 			LOGGER_INFO("Destroyed beatmap => {}", GetMetadataText());
 		}
 
 		void Beatmap::Load()
 		{
-			// creating list of hitsounds to play
+			// Load hitsounds
+			size_t i = 0;
 			for (const auto& object : m_HitObjects)
 			{
-				auto Hitsounds = object->GetHitsounds();
-				for (const auto& hitsound : Hitsounds)
+				for (const auto& hitsound : object->GetHitsounds())
 				{
-					m_HitsoundsOnTiming.emplace(hitsound.GetOffset(), hitsound.GetSampleNames());
+					m_Hitsounds.emplace_back(hitsound);
 				}
 			}
-			m_HitsoundsOnTimingDeleteable = m_HitsoundsOnTiming;
+			m_HitsoundsDeleteable = m_Hitsounds;
+
+			// Hitsound Channels
+			for (const auto& hs : m_Hitsounds)
+			{
+				for (const auto& filename : hs->GetSampleNames())
+				{
+					if (m_HitsoundChannels.find(filename) == m_HitsoundChannels.end())
+					{
+						// Not existing, create and store
+						m_HitsoundChannels.emplace(std::pair<std::string, HSTREAM>(filename, BASS_StreamCreateFile(FALSE, filename.c_str(), 0, 0, 0)));
+					}
+
+					// Regardless of the previous if statement, add the resulting hstream to the hitsound
+					hs->AddStream(m_HitsoundChannels.at(filename));
+				}
+			}
 
 			// Creating BASS Channels
 			if (!(m_HandleBase = BASS_StreamCreateFile(FALSE, GetFullMp3Path().c_str(), 0, 0, BASS_STREAM_DECODE)))
@@ -59,43 +86,15 @@ namespace Parser {
 			{
 				LOGGER_ERROR("Cant create sound, Error {}", BASS_ErrorGetCode());
 			}
-
-			// Load Hitsound Samples and add them to the Map
-			for (const auto& obj : m_HitObjects)
-			{
-				for (const auto& hs : obj->GetHitsounds())
-				{
-					for (const auto& samplename : hs.GetSampleNames())
-					{
-						if (m_SampleChannels.find(samplename) != m_SampleChannels.end())
-						{
-							continue;
-						}
-
-						// Load Sample
-						m_SampleChannels.emplace(std::pair<std::string, QWORD>(samplename, BASS_StreamCreateFile(FALSE, samplename.c_str(), 0, 0, 0)));
-
-						// Set Volume
-						BASS_ChannelSetAttribute(m_SampleChannels[samplename], BASS_ATTRIB_VOL, hs.GetVolume() / 100.0);
-					}
-				}
-			}
 		}
 
 		void Beatmap::GetMissedHitsounds()
 		{
-			for (const auto& pair : m_HitsoundsOnTimingDeleteable)
-			{
-				for (const auto& moreData : pair.second)
-				{
-					LOGGER_ERROR("Missed sound at {} => {}", pair.first, moreData);
-				}
-			}
 		}
 
 		void Beatmap::Play()
 		{
-			m_HitsoundsOnTimingDeleteable = m_HitsoundsOnTiming;
+			m_HitsoundsDeleteable = m_Hitsounds;
 			LOGGER_INFO("Playing: {}", GetMetadataText());
 			if (!m_Paused)
 			{
@@ -145,18 +144,15 @@ namespace Parser {
 
 		void Beatmap::SetSampleVolume(unsigned char Vol)
 		{
+			m_SampleVolume = Vol;
 			float TotalVol;
 
 			for (const auto& obj : m_HitObjects)
 			{
 				for (const auto& hs : obj->GetHitsounds())
 				{
-					TotalVol = Vol / 100.0f * (float)(m_GlobalVolume / 100.0f) * hs.GetVolume() / 100.0;
-					for (const auto& samplename : hs.GetSampleNames())
-					{
-						// Set Volume
-						BASS_ChannelSetAttribute(m_SampleChannels[samplename], BASS_ATTRIB_VOL, TotalVol);
-					}
+					TotalVol = Vol / 100.0f * (float)(m_GlobalVolume / 100.0f) * hs->GetVolume() / 100.0;
+					hs->ChangePlaybackVolume(TotalVol);
 				}
 			}
 		}
@@ -168,55 +164,21 @@ namespace Parser {
 
 		void Beatmap::PlaySamples(long offset)
 		{
-			if (m_HitsoundsOnTimingDeleteable.empty())
+			for (const auto& hs : m_HitsoundsDeleteable)
 			{
-				return;
-			}
-
-			// Check if offset is smaller than first sound
-			for (const auto& pair : m_HitsoundsOnTimingDeleteable)
-			{
-				if (offset < pair.first) // We dont have any sound before the offset
+				if (offset < hs->GetOffset())
 				{
 					return;
 				}
-				else // We have either a hitsound on the Offset or before it
-				{
-					LOGGER_DEBUG("PLAYING HITSOUNDS UP TO {}ms", offset);
-					break;
-				}
 
-			}
+				// Play hitsounds and erase so we dont keep playing the same sound
+				hs->Play();
+				m_HitsoundsDeleteable.erase(m_HitsoundsDeleteable.begin());
 
-			while (true)
-			{
-				for (const auto& pair : m_HitsoundsOnTimingDeleteable)
-				{
-					if (offset >= pair.first)
-					{
-						for (const auto& sound : m_HitsoundsOnTimingDeleteable.at(pair.first))
-						{
-							// Display each hitsound
-							LOGGER_DEBUG("Hitsound at {}ms => {}", pair.first, sound);
-
-							// If the hitsound file doesnt exist, just skip this entire sound
-							if (m_SampleChannels.find(sound) == m_SampleChannels.end())
-							{
-								LOGGER_WARN("Couldn't find .wav file. Skipping Hitsound");
-								continue;
-							}
-							BASS_ChannelPlay(m_SampleChannels.at(sound), true);
-						}
-						m_HitsoundsOnTimingDeleteable.erase(pair.first);
-						return;
-					}
-					else
-					{
-						LOGGER_INFO("All Hitsounds Played");
-						return;
-					}
-
-				}
+				// Change volume for next sounds already
+				float TotalVol = m_SampleVolume / 100.0f * (float)(m_GlobalVolume / 100.0f) * hs->GetVolume() / 100.0;;
+				m_HitsoundsDeleteable.front()->ChangePlaybackVolume(TotalVol);
+				break;
 			}
 		}
 

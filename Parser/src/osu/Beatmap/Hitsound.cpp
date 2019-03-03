@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Hitsound.h"
+
 namespace Parser {
 	namespace Beatmap {
 
@@ -8,13 +9,29 @@ namespace Parser {
 		{
 		}
 
+		Hitsound::~Hitsound()
+		{
+		}
+
+		void Hitsound::AddStream(HSTREAM stream)
+		{
+			m_SampleStreams.emplace_back(stream);
+		}
+
 		void Hitsound::Play()
 		{
-			std::string files;
-
-			for (const auto& s : m_SampleFiles)
+			for (const auto& stream : m_SampleStreams)
 			{
-				LOGGER_DEBUG("Playing {} at {}ms with {}% Volume", s, m_Offset, m_Volume);
+				LOGGER_DEBUG("Playing at {}ms with {}% Volume", m_Offset, m_Volume);
+				BASS_ChannelPlay(stream, true);
+			}	
+		}
+
+		void Hitsound::ChangePlaybackVolume(float vol)
+		{
+			for (const auto& stream : m_SampleStreams)
+			{
+				BASS_ChannelSetAttribute(stream, BASS_ATTRIB_VOL, vol);
 			}
 		}
 

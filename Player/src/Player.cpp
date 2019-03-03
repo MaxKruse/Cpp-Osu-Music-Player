@@ -89,7 +89,7 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	beatmap->SetSongVolume(songVolume);
 	beatmap->SetSampleVolume(sampleVolume);
 	beatmap->SetSpeedup(speedup);
-	//beatmap->Play();
+	beatmap->Play();
 
 	while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
 		// Check for the current Position in the channel
@@ -157,12 +157,23 @@ int main(int argc, const char * argv[])
 		Settings->SetLongValue("Audio", "HitsoundVolume", 10);
 		Settings->SaveFile("settings.ini", true);
 		LOGGER_ERROR("Settings.ini created. Make sure you set the Songs Folder before starting this program again.");
+		std::cin.get();
 		return 1;
 	}
 
-	auto folder         = Settings->GetValue("General", "SongsFolder", "C:/Program Files(x86)/osu!/Songs/");
-	auto hitsoundFolder = Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
-	auto criteria		= Settings->GetValue("Search", "SearchText", "bpm>=140");
+	auto folder         = std::string(Settings->GetValue("General", "SongsFolder", "C:/Program Files(x86)/osu!/Songs/"));
+	auto hitsoundFolder = std::string(Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/"));
+	auto criteria		= std::string(Settings->GetValue("Search", "SearchText", "bpm>=140"));
+
+	if (folder.at(folder.length() - 1) != '/' && folder.at(folder.length() - 1) != '\\')
+	{
+		folder += "/";
+	}
+
+	if (hitsoundFolder.at(hitsoundFolder.length() - 1) != '/' && hitsoundFolder.at(hitsoundFolder.length() - 1) != '\\')
+	{
+		hitsoundFolder += "/";
+	}
 
 	double minStar;
 	long cpuSleep;
@@ -173,22 +184,25 @@ int main(int argc, const char * argv[])
 
 	Parser::Parser p(folder, hitsoundFolder);
 	auto list = p.GetListOfFiles();
-	// RAISE MY SWORD = 15411
-	// FELY SEX = 3898
-
 
 	do // Music Playing Loop
 	{
 		// Get Beatmap
-		auto index = Parser::Random(list);
-		//auto index = 3898;
-		//auto index = 15411;
+		//auto index = Parser::Random(list);
+		//auto index = 3898; //FELY SEX
+		auto index = 15411; //RAISE MY SWORD
 
 		// Re-Read values for every beatmap to allow for changes between songs
 		minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);
 		cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
 		speedup = Settings->GetLongValue("General", "SpeedUp", 0);
-		hitsoundFolder = Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/");
+		hitsoundFolder = std::string(Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/"));
+
+		if (hitsoundFolder.at(hitsoundFolder.length() - 1) != '/' && hitsoundFolder.at(hitsoundFolder.length() - 1) != '\\')
+		{
+			hitsoundFolder += "/";
+		}
+
 		criteria = Settings->GetValue("Search", "SearchText", "bpm>=140");
 		masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 14);
 		songVolume = Settings->GetLongValue("Audio", "SongVolume", 8);

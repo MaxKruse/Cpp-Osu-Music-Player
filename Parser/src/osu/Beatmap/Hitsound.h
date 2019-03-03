@@ -1,5 +1,6 @@
 #pragma once
 #include "Logger.h"
+#include "bass.h"
 
 namespace Parser {
 	namespace Beatmap {
@@ -31,17 +32,30 @@ namespace Parser {
 		{
 		public:
 			Hitsound(long offset, std::vector<std::string> sampleFiles, unsigned char volume);
+			~Hitsound();
 
 			inline const std::vector<std::string> GetSampleNames() const { return m_SampleFiles; }
 			inline const long GetOffset() const { return m_Offset; }
 			inline const unsigned char GetVolume() const { return m_Volume; }
 
+			void AddStream(HSTREAM);
 			void Play();
+			void Load(std::vector<HSTREAM>);
+			void ChangePlaybackVolume(float);
 
 		private:
 			long m_Offset;
 			unsigned char m_Volume;
 			std::vector<std::string> m_SampleFiles;
+			std::vector<HSTREAM> m_SampleStreams;
+
+			bool operator==(const Hitsound* other)
+			{
+				return (GetOffset() == other->GetOffset() && GetVolume() == other->GetVolume() && GetSampleNames() == other->GetSampleNames());
+			}
 		};
+
+		
+
 	} // namespace Beatmap
 }  // namespace Parser

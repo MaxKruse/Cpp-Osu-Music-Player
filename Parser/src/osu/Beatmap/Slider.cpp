@@ -4,7 +4,7 @@
 namespace Parser {
 	namespace Beatmap {
 
-		Slider::Slider(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<Hitsound> hitsounds)
+		Slider::Slider(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<Hitsound*> hitsounds)
 			: Hitobject(x, y, offset, type, hitsounds)
 		{
 		}

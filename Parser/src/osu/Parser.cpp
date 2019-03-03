@@ -268,7 +268,7 @@ namespace Parser {
 				auto Folder = GetFolder();
 				std::vector<std::string> hitsoundFileNames;
 				std::string set, addition, sampleindex, sound;
-				std::vector<Beatmap::Hitsound> hitsounds;
+				std::vector<Beatmap::Hitsound*> hitsounds;
 				unsigned char vol;
 				Beatmap::TimingPoint redLine, greenLine;
 
@@ -573,7 +573,7 @@ namespace Parser {
 					}
 
 
-					hitsounds.emplace_back(Beatmap::Hitsound(offset, hitsoundFileNames, vol));
+					hitsounds.emplace_back(new Beatmap::Hitsound(offset, hitsoundFileNames, vol));
 
 					hitobjects.emplace_back(std::make_shared<Beatmap::Hitcircle>(x, y, offset, type, hitsounds));
 
@@ -716,7 +716,7 @@ namespace Parser {
 							}
 
 							tempOffset = repeatOffset + (sliderTickOffset * j);
-							hitsounds.emplace_back(Beatmap::Hitsound(tempOffset, hitsoundFileNames, vol));
+							hitsounds.emplace_back(new Beatmap::Hitsound(tempOffset, hitsoundFileNames, vol));
 							hitsoundFileNames = std::vector<std::string>();
 						}
 
@@ -962,7 +962,7 @@ namespace Parser {
 								}
 							}
 						}
-						hitsounds.emplace_back(Beatmap::Hitsound(repeatOffset, hitsoundFileNames, vol));
+						hitsounds.emplace_back(new Beatmap::Hitsound(repeatOffset, hitsoundFileNames, vol));
 					}
 
 					int i = repeat;
@@ -1244,7 +1244,7 @@ namespace Parser {
 							}
 						}
 					}
-					hitsounds.emplace_back(Beatmap::Hitsound(repeatOffset, hitsoundFileNames, vol));
+					hitsounds.emplace_back(new Beatmap::Hitsound(repeatOffset, hitsoundFileNames, vol));
 					hitobjects.emplace_back(std::make_shared<Beatmap::Slider>(x, y, offset, type, hitsounds));
 				}
 				else if (stoi(parts.at(3)) & Beatmap::SPINNER)
@@ -1536,7 +1536,7 @@ namespace Parser {
 							}
 						}
 					}
-					hitsounds.emplace_back(Beatmap::Hitsound(stoi(parts.at(5)), hitsoundFileNames, vol));
+					hitsounds.emplace_back(new Beatmap::Hitsound(stoi(parts.at(5)), hitsoundFileNames, vol));
 
 					hitobjects.emplace_back(std::make_shared<Beatmap::Spinner>(x, y, offset, type, hitsounds));
 

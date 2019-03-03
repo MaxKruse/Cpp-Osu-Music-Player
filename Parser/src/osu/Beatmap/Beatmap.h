@@ -201,7 +201,7 @@ namespace Parser {
 
 			void Load();
 
-			inline const std::map<long, std::vector<std::string>> GetHitsoundsOfTimings() const { return m_HitsoundsOnTiming; }
+			inline const std::vector<Hitsound*> GetHitsounds() const { return m_Hitsounds; }
 			const long GetLastOffset() const
 			{
 				auto last_object = m_HitObjects.size() - 1;
@@ -268,7 +268,7 @@ namespace Parser {
 			}
 
 			void GetMissedHitsounds();
-			inline const size_t CountMissedHitsounds() const { return m_HitsoundsOnTimingDeleteable.size(); }
+			inline const size_t CountMissedHitsounds() const { return m_HitsoundsDeleteable.size(); }
 
 			void Play();
 			void Pause();
@@ -286,12 +286,14 @@ namespace Parser {
 			bool Search(std::string);
 
 		private:
-			std::string                                           m_FilePath;
-			std::string                                           m_Folder;
-			std::string                                           m_BackgroundImage;
-			std::vector<std::shared_ptr<Hitobject>>               m_HitObjects;
-			std::vector<TimingPoint>                              m_TimingPoints;
-			std::vector<std::vector<long>>		                  m_Offsets;
+			std::string                             m_FilePath;
+			std::string                             m_Folder;
+			std::string                             m_BackgroundImage;
+			std::vector<std::shared_ptr<Hitobject>> m_HitObjects;
+			std::vector<TimingPoint>                m_TimingPoints;
+			std::vector<std::vector<long>>		    m_Offsets;
+
+			float m_SampleVolume;
 
 			HSTREAM m_HandleBase;
 			HSTREAM m_HandleFX;
@@ -299,9 +301,9 @@ namespace Parser {
 			QWORD	m_ChannelPos;
 			unsigned char m_GlobalVolume;
 
-			std::map<std::string, QWORD>             m_SampleChannels;
-			std::map<long, std::vector<std::string>> m_HitsoundsOnTiming;
-			std::map<long, std::vector<std::string>> m_HitsoundsOnTimingDeleteable;
+			std::map<std::string, HSTREAM> m_HitsoundChannels;
+			std::vector<Hitsound*>         m_Hitsounds;
+			std::vector<Hitsound*>	       m_HitsoundsDeleteable;
 
 			General    m_General;
 			Metadata   m_Metadata;
