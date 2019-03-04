@@ -185,12 +185,24 @@ int main(int argc, const char * argv[])
 	Parser::Parser p(folder, hitsoundFolder);
 	auto list = p.GetListOfFiles();
 
+#if _SEARCH
+	auto searchTerm = "Dan Dan";
+	for (size_t i = 0; i < list.size(); i++)
+	{
+		if (list.at(i).find(searchTerm) != std::string::npos)
+		{
+			LOGGER_DEBUG("\"{}\" found at index {}: {}", searchTerm, i, list.at(i));
+		}
+	}
+#endif
+
 	do // Music Playing Loop
 	{
 		// Get Beatmap
-		//auto index = Parser::Random(list);
+		auto index = Parser::Random(list);
 		//auto index = 3898; //FELY SEX
-		auto index = 15411; //RAISE MY SWORD
+		//auto index = 15411; //RAISE MY SWORD
+		//auto index = 9827; // DAN DAN KIKOERU
 
 		// Re-Read values for every beatmap to allow for changes between songs
 		minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);

@@ -176,8 +176,11 @@ namespace Parser {
 				m_HitsoundsDeleteable.erase(m_HitsoundsDeleteable.begin());
 
 				// Change volume for next sounds already
-				float TotalVol = m_SampleVolume / 100.0f * (float)(m_GlobalVolume / 100.0f) * hs->GetVolume() / 100.0;;
-				m_HitsoundsDeleteable.front()->ChangePlaybackVolume(TotalVol);
+				float TotalVol = m_SampleVolume / 100.0f * (float)(m_GlobalVolume / 100.0f) * hs->GetVolume() / 100.0;
+				if (!m_HitsoundsDeleteable.empty())
+				{
+					m_HitsoundsDeleteable.front()->ChangePlaybackVolume(TotalVol);
+				}
 				break;
 			}
 		}

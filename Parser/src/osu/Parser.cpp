@@ -587,6 +587,11 @@ namespace Parser {
 						continue;
 					}
 
+					if (offset >= 42341)
+					{
+						int losa = 2;
+					}
+
 					for (const auto& timingpoint : timings)
 					{
 						if (timingpoint.GetOffset() <= offset && timingpoint.IsInherited())
@@ -625,8 +630,8 @@ namespace Parser {
 					}
 
 					size_t repeat = stoi(parts.at(6));
-					unsigned int pixelLength = stoi(parts.at(7));
-					int duration = (int)(pixelLength / (100.0 * diff.GetSliderMultiplier() * sv) * msPerBeat);
+					double pixelLength = stod(parts.at(7));
+					double duration = (pixelLength / (100.0 * diff.GetSliderMultiplier() * sv) * msPerBeat);
 
 					std::vector<std::string> edgeHitsounds;
 					std::vector<std::string> edgeAdditions;
@@ -653,7 +658,7 @@ namespace Parser {
 						hitsoundFileNames = std::vector<std::string>();
 						hitsound = stoi(edgeHitsounds.at(i));
 						extras = split(edgeAdditions.at(i), ':');
-						repeatOffset = offset + (i * duration);
+						repeatOffset = ceil(offset + (i * duration));
 						
 						for (const auto& timingpoint : timings)
 						{
@@ -685,41 +690,7 @@ namespace Parser {
 							vol = greenLine.GetVolume();
 							LOGGER_TRACE("GreenLine => {}", greenLine);
 						}
-
-						double sliderTickOffset = msPerBeat * (1.0 / diff.GetSliderTickrate());
-						int tempOffset = repeatOffset + sliderTickOffset;
-						double maxAmount = floor(duration / sliderTickOffset);
-
-						for(double j = 1; j < maxAmount + 1; j++)
-						{
-							if (sampleindex == "0")
-							{
-								// Default sound for this set
-								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-slidertick.wav");
-							}
-							else
-							{
-								if (sampleindex == "1")
-								{
-									sampleindex = "";
-								}
-
-								if (!std::filesystem::exists(GetFolder() + set + "-slidertick" + sampleindex + ".wav"))
-								{
-									hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-slidertick.wav");
-								}
-								else
-								{
-									// Custom Index
-									hitsoundFileNames.emplace_back(GetFolder() + set + "-slidertick" + sampleindex + ".wav");
-								}
-							}
-
-							tempOffset = repeatOffset + (sliderTickOffset * j);
-							hitsounds.emplace_back(new Beatmap::Hitsound(tempOffset, hitsoundFileNames, vol));
-							hitsoundFileNames = std::vector<std::string>();
-						}
-
+					
 						// Base hitsound
 						if (extras.at(0) == "1")
 						{
@@ -963,13 +934,63 @@ namespace Parser {
 							}
 						}
 						hitsounds.emplace_back(new Beatmap::Hitsound(repeatOffset, hitsoundFileNames, vol));
+
+						set = redLine.GetSampleSet();
+						sampleindex = redLine.GetSampleIndex();
+						vol = redLine.GetVolume();
+						if (!greenLine.HasDefaults())
+						{
+							set = greenLine.GetSampleSet();
+							sampleindex = greenLine.GetSampleIndex();
+							vol = greenLine.GetVolume();
+						}
+
+						double sliderTickOffset = msPerBeat * (1.0 / diff.GetSliderTickrate());
+						double maxAmount = floor(duration / sliderTickOffset);
+						repeatOffset = ceil(offset + (i * duration));
+
+						for (double j = 1; j <= maxAmount; j++)
+						{
+							hitsoundFileNames = std::vector<std::string>();
+							int tempOffset = round(repeatOffset + (sliderTickOffset * j));
+							if (tempOffset == (int)round(offset + duration))
+							{
+								continue;
+							}
+
+							if (sampleindex == "0")
+							{
+								// Default sound for this set
+								hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-slidertick.wav");
+							}
+							else
+							{
+								if (sampleindex == "1")
+								{
+									sampleindex = "";
+								}
+
+								if (!std::filesystem::exists(GetFolder() + set + "-slidertick" + sampleindex + ".wav"))
+								{
+									hitsoundFileNames.emplace_back(m_HitsoundsFolder + set + "-slidertick.wav");
+								}
+								else
+								{
+									// Custom Index
+									hitsoundFileNames.emplace_back(GetFolder() + set + "-slidertick" + sampleindex + ".wav");
+								}
+							}
+
+							hitsounds.emplace_back(new Beatmap::Hitsound(tempOffset, hitsoundFileNames, vol));
+						}
+
+
 					}
 
-					int i = repeat;
 					hitsoundFileNames = std::vector<std::string>();
-					hitsound = stoi(edgeHitsounds.at(i));
-					extras = split(edgeAdditions.at(i), ':');
-					repeatOffset = offset + (i * duration);
+					hitsound = stoi(edgeHitsounds.at(repeat));
+					extras = split(edgeAdditions.at(repeat), ':');
+					repeatOffset = ceil(offset + (repeat * duration));
 
 					for (const auto& timingpoint : timings)
 					{
@@ -1177,6 +1198,25 @@ namespace Parser {
 						}
 					}
 
+					for (const auto& timingpoint : timings)
+					{
+						if (timingpoint.GetOffset() <= repeatOffset && timingpoint.IsInherited())
+						{
+							redLine = timingpoint;
+							greenLine = Beatmap::TimingPoint();
+						}
+						else if (timingpoint.GetOffset() >= repeatOffset && timingpoint.IsInherited() && redLine.HasDefaults())
+						{
+							redLine = timingpoint;
+							greenLine = Beatmap::TimingPoint();
+						}
+						else if (timingpoint.GetOffset() <= repeatOffset)
+						{
+							greenLine = timingpoint;
+						}
+					}
+
+
 					set = redLine.GetSampleSet();
 					sampleindex = redLine.GetSampleIndex();
 					vol = redLine.GetVolume();
@@ -1244,6 +1284,8 @@ namespace Parser {
 							}
 						}
 					}
+
+
 					hitsounds.emplace_back(new Beatmap::Hitsound(repeatOffset, hitsoundFileNames, vol));
 					hitobjects.emplace_back(std::make_shared<Beatmap::Slider>(x, y, offset, type, hitsounds));
 				}
