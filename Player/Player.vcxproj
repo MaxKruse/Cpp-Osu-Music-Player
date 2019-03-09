@@ -142,6 +142,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Player.h" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -151,9 +154,6 @@
     <ProjectReference Include="vendor\SimpleIni\SimpleIni.vcxproj">
       <Project>{AF201E71-1B8B-D2E7-64C9-838DD072B03C}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Player.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

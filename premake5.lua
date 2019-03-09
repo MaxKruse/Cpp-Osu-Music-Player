@@ -116,6 +116,7 @@ project "Player"
 		"%{prj.name}/vendor/SimpleIni",
 		"%{prj.name}/vendor/oppai-ng",
 		"%{prj.name}/vendor/Win32xx/include",
+		"%{prj.name}/vendor/nana/include",
 		"Parser/src",
 		"Parser/vendor/cxxtimer",
 		"Parser/vendor/spdlog/include"
@@ -123,7 +124,8 @@ project "Player"
 
 	libdirs
 	{
-		"%{prj.name}/vendor/Un4Seen_bass"
+		"%{prj.name}/vendor/Un4Seen_bass",
+		"%{prj.name}/vendor/nana/build/bin"
 	}
 
 	links
