@@ -33,16 +33,6 @@ namespace Parser {
 			{
 				BASS_StreamFree(pair.second);
 			}
-
-			for (const auto& hs : m_Hitsounds)
-			{
-				delete hs;
-			}
-
-			for (const auto& hs : m_HitsoundsDeleteable)
-			{
-				delete hs;
-			}
 			
 			LOGGER_INFO("Destroyed beatmap => {}", GetMetadataText());
 		}
@@ -201,6 +191,11 @@ namespace Parser {
 
 		bool Beatmap::Search(std::string criteria)
 		{
+			if (criteria.empty())
+			{
+				return true;
+			}
+
 			auto items = split(criteria, ' ');
 			return false;
 		}

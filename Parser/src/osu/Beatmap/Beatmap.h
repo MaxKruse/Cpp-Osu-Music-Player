@@ -201,7 +201,7 @@ namespace Parser {
 
 			void Load();
 
-			inline const std::vector<Hitsound*> GetHitsounds() const { return m_Hitsounds; }
+			inline const std::vector< std::shared_ptr<Hitsound>> GetHitsounds() const { return m_Hitsounds; }
 			const long GetLastOffset() const
 			{
 				auto last_object = m_HitObjects.size() - 1;
@@ -301,9 +301,9 @@ namespace Parser {
 			QWORD	m_ChannelPos;
 			unsigned char m_GlobalVolume;
 
-			std::map<std::string, HSTREAM> m_HitsoundChannels;
-			std::vector<Hitsound*>         m_Hitsounds;
-			std::vector<Hitsound*>	       m_HitsoundsDeleteable;
+			std::map<std::string, HSTREAM>			m_HitsoundChannels;
+			std::vector<std::shared_ptr<Hitsound>>  m_Hitsounds;
+			std::vector<std::shared_ptr<Hitsound>>	m_HitsoundsDeleteable;
 
 			General    m_General;
 			Metadata   m_Metadata;

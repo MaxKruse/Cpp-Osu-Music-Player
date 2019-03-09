@@ -14,3 +14,4 @@
 #include <ctime>
 #include <filesystem>
 #include <random>
+#include "osu/Beatmap/Beatmap.h"

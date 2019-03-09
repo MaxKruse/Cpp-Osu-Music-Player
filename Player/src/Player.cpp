@@ -4,9 +4,6 @@
 #include "osu/Parser.h"
 #include "cxxtimer.hpp"
 
-#define OPPAI_IMPLEMENTATION
-#include "oppai.c"
-
 #define SI_CONVERT_WIN32
 #include "SimpleIni.h"
 #include "Player.h"
@@ -16,14 +13,51 @@ struct beatmap map;
 
 struct diff_calc stars;
 
-void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, long & speedup, long & masterVolume, long & songVolume, long & sampleVolume, std::string& criteria, Parser::Parser & p)
+bool PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, long & speedup, long & masterVolume, long & songVolume, long & sampleVolume, std::string& criteria, Parser::Parser & p)
 {
 	// skip if file no longer exists
-	if (!std::filesystem::exists(p.GetFolderPath() + path))
+	auto fullPath = p.GetFolderPath() + path;
+
+	if (!std::filesystem::exists(fullPath))
 	{
 		LOGGER_ERROR("File doesnt exist => {}", p.GetFolderPath() + path);
 		LOGGER_ERROR("Consider resetting/deleting your Beatmaps.prs file");
-		return;
+		return true;
+	}
+
+	FILE* bm;
+
+	// Oppai stuff
+	try
+	{
+		bm = fopen(fullPath.c_str(), "r");
+		p_map(&pstate, &map, bm);
+		fclose(bm);
+	}
+	catch (const std::exception& e)
+	{
+		LOGGER_ERROR("ERROR OCCURED: {}", e.what());
+		LOGGER_ERROR("+++ ERROR DATA START +++");
+		LOGGER_ERROR("FILE TO OPEN => {}", fullPath);
+		LOGGER_ERROR("ACCESS MODE => {}", "\"r\"");
+		LOGGER_ERROR("OPPAI STATES => {}", pstate);
+		LOGGER_ERROR("+++ ERROR DATA END +++");
+		return true;
+	}
+	
+
+	if (map.original_mode != MODE_STD)
+	{
+		LOGGER_WARN("Cant Play (wrong mode) => {}", p.GetFolderPath() + path);
+		return false;
+	}
+
+	d_calc(&stars, &map, 0);
+
+	if (stars.total < minStar)
+	{
+		LOGGER_WARN("Cant Play (low star rating) => {}", p.GetFolderPath() + path);
+		return false;
 	}
 
 	double bpm;
@@ -32,42 +66,22 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	int Offset;
 	std::vector<std::vector<long>> offsets;
 
-	FILE* bm;
-
-	// Oppai stuff
-	bm = fopen((p.GetFolderPath() + path).c_str(), "r");
-	p_map(&pstate, &map, bm);
-	fclose(bm);
-
-	if (map.original_mode != MODE_STD)
-	{
-		LOGGER_WARN("Cant Play (wrong mode) => {}", p.GetFolderPath() + path);
-		return;
-	}
-
-	d_calc(&stars, &map, 0);
-
-	if (stars.total < minStar)
-	{
-		LOGGER_WARN("Cant Play (low star rating) => {}", p.GetFolderPath() + path);
-		return;
-	}
-
 	auto beatmap = p.BeatmapFromFile(path);
 
 	// Check if beatmap is supported
 	if (!beatmap->IsPlayable())
 	{
 		LOGGER_WARN("Cant Play (Wrong FileVersion) => {}", beatmap->GetMetadataText());
-		return;
+		return false;
 	}
 
 	if (!beatmap->Search(criteria))
 	{
 		LOGGER_WARN("Search Criteria werent met => {}", criteria);
+		return false;
 	}
 
-	beatmap->Load();
+	//beatmap->Load();
 
 	// Debug logs
 	LOGGER_TRACE("MP3 for {} => {}", path, beatmap->GetMp3());
@@ -89,7 +103,7 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	beatmap->SetSongVolume(songVolume);
 	beatmap->SetSampleVolume(sampleVolume);
 	beatmap->SetSpeedup(speedup);
-	beatmap->Play();
+	//beatmap->Play();
 
 	while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
 		// Check for the current Position in the channel
@@ -99,6 +113,8 @@ void PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 		}
 		std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
 	}
+
+	return false;
 }
 
 
@@ -181,6 +197,7 @@ int main(int argc, const char * argv[])
 	long masterVolume;
 	long songVolume;
 	long sampleVolume;
+	bool error = true;
 
 	Parser::Parser p(folder, hitsoundFolder);
 	auto list = p.GetListOfFiles();
@@ -220,9 +237,14 @@ int main(int argc, const char * argv[])
 		songVolume = Settings->GetLongValue("Audio", "SongVolume", 8);
 		sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 10);
 
-		// Play beatmap in its own function to **hopefully** fix the memory leak
-		PlayBeatmap(list.at(index), minStar, cpuSleep, speedup, masterVolume, songVolume, sampleVolume, std::string(criteria), p);
-
+		error = PlayBeatmap(list.at(index), minStar, cpuSleep, speedup, masterVolume, songVolume, sampleVolume, std::string(criteria), p);
+		if (error)
+		{
+			LOGGER_ERROR("Some Error occured, please file a bugreport on github.");
+			LOGGER_FLUSH();
+			std::cin.get();
+			return 1;
+		}
 	} while (true);
 
 	// On Exit, flush all debug output to logfile

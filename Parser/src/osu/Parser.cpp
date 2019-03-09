@@ -268,7 +268,7 @@ namespace Parser {
 				auto Folder = GetFolder();
 				std::vector<std::string> hitsoundFileNames;
 				std::string set, addition, sampleindex, sound;
-				std::vector<Beatmap::Hitsound*> hitsounds;
+				std::vector<std::shared_ptr<Beatmap::Hitsound>> hitsounds;
 				unsigned char vol;
 				Beatmap::TimingPoint redLine, greenLine;
 
@@ -573,7 +573,7 @@ namespace Parser {
 					}
 
 
-					hitsounds.emplace_back(new Beatmap::Hitsound(offset, hitsoundFileNames, vol));
+					hitsounds.emplace_back(std::make_shared<Beatmap::Hitsound>(offset, hitsoundFileNames, vol));
 
 					hitobjects.emplace_back(std::make_shared<Beatmap::Hitcircle>(x, y, offset, type, hitsounds));
 
@@ -655,7 +655,7 @@ namespace Parser {
 
 					for (size_t i = 0; i < repeat; i++)
 					{
-						hitsoundFileNames = std::vector<std::string>();
+						hitsoundFileNames.clear();
 						hitsound = stoi(edgeHitsounds.at(i));
 						extras = split(edgeAdditions.at(i), ':');
 						repeatOffset = ceil(offset + (i * duration));
@@ -933,7 +933,7 @@ namespace Parser {
 								}
 							}
 						}
-						hitsounds.emplace_back(new Beatmap::Hitsound(repeatOffset, hitsoundFileNames, vol));
+						hitsounds.emplace_back(std::make_shared<Beatmap::Hitsound>(repeatOffset, hitsoundFileNames, vol));
 
 						set = redLine.GetSampleSet();
 						sampleindex = redLine.GetSampleIndex();
@@ -951,7 +951,7 @@ namespace Parser {
 
 						for (double j = 1; j <= maxAmount; j++)
 						{
-							hitsoundFileNames = std::vector<std::string>();
+							hitsoundFileNames.clear();
 							int tempOffset = round(repeatOffset + (sliderTickOffset * j));
 							if (tempOffset == (int)round(offset + duration))
 							{
@@ -981,13 +981,13 @@ namespace Parser {
 								}
 							}
 
-							hitsounds.emplace_back(new Beatmap::Hitsound(tempOffset, hitsoundFileNames, vol));
+							hitsounds.emplace_back(std::make_shared<Beatmap::Hitsound>(tempOffset, hitsoundFileNames, vol));
 						}
 
 
 					}
 
-					hitsoundFileNames = std::vector<std::string>();
+					hitsoundFileNames.clear();
 					hitsound = stoi(edgeHitsounds.at(repeat));
 					extras = split(edgeAdditions.at(repeat), ':');
 					repeatOffset = ceil(offset + (repeat * duration));
@@ -1286,7 +1286,7 @@ namespace Parser {
 					}
 
 
-					hitsounds.emplace_back(new Beatmap::Hitsound(repeatOffset, hitsoundFileNames, vol));
+					hitsounds.emplace_back(std::make_shared<Beatmap::Hitsound>(repeatOffset, hitsoundFileNames, vol));
 					hitobjects.emplace_back(std::make_shared<Beatmap::Slider>(x, y, offset, type, hitsounds));
 				}
 				else if (stoi(parts.at(3)) & Beatmap::SPINNER)
@@ -1578,7 +1578,7 @@ namespace Parser {
 							}
 						}
 					}
-					hitsounds.emplace_back(new Beatmap::Hitsound(stoi(parts.at(5)), hitsoundFileNames, vol));
+					hitsounds.emplace_back(std::make_shared<Beatmap::Hitsound>(stoi(parts.at(5)), hitsoundFileNames, vol));
 
 					hitobjects.emplace_back(std::make_shared<Beatmap::Spinner>(x, y, offset, type, hitsounds));
 
