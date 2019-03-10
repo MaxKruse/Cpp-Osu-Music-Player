@@ -87,6 +87,8 @@ project "Parser"
 
 include "Player/vendor/SimpleIni"
 
+include "Player/vendor/nana"
+
 project "Player"
 	location "Player"
 	kind "ConsoleApp"
@@ -133,7 +135,8 @@ project "Player"
 		"Parser",
 		"bass.lib",
 		"bass_fx.lib",
-		"SimpleIni"
+		"SimpleIni",
+		"nana" 
 	}
 
 	filter "system:windows"

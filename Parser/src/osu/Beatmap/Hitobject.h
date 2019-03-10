@@ -14,7 +14,7 @@ namespace Parser {
 		};
 
 		// Basic struct to safe memory
-		struct API Position
+		struct API_PLAYER Position
 		{
 			unsigned short X;
 			unsigned short Y;
@@ -25,7 +25,7 @@ namespace Parser {
 			}
 		};
 
-		class API Hitobject
+		class API_PLAYER Hitobject
 		{
 		public:
 			Hitobject(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<std::shared_ptr<Hitsound>> hitsounds)

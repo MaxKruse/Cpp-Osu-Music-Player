@@ -6,7 +6,7 @@ namespace Parser {
 
 	// A Slider is the most complex Hitobject
 	// lots of sounds possible due to repeats having their own sounds
-		class API Slider : public Hitobject
+		class API_PLAYER Slider : public Hitobject
 		{
 		public:
 			Slider(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<std::shared_ptr<Hitsound>> hitsounds);

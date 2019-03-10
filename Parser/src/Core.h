@@ -3,7 +3,7 @@
 
 
 #ifdef BUILD_DLL
-	#define API __declspec(dllexport)
+	#define API_PLAYER __declspec(dllexport)
 #else
-	#define API __declspec(dllimport)
+	#define API_PLAYER __declspec(dllimport)
 #endif

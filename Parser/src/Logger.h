@@ -9,7 +9,7 @@
 
 namespace Parser {
 
-	class API Logger
+	class API_PLAYER Logger
 	{
 
 	public:

@@ -10,7 +10,7 @@ namespace Parser {
 	time_t x;
 
 	// Parser Class to handle .osu files
-	class API Parser
+	class API_PLAYER Parser
 	{
 	public:
 		Parser(const std::string SongsFolderPath, const std::string hitsoundsFolder, bool GetListOfFiles = true);

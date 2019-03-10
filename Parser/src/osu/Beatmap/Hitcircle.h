@@ -6,7 +6,7 @@ namespace Parser {
 
 		// A Hitcircle is the 2nd simplest Hitobject, next to a spinner
 		// One offset, a maximum of 4 possible hitsounds (including default)
-		class API Hitcircle : public Hitobject
+		class API_PLAYER Hitcircle : public Hitobject
 		{
 		public:
 			Hitcircle(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<std::shared_ptr<Hitsound>> hitsounds);

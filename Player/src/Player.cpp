@@ -8,6 +8,11 @@
 #include "SimpleIni.h"
 #include "Player.h"
 
+#include "nana/gui.hpp"
+#include "nana/gui/widgets/label.hpp"
+#include "nana/gui/widgets/listbox.hpp"
+#include "nana/gui/widgets/button.hpp"
+
 struct parser pstate;
 struct beatmap map;
 
@@ -103,7 +108,7 @@ bool PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, lon
 	beatmap->SetSongVolume(songVolume);
 	beatmap->SetSampleVolume(sampleVolume);
 	beatmap->SetSpeedup(speedup);
-	//beatmap->Play();
+	beatmap->Play();
 
 	while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
 		// Check for the current Position in the channel
@@ -126,6 +131,24 @@ int main(int argc, const char * argv[])
 	// Oppai Inits
 	p_init(&pstate);
 	d_init(&stars);
+
+	// nana GUI
+	nana::form PlayerGUI;
+	nana::label labelTitle(PlayerGUI, "osu! Hitsound Musicplayer");
+	nana::button buttonCloseProgram(PlayerGUI, "Quit");
+
+	buttonCloseProgram.events().click([&PlayerGUI] {
+		PlayerGUI.close();
+		LOGGER_FLUSH();
+		return 0;
+	});
+	PlayerGUI.div("vert <><<><text><>><><weight=24<><button><>><>");
+
+	PlayerGUI["text"] << labelTitle;
+	PlayerGUI["button"] << buttonCloseProgram;
+
+	PlayerGUI.collocate();
+	PlayerGUI.show();
 
 	LOGGER_INFO("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
 	
@@ -215,6 +238,8 @@ int main(int argc, const char * argv[])
 
 	do // Music Playing Loop
 	{
+		nana::exec();
+
 		// Get Beatmap
 		auto index = Parser::Random(list);
 		//auto index = 3898; //FELY SEX

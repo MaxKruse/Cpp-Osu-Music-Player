@@ -32,10 +32,10 @@ option(NANA_CMAKE_LIBPNG_FROM_OS "Use libpng from operating system." ON)
 option(NANA_CMAKE_ENABLE_JPEG "Enable the use of JPEG" OFF)
 option(NANA_CMAKE_LIBJPEG_FROM_OS "Use libjpeg from operating system." ON)
 option(NANA_CMAKE_ENABLE_AUDIO "Enable class audio::play for PCM playback." OFF)
-option(NANA_CMAKE_SHARED_LIB "Compile nana as a shared library." OFF)
+option(NANA_CMAKE_SHARED_LIB "Compile nana as a shared library." ON)
 option(NANA_CMAKE_VERBOSE_PREPROCESSOR "Show annoying debug messages during compilation." ON)
 option(NANA_CMAKE_STOP_VERBOSE_PREPROCESSOR "Stop compilation after showing the annoying debug messages." OFF)
-option(NANA_CMAKE_AUTOMATIC_GUI_TESTING "Activate automatic GUI testing?" OFF)
+option(NANA_CMAKE_AUTOMATIC_GUI_TESTING "Activate automatic GUI testing?" ON)
 option(NANA_CLION "Activate some CLion specific workarounds" OFF)
 
 # The ISO C++ File System Technical Specification (ISO-TS, or STD) is optional.
@@ -68,8 +68,8 @@ if(WIN32)
     add_definitions(-DWIN32)
     # Global MSVC definitions. You may prefer the hand-tuned sln and projects from the nana repository.
     if(MSVC)
-        option(MSVC_USE_MP "Set to ON to build nana with the /MP option (Visual Studio 2005 and above)." ON)
-        option(MSVC_USE_STATIC_RUNTIME "Set to ON to build nana with the /MT(d) option." ON)
+        option(MSVC_USE_MP "Set to ON to build nana with the /MP option (Visual Studio 2005 and above)." OFF)
+        option(MSVC_USE_STATIC_RUNTIME "Set to ON to build nana with the /MT(d) option." OFF)
 
         # Change the MSVC Compiler flags
         if(MSVC_USE_MP)

@@ -12,7 +12,7 @@ namespace Parser {
 		/// <summary>
 		/// General data, otherwise not categorized
 		/// </summary>
-		class API General
+		class API_PLAYER General
 		{
 			std::string m_FileFormatVersion;
 			std::string m_AudioFilename;
@@ -58,7 +58,7 @@ namespace Parser {
 		/// <summary>
 		/// Metadata Stored for the individual .osu file
 		/// </summary>
-		class API Metadata
+		class API_PLAYER Metadata
 		{
 			std::string m_Artist;
 			std::string m_ArtistUnicode;
@@ -105,11 +105,11 @@ namespace Parser {
 		/// <summary>
 		/// These attributes can be used for search algorithms
 		/// </summary>
-		class API SearchBy
+		class API_PLAYER SearchBy
 		{
 			std::string m_Source;
 			std::string m_Tags;
-			int         m_BeatmapID{ -1 };
+			int         m_BeatmAPI_PLAYERD{ -1 };
 			int         m_BeatmapSetID{ -1 };
 		public:
 			SearchBy()
@@ -117,8 +117,8 @@ namespace Parser {
 				LOGGER_WARN("SearchBy initialized with default values.");
 			}
 
-			SearchBy(std::string Source, std::string Tags, int BeatmapID, int BeatmapSetID)
-				: m_Source(std::move(Source)), m_Tags(std::move(Tags)), m_BeatmapID(BeatmapID), m_BeatmapSetID(BeatmapSetID)
+			SearchBy(std::string Source, std::string Tags, int BeatmAPI_PLAYERD, int BeatmapSetID)
+				: m_Source(std::move(Source)), m_Tags(std::move(Tags)), m_BeatmAPI_PLAYERD(BeatmAPI_PLAYERD), m_BeatmapSetID(BeatmapSetID)
 			{
 				LOGGER_TRACE("{}", ToString());
 			}
@@ -127,13 +127,13 @@ namespace Parser {
 			{
 				std::stringstream ss;
 				ss << "SearchBy => [Source = " << m_Source << ", Tags = " << m_Tags
-					<< ", BeatmapID = " << m_BeatmapID << ", BeatmapSetID = " << m_BeatmapSetID << "]";
+					<< ", BeatmAPI_PLAYERD = " << m_BeatmAPI_PLAYERD << ", BeatmapSetID = " << m_BeatmapSetID << "]";
 				return ss.str();
 			}
 
 			bool HasDefaults()
 			{
-				if (m_Source.empty() || m_Tags.empty() || m_BeatmapID == -1 || m_BeatmapSetID == -1)
+				if (m_Source.empty() || m_Tags.empty() || m_BeatmAPI_PLAYERD == -1 || m_BeatmapSetID == -1)
 				{
 					return true;
 				}
@@ -151,7 +151,7 @@ namespace Parser {
 		/// float TrueCircleSize = m_CircleSize / 10.0f;
 		/// 
 		/// </summary>
-		class API Difficulty
+		class API_PLAYER Difficulty
 		{
 			unsigned short m_HPDrainRate{ 255 };
 			unsigned short m_CircleSize{ 255 };
@@ -193,7 +193,7 @@ namespace Parser {
 		};
 
 		// A Beatmap is a single Object that knows about all of its contents (see .osu files for contents)
-		class API Beatmap
+		class API_PLAYER Beatmap
 		{
 		public:
 			Beatmap(const std::string &, const std::string &, const std::string &, const std::string &, std::vector<std::shared_ptr<Hitobject>>, std::vector<TimingPoint>, General, Metadata, SearchBy, Difficulty);

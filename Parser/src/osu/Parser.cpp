@@ -62,7 +62,7 @@ namespace Parser {
 		return std::make_unique<Beatmap::Beatmap>(m_FullFilePath, Folder, m_HitsoundsFolder, image, hitobjects, timings, general, meta, search, diff);
 	}
 
-	// This is intended to do the same thing as above, except just reading from a vector itself (API purposes for other programs)
+	// This is intended to do the same thing as above, except just reading from a vector itself (API_PLAYER purposes for other programs)
 	std::unique_ptr<Beatmap::Beatmap> Parser::BeatmapFromString(const std::vector<std::string> & Text)
 	{
 		LOGGER_DEBUG("Parsing from StringVector");
@@ -1806,7 +1806,7 @@ namespace Parser {
 		// Set defaults to compare later on
 		std::string Source = "-1";
 		std::string Tags = "-1";
-		int         BeatmapID = -1;
+		int         BeatmAPI_PLAYERD = -1;
 		int         BeatmapSetID = -1;
 
 		int found = 0;
@@ -1833,10 +1833,10 @@ namespace Parser {
 				found++;
 			}
 
-			if (line.find("BeatmapID:") != std::string::npos)
+			if (line.find("BeatmAPI_PLAYERD:") != std::string::npos)
 			{
-				BeatmapID = atoi(line.erase(0, 10).c_str());
-				LOGGER_TRACE("FOUND BEATMAPID => {}", BeatmapID);
+				BeatmAPI_PLAYERD = atoi(line.erase(0, 10).c_str());
+				LOGGER_TRACE("FOUND BEATMAPI_PLAYERD => {}", BeatmAPI_PLAYERD);
 				found++;
 			}
 
@@ -1848,7 +1848,7 @@ namespace Parser {
 			}
 		}
 
-		return Beatmap::SearchBy(Source, Tags, BeatmapID, BeatmapSetID);
+		return Beatmap::SearchBy(Source, Tags, BeatmAPI_PLAYERD, BeatmapSetID);
 	}
 
 	// Parse the Difficulty Section from a file

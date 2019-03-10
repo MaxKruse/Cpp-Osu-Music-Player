@@ -4,7 +4,7 @@
 namespace Parser {
 	namespace Beatmap {
 		// Timingpoints are basic timings that affect hitsounds played and the speed of the map, as well as volume.
-		class API TimingPoint
+		class API_PLAYER TimingPoint
 		{
 		public:
 			TimingPoint()
