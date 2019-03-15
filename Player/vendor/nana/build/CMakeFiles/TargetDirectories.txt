@@ -1,5 +1,0 @@
-C:/Dev/C++ Osu Music Player/Player/vendor/nana/build/CMakeFiles/nana.dir
-C:/Dev/C++ Osu Music Player/Player/vendor/nana/build/CMakeFiles/INSTALL.dir
-C:/Dev/C++ Osu Music Player/Player/vendor/nana/build/CMakeFiles/RUN_TESTS.dir
-C:/Dev/C++ Osu Music Player/Player/vendor/nana/build/CMakeFiles/ALL_BUILD.dir
-C:/Dev/C++ Osu Music Player/Player/vendor/nana/build/CMakeFiles/ZERO_CHECK.dir

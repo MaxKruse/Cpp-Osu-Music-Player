@@ -255,83 +255,12 @@ int main(int argc, const char * argv[])
 	}
 #endif
 
-#if _GUI
-	// nana GUI
-	int width = 1280, height = 720;
-	nana::form PlayerGUI;
-	PlayerGUI.caption("Osu Hitsound Musicplayer");
-	PlayerGUI.size(nana::size(width, height));
-	PlayerGUI.move(nana::point(1920/2 - width / 2, 1080/2 - height/2));
-
-	nana::label labelTitle(PlayerGUI, "<bold size=30 >osu! Hitsound Player</>");
-	labelTitle.format(true);
-
-	nana::button buttonPlaySongs(PlayerGUI, "Play");
-	nana::button buttonPauseSongs(PlayerGUI, "Pause");
-	nana::button buttonStopSongs(PlayerGUI, "Stop");
-	nana::button buttonQuit(PlayerGUI, "Quit");
-	
-
-	PlayerGUI.events().destroy([] {
-		CloseProgram = true;
-		return 0;
-	});
-
-	buttonQuit.events().click([&PlayerGUI] {
-		PlayerGUI.close();
-		CloseProgram = true;
-	});
-
-	// Play song in extra threa
-
-	buttonPauseSongs.events().click([] {
-		LOGGER_DEBUG("buttonPauseSongs pressed");
-		PauseSong = true;
-	});
-
-	buttonPlaySongs.events().click([&PlayerGUI, &list, &Settings, &p] {
-		LOGGER_DEBUG("buttonPlaySongs pressed");
-		PlaySong = true;
-		if (PauseSong)
-		{
-			PauseSong = false;
-		}
-		else
-		{
-			std::thread PlaySongThread(PlayBeatmap, list, Settings, p);
-			PlaySongThread.detach();
-		}
-		
-	});
-
-	buttonStopSongs.events().click([] {
-		LOGGER_DEBUG("buttonStopSongs pressed");
-		PlaySong = false;
-	});
-
-	PlayerGUI.div("vert <><<><text><>><<><buttonPlay><><buttonPause><><buttonStop><>><><<><buttonQuit><>><>");
-
-	PlayerGUI["text"] << labelTitle;
-	PlayerGUI["buttonPlay"] << buttonPlaySongs;
-	PlayerGUI["buttonPause"] << buttonPauseSongs;
-	PlayerGUI["buttonStop"] << buttonStopSongs;
-	PlayerGUI["buttonQuit"] << buttonQuit;
-
-	PlayerGUI.collocate();
-	PlayerGUI.show();
-	nana::exec();
-#else
-	
-
-
 	do // Main Loop
 	{
 		PlayBeatmap(list, Settings, p);
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
 	} while (true);
-
-#endif
 
 	// On Exit, flush all debug output to logfile
 	LOGGER_FLUSH();

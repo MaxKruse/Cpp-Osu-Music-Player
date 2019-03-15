@@ -87,8 +87,6 @@ project "Parser"
 
 include "Player/vendor/SimpleIni"
 
-include "Player/vendor/nana"
-
 project "Player"
 	location "Player"
 	kind "ConsoleApp"
@@ -117,8 +115,6 @@ project "Player"
 		"%{prj.name}/vendor/Un4Seen_bass",
 		"%{prj.name}/vendor/SimpleIni",
 		"%{prj.name}/vendor/oppai-ng",
-		"%{prj.name}/vendor/Win32xx/include",
-		"%{prj.name}/vendor/nana/include",
 		"Parser/src",
 		"Parser/vendor/cxxtimer",
 		"Parser/vendor/spdlog/include"
@@ -136,7 +132,6 @@ project "Player"
 		"bass.lib",
 		"bass_fx.lib",
 		"SimpleIni",
-		"nana" 
 	}
 
 	filter "system:windows"
