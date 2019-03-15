@@ -193,9 +193,30 @@ namespace Parser {
 			{
 				return true;
 			}
+			
+			bool res = false;
+			auto items = split(criteria, '\x20'); // seperate by space
 
-			auto items = split(criteria, ' ');
-			return false;
+			for (const auto& item : items)
+			{
+				if (item.find("bpm") != std::string::npos)
+				{
+					auto ComparisonOperator = item.substr(3, 1);
+					if (ComparisonOperator == ">" && GetBPM() > atoi(item.substr(4, item.size() - 4).c_str()))
+					{
+						res = true;
+					}
+					else if(ComparisonOperator == "<" && GetBPM() < atoi(item.substr(4, item.size() - 4).c_str()))
+					{
+						res = true;
+					}
+					else if(ComparisonOperator == "=" && GetBPM() == atoi(item.substr(4, item.size() - 4).c_str()))
+					{
+						res = true;
+					}
+				}
+			}
+			return res;
 		}
 
 		void Beatmap::LoadHitsounds()
