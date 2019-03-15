@@ -8,11 +8,6 @@
 #include "SimpleIni.h"
 #include "Player.h"
 
-#include "nana/gui.hpp"
-#include "nana/gui/widgets/label.hpp"
-#include "nana/gui/widgets/listbox.hpp"
-#include "nana/gui/widgets/button.hpp"
-
 struct parser pstate;
 struct beatmap map;
 
