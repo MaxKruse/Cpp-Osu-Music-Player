@@ -14,6 +14,7 @@ namespace Parser {
 	{
 	public:
 		Parser(const std::string SongsFolderPath, const std::string hitsoundsFolder, bool GetListOfFiles = true);
+		Parser(const Parser& p) : m_SongsFolder(p.m_SongsFolder), m_HitsoundsFolder(p.m_HitsoundsFolder) {}
 
 		std::unique_ptr<Beatmap::Beatmap> BeatmapFromFile(const std::string & FilePath);
 		std::unique_ptr<Beatmap::Beatmap> BeatmapFromString(const std::vector<std::string> & Text);

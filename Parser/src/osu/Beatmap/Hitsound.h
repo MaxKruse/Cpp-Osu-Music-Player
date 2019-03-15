@@ -31,6 +31,7 @@ namespace Parser {
 		class Hitsound
 		{
 		public:
+			Hitsound();
 			Hitsound(long offset, std::vector<std::string> sampleFiles, unsigned char volume);
 			~Hitsound();
 
@@ -38,16 +39,15 @@ namespace Parser {
 			inline const long GetOffset() const { return m_Offset; }
 			inline const unsigned char GetVolume() const { return m_Volume; }
 
-			void AddStream(HSTREAM);
+			void AddStream(std::string, HSTREAM);
 			void Play();
-			void Load(std::vector<HSTREAM>);
 			void ChangePlaybackVolume(float);
 
 		private:
 			long m_Offset;
 			unsigned char m_Volume;
 			std::vector<std::string> m_SampleFiles;
-			std::vector<HSTREAM> m_SampleStreams;
+			std::map<std::string, HSTREAM> m_SampleStreams;
 
 			bool operator==(const Hitsound* other)
 			{

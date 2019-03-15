@@ -267,9 +267,6 @@ namespace Parser {
 				return (QWORD)floor(BASS_ChannelBytes2Seconds(m_HandleFX, bytePos));
 			}
 
-			void GetMissedHitsounds();
-			inline const size_t CountMissedHitsounds() const { return m_HitsoundsDeleteable.size(); }
-
 			void Play();
 			void Pause();
 			void Stop();
@@ -286,12 +283,16 @@ namespace Parser {
 			bool Search(std::string);
 
 		private:
+			void LoadHitsounds();
+
+		private:
 			std::string                             m_FilePath;
 			std::string                             m_Folder;
 			std::string                             m_BackgroundImage;
 			std::vector<std::shared_ptr<Hitobject>> m_HitObjects;
 			std::vector<TimingPoint>                m_TimingPoints;
 			std::vector<std::vector<long>>		    m_Offsets;
+			std::string								m_HitsoundsFolder;
 
 			float m_SampleVolume;
 

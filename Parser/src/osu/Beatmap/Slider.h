@@ -9,8 +9,12 @@ namespace Parser {
 		class API_PLAYER Slider : public Hitobject
 		{
 		public:
-			Slider(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<std::shared_ptr<Hitsound>> hitsounds);
-
+			Slider(unsigned short x, unsigned short y, long offset, unsigned short type, std::string myLine);
+			
+			virtual unsigned short GetType() override
+			{
+				return HITOBJECT_TYPE::SLIDER;
+			}
 		};
 	} // namespace Beatmap
 } // namespace Parser

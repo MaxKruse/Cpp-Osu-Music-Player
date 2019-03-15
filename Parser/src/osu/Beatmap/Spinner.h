@@ -9,7 +9,11 @@ namespace Parser {
 	class API_PLAYER Spinner : public Hitobject
 	{
 	public:
-		Spinner(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<std::shared_ptr<Hitsound>> hitsounds);
+		Spinner(unsigned short x, unsigned short y, long offset, unsigned short type, std::string myLine);
+		unsigned short GetType() override
+		{
+			return HITOBJECT_TYPE::SPINNER;
+		}
 	};
 
 	} // namespace Beatmap

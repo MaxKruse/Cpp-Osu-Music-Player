@@ -18,108 +18,146 @@ struct beatmap map;
 
 struct diff_calc stars;
 
-bool PlayBeatmap(const std::string& path, double & minStar, long & cpuSleep, long & speedup, long & masterVolume, long & songVolume, long & sampleVolume, std::string& criteria, Parser::Parser & p)
+static void PlayBeatmap(std::vector<std::string> list, CSimpleIniA* Settings, Parser::Parser p)
 {
-	// skip if file no longer exists
-	auto fullPath = p.GetFolderPath() + path;
+	bool foundSongToPlay = false;
+	srand(time(NULL));
+	auto seed = std::thread::hardware_concurrency() * rand();
+	srand(seed);
 
-	if (!std::filesystem::exists(fullPath))
-	{
-		LOGGER_ERROR("File doesnt exist => {}", p.GetFolderPath() + path);
-		LOGGER_ERROR("Consider resetting/deleting your Beatmaps.prs file");
-		return true;
-	}
-
-	FILE* bm;
-
-	// Oppai stuff
-	try
-	{
-		bm = fopen(fullPath.c_str(), "r");
-		p_map(&pstate, &map, bm);
-		fclose(bm);
-	}
-	catch (const std::exception& e)
-	{
-		LOGGER_ERROR("ERROR OCCURED: {}", e.what());
-		LOGGER_ERROR("+++ ERROR DATA START +++");
-		LOGGER_ERROR("FILE TO OPEN => {}", fullPath);
-		LOGGER_ERROR("ACCESS MODE => {}", "\"r\"");
-		LOGGER_ERROR("OPPAI STATES => {}", pstate);
-		LOGGER_ERROR("+++ ERROR DATA END +++");
-		return true;
-	}
-	
-
-	if (map.original_mode != MODE_STD)
-	{
-		LOGGER_WARN("Cant Play (wrong mode) => {}", p.GetFolderPath() + path);
-		return false;
-	}
-
-	d_calc(&stars, &map, 0);
-
-	if (stars.total < minStar)
-	{
-		LOGGER_WARN("Cant Play (low star rating) => {}", p.GetFolderPath() + path);
-		return false;
-	}
-
-	double bpm;
-	QWORD lengthInSeconds;
-	QWORD a, b;
-	int Offset;
-	std::vector<std::vector<long>> offsets;
-
-	auto beatmap = p.BeatmapFromFile(path);
-
-	// Check if beatmap is supported
-	if (!beatmap->IsPlayable())
-	{
-		LOGGER_WARN("Cant Play (Wrong FileVersion) => {}", beatmap->GetMetadataText());
-		return false;
-	}
-
-	if (!beatmap->Search(criteria))
-	{
-		LOGGER_WARN("Search Criteria werent met => {}", criteria);
-		return false;
-	}
-
-	//beatmap->Load();
-
-	// Debug logs
-	LOGGER_TRACE("MP3 for {} => {}", path, beatmap->GetMp3());
-	LOGGER_TRACE("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
-
-	// 5. Get Song Length to Display change later
-	bpm = beatmap->GetBPM();
-	lengthInSeconds = beatmap->GetSongLength();
-
-	// 6. Display Data
-	a = (int)floor(lengthInSeconds / 60.0);
-	b = (int)floor(fmod(lengthInSeconds, 60));
-	LOGGER_INFO("Original Length: {:02d}:{:02d}", a, b);
-
-	LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
-	LOGGER_DEBUG("{:.2f} stars", stars.total);
-
-	beatmap->SetGlobalVolume(masterVolume);
-	beatmap->SetSongVolume(songVolume);
-	beatmap->SetSampleVolume(sampleVolume);
-	beatmap->SetSpeedup(speedup);
-	beatmap->Play();
-
-	while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
-		// Check for the current Position in the channel
-		if (Offset = beatmap->GetCurrentOffset())
+		do
 		{
-			beatmap->PlaySamples(Offset);
-		}
-		std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
-	}
+			foundSongToPlay = false;
 
-	return false;
+			// Get Beatmap
+			auto index = Parser::Random(list);
+			LOGGER_DEBUG("INDEX TO PLAY: {}", index);
+			//auto index = 3898; //FELY SEX
+			//auto index = 15411; //RAISE MY SWORD
+			//auto index = 9827; // DAN DAN KIKOERU
+
+			// Re-Read values for every beatmap to allow for changes between songs
+			auto minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);
+			auto cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
+			auto speedup = Settings->GetLongValue("General", "SpeedUp", 0);
+			auto hitsoundFolder = std::string(Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/"));
+
+			if (hitsoundFolder.at(hitsoundFolder.length() - 1) != '/' && hitsoundFolder.at(hitsoundFolder.length() - 1) != '\\')
+			{
+				hitsoundFolder += "/";
+			}
+
+			auto criteria = Settings->GetValue("Search", "SearchText", "bpm>=140");
+			auto masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 14);
+			auto songVolume = Settings->GetLongValue("Audio", "SongVolume", 8);
+			auto sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 10);
+
+			auto path = list.at(index);
+			auto fullPath = p.GetFolderPath() + path;
+
+			if (!std::filesystem::exists(fullPath))
+			{
+				LOGGER_ERROR("File doesnt exist => {}", p.GetFolderPath() + path);
+				LOGGER_ERROR("Consider resetting/deleting your Beatmaps.prs file");
+				continue;
+			}
+
+			FILE* bm;
+
+			// Oppai stuff
+			try
+			{
+				bm = fopen(fullPath.c_str(), "r");
+				p_map(&pstate, &map, bm);
+				fclose(bm);
+			}
+			catch (const std::exception& e)
+			{
+				LOGGER_ERROR("ERROR OCCURED: {}", e.what());
+				LOGGER_ERROR("+++ ERROR DATA START +++");
+				LOGGER_ERROR("FILE TO OPEN => {}", fullPath);
+				LOGGER_ERROR("ACCESS MODE => {}", "\"r\"");
+				LOGGER_ERROR("OPPAI STATES => {}", pstate);
+				LOGGER_ERROR("+++ ERROR DATA END +++");
+				continue;
+			}
+
+
+			if (map.original_mode != MODE_STD)
+			{
+				LOGGER_WARN("Cant Play (wrong mode) => {}", p.GetFolderPath() + path);
+				continue;
+			}
+
+			d_calc(&stars, &map, 0);
+
+			if (stars.total < minStar)
+			{
+				LOGGER_WARN("Cant Play (low star rating) => {}", p.GetFolderPath() + path);
+				continue;
+			}
+
+
+			double bpm;
+			QWORD lengthInSeconds;
+			QWORD a, b;
+			int Offset;
+			std::vector<std::vector<long>> offsets;
+
+			auto beatmap = p.BeatmapFromFile(path);
+
+			// Check if beatmap is supported
+			if (!beatmap->IsPlayable())
+			{
+				LOGGER_WARN("Cant Play (Wrong FileVersion) => {}", beatmap->GetMetadataText());
+				continue;
+			}
+
+			if (!beatmap->Search(criteria))
+			{
+				LOGGER_WARN("Search Criteria werent met => {}", criteria);
+				continue;
+			}
+
+
+			beatmap->Load();
+			foundSongToPlay = true;
+
+			// Debug logs
+			LOGGER_TRACE("MP3 for {} => {}", path, beatmap->GetMp3());
+			LOGGER_TRACE("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
+
+			// 5. Get Song Length to Display change later
+			bpm = beatmap->GetBPM();
+			lengthInSeconds = beatmap->GetSongLength();
+
+			// 6. Display Data
+			a = (int)floor(lengthInSeconds / 60.0);
+			b = (int)floor(fmod(lengthInSeconds, 60));
+			LOGGER_INFO("Original Length: {:02d}:{:02d}", a, b);
+
+			LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
+			LOGGER_DEBUG("{:.2f} stars", stars.total);
+
+			beatmap->SetGlobalVolume(masterVolume);
+			beatmap->SetSongVolume(songVolume);
+			beatmap->SetSampleVolume(sampleVolume);
+			beatmap->SetSpeedup(speedup);
+			beatmap->Play();
+
+			bool prevPause = false;
+
+
+			while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
+				// Check for the current Position in the channel
+				if (Offset = beatmap->GetCurrentOffset())
+				{
+					beatmap->PlaySamples(Offset);
+				}
+				std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
+			}
+
+		} while (!foundSongToPlay);
 }
 
 
@@ -131,24 +169,6 @@ int main(int argc, const char * argv[])
 	// Oppai Inits
 	p_init(&pstate);
 	d_init(&stars);
-
-	// nana GUI
-	nana::form PlayerGUI;
-	nana::label labelTitle(PlayerGUI, "osu! Hitsound Musicplayer");
-	nana::button buttonCloseProgram(PlayerGUI, "Quit");
-
-	buttonCloseProgram.events().click([&PlayerGUI] {
-		PlayerGUI.close();
-		LOGGER_FLUSH();
-		return 0;
-	});
-	PlayerGUI.div("vert <><<><text><>><><weight=24<><button><>><>");
-
-	PlayerGUI["text"] << labelTitle;
-	PlayerGUI["button"] << buttonCloseProgram;
-
-	PlayerGUI.collocate();
-	PlayerGUI.show();
 
 	LOGGER_INFO("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
 	
@@ -220,7 +240,6 @@ int main(int argc, const char * argv[])
 	long masterVolume;
 	long songVolume;
 	long sampleVolume;
-	bool error = true;
 
 	Parser::Parser p(folder, hitsoundFolder);
 	auto list = p.GetListOfFiles();
@@ -236,41 +255,83 @@ int main(int argc, const char * argv[])
 	}
 #endif
 
-	do // Music Playing Loop
+#if _GUI
+	// nana GUI
+	int width = 1280, height = 720;
+	nana::form PlayerGUI;
+	PlayerGUI.caption("Osu Hitsound Musicplayer");
+	PlayerGUI.size(nana::size(width, height));
+	PlayerGUI.move(nana::point(1920/2 - width / 2, 1080/2 - height/2));
+
+	nana::label labelTitle(PlayerGUI, "<bold size=30 >osu! Hitsound Player</>");
+	labelTitle.format(true);
+
+	nana::button buttonPlaySongs(PlayerGUI, "Play");
+	nana::button buttonPauseSongs(PlayerGUI, "Pause");
+	nana::button buttonStopSongs(PlayerGUI, "Stop");
+	nana::button buttonQuit(PlayerGUI, "Quit");
+	
+
+	PlayerGUI.events().destroy([] {
+		CloseProgram = true;
+		return 0;
+	});
+
+	buttonQuit.events().click([&PlayerGUI] {
+		PlayerGUI.close();
+		CloseProgram = true;
+	});
+
+	// Play song in extra threa
+
+	buttonPauseSongs.events().click([] {
+		LOGGER_DEBUG("buttonPauseSongs pressed");
+		PauseSong = true;
+	});
+
+	buttonPlaySongs.events().click([&PlayerGUI, &list, &Settings, &p] {
+		LOGGER_DEBUG("buttonPlaySongs pressed");
+		PlaySong = true;
+		if (PauseSong)
+		{
+			PauseSong = false;
+		}
+		else
+		{
+			std::thread PlaySongThread(PlayBeatmap, list, Settings, p);
+			PlaySongThread.detach();
+		}
+		
+	});
+
+	buttonStopSongs.events().click([] {
+		LOGGER_DEBUG("buttonStopSongs pressed");
+		PlaySong = false;
+	});
+
+	PlayerGUI.div("vert <><<><text><>><<><buttonPlay><><buttonPause><><buttonStop><>><><<><buttonQuit><>><>");
+
+	PlayerGUI["text"] << labelTitle;
+	PlayerGUI["buttonPlay"] << buttonPlaySongs;
+	PlayerGUI["buttonPause"] << buttonPauseSongs;
+	PlayerGUI["buttonStop"] << buttonStopSongs;
+	PlayerGUI["buttonQuit"] << buttonQuit;
+
+	PlayerGUI.collocate();
+	PlayerGUI.show();
+	nana::exec();
+#else
+	
+
+
+	do // Main Loop
 	{
-		nana::exec();
+		PlayBeatmap(list, Settings, p);
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
-		// Get Beatmap
-		auto index = Parser::Random(list);
-		//auto index = 3898; //FELY SEX
-		//auto index = 15411; //RAISE MY SWORD
-		//auto index = 9827; // DAN DAN KIKOERU
-
-		// Re-Read values for every beatmap to allow for changes between songs
-		minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);
-		cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
-		speedup = Settings->GetLongValue("General", "SpeedUp", 0);
-		hitsoundFolder = std::string(Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/"));
-
-		if (hitsoundFolder.at(hitsoundFolder.length() - 1) != '/' && hitsoundFolder.at(hitsoundFolder.length() - 1) != '\\')
-		{
-			hitsoundFolder += "/";
-		}
-
-		criteria = Settings->GetValue("Search", "SearchText", "bpm>=140");
-		masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 14);
-		songVolume = Settings->GetLongValue("Audio", "SongVolume", 8);
-		sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 10);
-
-		error = PlayBeatmap(list.at(index), minStar, cpuSleep, speedup, masterVolume, songVolume, sampleVolume, std::string(criteria), p);
-		if (error)
-		{
-			LOGGER_ERROR("Some Error occured, please file a bugreport on github.");
-			LOGGER_FLUSH();
-			std::cin.get();
-			return 1;
-		}
 	} while (true);
+
+#endif
 
 	// On Exit, flush all debug output to logfile
 	LOGGER_FLUSH();

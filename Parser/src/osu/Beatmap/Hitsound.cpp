@@ -13,25 +13,25 @@ namespace Parser {
 		{
 		}
 
-		void Hitsound::AddStream(HSTREAM stream)
+		void Hitsound::AddStream(std::string filename, HSTREAM stream)
 		{
-			m_SampleStreams.emplace_back(stream);
+			m_SampleStreams.emplace(std::pair<std::string, HSTREAM>(filename, stream));
 		}
 
 		void Hitsound::Play()
 		{
-			for (const auto& stream : m_SampleStreams)
+			for (const auto& pair : m_SampleStreams)
 			{
-				LOGGER_DEBUG("Playing at {}ms with {}% Volume", m_Offset, m_Volume);
-				BASS_ChannelPlay(stream, true);
+				LOGGER_DEBUG("Playing {} at {}ms with {}% Volume", pair.first, m_Offset, m_Volume);
+				BASS_ChannelPlay(pair.second, true);
 			}	
 		}
 
 		void Hitsound::ChangePlaybackVolume(float vol)
 		{
-			for (const auto& stream : m_SampleStreams)
+			for (const auto& pair : m_SampleStreams)
 			{
-				BASS_ChannelSetAttribute(stream, BASS_ATTRIB_VOL, vol);
+				BASS_ChannelSetAttribute(pair.second, BASS_ATTRIB_VOL, vol);
 			}
 		}
 

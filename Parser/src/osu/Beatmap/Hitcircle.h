@@ -9,7 +9,12 @@ namespace Parser {
 		class API_PLAYER Hitcircle : public Hitobject
 		{
 		public:
-			Hitcircle(unsigned short x, unsigned short y, long offset, unsigned short type, std::vector<std::shared_ptr<Hitsound>> hitsounds);
+			Hitcircle(unsigned short x, unsigned short y, long offset, unsigned short type, std::string myLine);
+			
+			unsigned short GetType() override
+			{
+				return HITOBJECT_TYPE::HITCIRCLE;
+			}
 
 		private:
 			std::vector<std::string> m_Extras;

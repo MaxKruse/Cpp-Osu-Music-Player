@@ -27,7 +27,6 @@ project "nana"
 		systemversion "latest"
 		defines
 		{
-			"NANA_WINDOWS",
 			"WIN32"
 		}
 		
