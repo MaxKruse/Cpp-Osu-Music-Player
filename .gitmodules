@@ -7,3 +7,6 @@
 [submodule "Player/vendor/SimpleIni"]
 	path = Player/vendor/SimpleIni
 	url = https://github.com/MaxKruse/simpleini
+[submodule "Player/vendor/oppai-ng"]
+	path = Player/vendor/oppai-ng
+	url = https://github.com/MaxKruse/oppai-ng
