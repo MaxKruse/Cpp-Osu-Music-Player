@@ -1,158 +1,139 @@
 ﻿#include "pch.h"
 
+#include "Player.h"
+
+
+extern "C" {
+#define OPPAI_STATIC_HEADER
+#include "oppai.c"
+}
+
 #include "Core.h"
 #include "osu/Parser.h"
 #include "cxxtimer.hpp"
 
 #define SI_CONVERT_WIN32
 #include "SimpleIni.h"
-#include "Player.h"
 
-struct parser pstate;
-struct beatmap map;
-
-struct diff_calc stars;
+ezpp_t ez;
 
 static void PlayBeatmap(std::vector<std::string> list, CSimpleIniA* Settings, Parser::Parser p)
 {
 	bool foundSongToPlay = false;
 	srand(time(NULL));
-	auto seed = std::thread::hardware_concurrency() * rand();
-	srand(seed);
 
-		do
+	do
+	{
+		foundSongToPlay = false;
+
+		// Get Beatmap
+		auto index = Parser::Random(list);
+		LOGGER_DEBUG("INDEX TO PLAY: {}", index);
+		//auto index = 3898; //FELY SEX
+		//auto index = 15411; //RAISE MY SWORD
+		//auto index = 9827; // DAN DAN KIKOERU
+
+		// Re-Read values for every beatmap to allow for changes between songs
+		auto minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);
+		auto cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
+		auto speedup = Settings->GetLongValue("General", "SpeedUp", 0);
+		auto hitsoundFolder = std::string(Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/"));
+
+		if (hitsoundFolder.at(hitsoundFolder.length() - 1) != '/' && hitsoundFolder.at(hitsoundFolder.length() - 1) != '\\')
 		{
-			foundSongToPlay = false;
+			hitsoundFolder += "/";
+		}
 
-			// Get Beatmap
-			auto index = Parser::Random(list);
-			LOGGER_DEBUG("INDEX TO PLAY: {}", index);
-			//auto index = 3898; //FELY SEX
-			//auto index = 15411; //RAISE MY SWORD
-			//auto index = 9827; // DAN DAN KIKOERU
+		auto criteria = Settings->GetValue("Search", "SearchText", "bpm>=140");
+		auto masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 14);
+		auto songVolume = Settings->GetLongValue("Audio", "SongVolume", 8);
+		auto sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 10);
 
-			// Re-Read values for every beatmap to allow for changes between songs
-			auto minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);
-			auto cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
-			auto speedup = Settings->GetLongValue("General", "SpeedUp", 0);
-			auto hitsoundFolder = std::string(Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/"));
+		auto path = list.at(index);
+		auto fullPath = p.GetFolderPath() + path;
 
-			if (hitsoundFolder.at(hitsoundFolder.length() - 1) != '/' && hitsoundFolder.at(hitsoundFolder.length() - 1) != '\\')
+		ezpp(ez, (char*)fullPath.c_str());
+
+		if (!std::filesystem::exists(fullPath))
+		{
+			LOGGER_ERROR("File doesnt exist => {}", p.GetFolderPath() + path);
+			LOGGER_ERROR("Consider resetting/deleting your Beatmaps.prs file");
+			continue;
+		}
+
+		if (ezpp_mode(ez) != MODE_STD)
+		{
+			LOGGER_WARN("Cant Play (wrong mode) => {}", p.GetFolderPath() + path);
+			continue;
+		}
+
+		if (ezpp_stars(ez) < minStar)
+		{
+			LOGGER_WARN("Cant Play (low star rating) => {}", p.GetFolderPath() + path);
+			continue;
+		}
+
+
+		double bpm;
+		QWORD lengthInSeconds;
+		QWORD a, b;
+		int Offset;
+		std::vector<std::vector<long>> offsets;
+
+		auto beatmap = p.BeatmapFromFile(path);
+
+		// Check if beatmap is supported
+		if (!beatmap->IsPlayable())
+		{
+			LOGGER_WARN("Cant Play (Wrong FileVersion) => {}", beatmap->GetMetadataText());
+			continue;
+		}
+
+		if (!beatmap->Search(criteria))
+		{
+			LOGGER_WARN("Search Criteria werent met => {}", criteria);
+			continue;
+		}
+
+
+		beatmap->Load();
+		foundSongToPlay = true;
+
+		// Debug logs
+		LOGGER_TRACE("MP3 for {} => {}", path, beatmap->GetMp3());
+		LOGGER_TRACE("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
+
+		// 5. Get Song Length to Display change later
+		bpm = beatmap->GetBPM();
+		lengthInSeconds = beatmap->GetSongLength();
+
+		// 6. Display Data
+		a = (int)floor(lengthInSeconds / 60.0);
+		b = (int)floor(fmod(lengthInSeconds, 60));
+		LOGGER_INFO("Original Length: {:02d}:{:02d}", a, b);
+
+		LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
+		LOGGER_DEBUG("{:.2f} stars", ezpp_stars(ez));
+
+		beatmap->SetGlobalVolume(masterVolume);
+		beatmap->SetSongVolume(songVolume);
+		beatmap->SetSampleVolume(sampleVolume);
+		beatmap->SetSpeedup(speedup);
+		beatmap->Play();
+
+		bool prevPause = false;
+
+
+		while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
+			// Check for the current Position in the channel
+			if (Offset = beatmap->GetCurrentOffset())
 			{
-				hitsoundFolder += "/";
+				beatmap->PlaySamples(Offset);
 			}
+			std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
+		}
 
-			auto criteria = Settings->GetValue("Search", "SearchText", "bpm>=140");
-			auto masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 14);
-			auto songVolume = Settings->GetLongValue("Audio", "SongVolume", 8);
-			auto sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 10);
-
-			auto path = list.at(index);
-			auto fullPath = p.GetFolderPath() + path;
-
-			if (!std::filesystem::exists(fullPath))
-			{
-				LOGGER_ERROR("File doesnt exist => {}", p.GetFolderPath() + path);
-				LOGGER_ERROR("Consider resetting/deleting your Beatmaps.prs file");
-				continue;
-			}
-
-			FILE* bm;
-
-			// Oppai stuff
-			try
-			{
-				bm = fopen(fullPath.c_str(), "r");
-				p_map(&pstate, &map, bm);
-				fclose(bm);
-			}
-			catch (const std::exception& e)
-			{
-				LOGGER_ERROR("ERROR OCCURED: {}", e.what());
-				LOGGER_ERROR("+++ ERROR DATA START +++");
-				LOGGER_ERROR("FILE TO OPEN => {}", fullPath);
-				LOGGER_ERROR("ACCESS MODE => {}", "\"r\"");
-				LOGGER_ERROR("OPPAI STATES => {}", pstate);
-				LOGGER_ERROR("+++ ERROR DATA END +++");
-				continue;
-			}
-
-
-			if (map.original_mode != MODE_STD)
-			{
-				LOGGER_WARN("Cant Play (wrong mode) => {}", p.GetFolderPath() + path);
-				continue;
-			}
-
-			d_calc(&stars, &map, 0);
-
-			if (stars.total < minStar)
-			{
-				LOGGER_WARN("Cant Play (low star rating) => {}", p.GetFolderPath() + path);
-				continue;
-			}
-
-
-			double bpm;
-			QWORD lengthInSeconds;
-			QWORD a, b;
-			int Offset;
-			std::vector<std::vector<long>> offsets;
-
-			auto beatmap = p.BeatmapFromFile(path);
-
-			// Check if beatmap is supported
-			if (!beatmap->IsPlayable())
-			{
-				LOGGER_WARN("Cant Play (Wrong FileVersion) => {}", beatmap->GetMetadataText());
-				continue;
-			}
-
-			if (!beatmap->Search(criteria))
-			{
-				LOGGER_WARN("Search Criteria werent met => {}", criteria);
-				continue;
-			}
-
-
-			beatmap->Load();
-			foundSongToPlay = true;
-
-			// Debug logs
-			LOGGER_TRACE("MP3 for {} => {}", path, beatmap->GetMp3());
-			LOGGER_TRACE("Full Path for MP3 => {}", beatmap->GetFullMp3Path());
-
-			// 5. Get Song Length to Display change later
-			bpm = beatmap->GetBPM();
-			lengthInSeconds = beatmap->GetSongLength();
-
-			// 6. Display Data
-			a = (int)floor(lengthInSeconds / 60.0);
-			b = (int)floor(fmod(lengthInSeconds, 60));
-			LOGGER_INFO("Original Length: {:02d}:{:02d}", a, b);
-
-			LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
-			LOGGER_DEBUG("{:.2f} stars", stars.total);
-
-			beatmap->SetGlobalVolume(masterVolume);
-			beatmap->SetSongVolume(songVolume);
-			beatmap->SetSampleVolume(sampleVolume);
-			beatmap->SetSpeedup(speedup);
-			beatmap->Play();
-
-			bool prevPause = false;
-
-
-			while (beatmap->IsPlaying()) { // Bass plays async, While the Channel is playing, sleep to not consume CPU. 
-				// Check for the current Position in the channel
-				if (Offset = beatmap->GetCurrentOffset())
-				{
-					beatmap->PlaySamples(Offset);
-				}
-				std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
-			}
-
-		} while (!foundSongToPlay);
+	} while (!foundSongToPlay);
 }
 
 
@@ -161,9 +142,8 @@ int main(int argc, const char * argv[])
 	// Init the Logger for the whole Program
 	Parser::Logger::Init();
 
-	// Oppai Inits
-	p_init(&pstate);
-	d_init(&stars);
+	ez = ezpp_new();
+	ezpp_set_autocalc(ez, 1);
 
 	LOGGER_INFO("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
 	
@@ -259,5 +239,6 @@ int main(int argc, const char * argv[])
 
 	// On Exit, flush all debug output to logfile
 	LOGGER_FLUSH();
+	ezpp_free(ez);
 	return 0;
 }

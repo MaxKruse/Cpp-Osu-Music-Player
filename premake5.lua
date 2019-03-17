@@ -21,8 +21,6 @@ project "Parser"
 	characterset "Unicode"
 	vectorextensions "AVX"
 
-	toolset "msc"
-
 	staticruntime "Off"
 
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
@@ -87,14 +85,14 @@ project "Parser"
 
 include "Player/vendor/SimpleIni"
 
+include "Player/vendor/oppai-ng"
+
 project "Player"
 	location "Player"
 	kind "ConsoleApp"
 	language "C++"
 	characterset "Unicode"
 	vectorextensions "AVX"
-
-	toolset "msc"
 
 	staticruntime "Off"
 
@@ -105,8 +103,8 @@ project "Player"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.hpp",
-		"%{prj.name}/src/**.cpp"
-
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/oppai-ng/oppai.c"
 	}
 
 	includedirs
@@ -122,8 +120,7 @@ project "Player"
 
 	libdirs
 	{
-		"%{prj.name}/vendor/Un4Seen_bass",
-		"%{prj.name}/vendor/nana/build/bin"
+		"%{prj.name}/vendor/Un4Seen_bass"
 	}
 
 	links
@@ -132,6 +129,7 @@ project "Player"
 		"bass.lib",
 		"bass_fx.lib",
 		"SimpleIni",
+		"oppai-ng"
 	}
 
 	filter "system:windows"

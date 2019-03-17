@@ -12,12 +12,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Player.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\Player.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="Benchmark.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Player.h" />
+    <ClCompile Include="vendor\oppai-ng\oppai.c">
+      <Filter>vendor\oppai-ng</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
