@@ -16,12 +16,12 @@ IncludeDir = {}
 
 project "Parser"
 	location "Parser"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 	characterset "Unicode"
 	vectorextensions "AVX"
 
-	staticruntime "Off"
+	staticruntime "On"
 
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
@@ -57,12 +57,7 @@ project "Parser"
 
 	defines
 	{
-		"BUILD_DLL"
-	}
-
-	postbuildcommands
-	{
-		("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputDir .. "/Player/\"")
+		"LINK_STATIC"
 	}
 
 	filter "system:windows"
@@ -94,7 +89,7 @@ project "Player"
 	characterset "Unicode"
 	vectorextensions "AVX"
 
-	staticruntime "Off"
+	staticruntime "On"
 
 	targetdir ("bin/" .. outputDir .. "/%{prj.name}")
 	objdir ("bin/Intemediates/" .. outputDir .. "/%{prj.name}")
@@ -121,6 +116,11 @@ project "Player"
 	libdirs
 	{
 		"%{prj.name}/vendor/Un4Seen_bass"
+	}
+
+	defines
+	{
+		"LINK_STATIC"
 	}
 
 	links

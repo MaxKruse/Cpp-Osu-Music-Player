@@ -15,9 +15,42 @@ extern "C" {
 #define SI_CONVERT_WIN32
 #include "SimpleIni.h"
 
-ezpp_t ez;
+// Random Functions using Low/High or a vector of sorts, to return a random index between given low and high
+static size_t Random(size_t low = 0, size_t high = 0xFFFFFFF)
+{
+	size_t z = rand() % (high - low);
+	z += low;
+	return z;
+}
 
-static void PlayBeatmap(std::vector<std::string> list, CSimpleIniA* Settings, Parser::Parser p)
+template<typename T>
+static size_t Random(std::vector<T> input)
+{
+	if (input.size() == 1)
+	{
+		return 0;
+	}
+	size_t low = 0;
+	size_t high = input.size();
+	size_t z = rand() % (high - low);
+	z += low - 1;
+	return z;
+}
+
+// See: https://stackoverflow.com/a/3418285
+static void replaceAll(std::string & str, const std::string & from, const std::string & to) {
+	if (from.empty())
+	{
+		return;
+	}
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+	}
+}
+
+static void PlayBeatmap(std::vector<std::string>& list, CSimpleIniA& Settings, Parser::Parser& p)
 {
 	bool foundSongToPlay = false;
 	srand(time(NULL));
@@ -27,37 +60,43 @@ static void PlayBeatmap(std::vector<std::string> list, CSimpleIniA* Settings, Pa
 		foundSongToPlay = false;
 
 		// Get Beatmap
-		auto index = Parser::Random(list);
+		auto index = Random(list);
 		LOGGER_DEBUG("INDEX TO PLAY: {}", index);
 		//auto index = 3898; //FELY SEX
 		//auto index = 15411; //RAISE MY SWORD
 		//auto index = 9827; // DAN DAN KIKOERU
 
 		// Re-Read values for every beatmap to allow for changes between songs
-		auto minStar = Settings->GetDoubleValue("General", "MinStars", 5.0);
-		auto cpuSleep = Settings->GetLongValue("General", "CPU_Sleep", 200);
-		auto speedup = Settings->GetLongValue("General", "SpeedUp", 0);
-		auto hitsoundFolder = std::string(Settings->GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/"));
+		auto minStar = Settings.GetDoubleValue("General", "MinStars", 5.0);
+		auto cpuSleep = Settings.GetLongValue("General", "CPU_Sleep", 200);
+		auto speedup = Settings.GetLongValue("General", "SpeedUp", 0);
+		auto hitsoundFolder = std::string(Settings.GetValue("Audio", "HitsoundsLocation", "C:/Program Files(x86)/osu!/DefaultHitsounds/"));
 
 		if (hitsoundFolder.at(hitsoundFolder.length() - 1) != '/' && hitsoundFolder.at(hitsoundFolder.length() - 1) != '\\')
 		{
 			hitsoundFolder += "/";
 		}
 
-		auto criteria = Settings->GetValue("Search", "SearchText", "bpm>=140");
-		auto masterVolume = Settings->GetLongValue("Audio", "MasterVolume", 14);
-		auto songVolume = Settings->GetLongValue("Audio", "SongVolume", 8);
-		auto sampleVolume = Settings->GetLongValue("Audio", "HitsoundVolume", 10);
+		auto criteria = Settings.GetValue("Search", "SearchText", "bpm>=140");
+		auto masterVolume = Settings.GetLongValue("Audio", "MasterVolume", 14);
+		auto songVolume = Settings.GetLongValue("Audio", "SongVolume", 8);
+		auto sampleVolume = Settings.GetLongValue("Audio", "HitsoundVolume", 10);
 
 		auto path = list.at(index);
 		auto fullPath = p.GetFolderPath() + path;
-
-		ezpp(ez, (char*)fullPath.c_str());
-
 		if (!std::filesystem::exists(fullPath))
 		{
 			LOGGER_ERROR("File doesnt exist => {}", p.GetFolderPath() + path);
 			LOGGER_ERROR("Consider resetting/deleting your Beatmaps.prs file");
+			continue;
+		}
+
+		ezpp_t ez;
+		ez = ezpp_new();
+
+		if (ezpp(ez, fullPath.data()))
+		{
+			LOGGER_ERROR("oppai-ng error: cant load file");
 			continue;
 		}
 
@@ -67,9 +106,12 @@ static void PlayBeatmap(std::vector<std::string> list, CSimpleIniA* Settings, Pa
 			continue;
 		}
 
-		if (ezpp_stars(ez) < minStar)
+		double stars = ezpp_stars(ez);
+
+		if (stars <= minStar)
 		{
 			LOGGER_WARN("Cant Play (low star rating) => {}", p.GetFolderPath() + path);
+			LOGGER_WARN("Needed: {} | Got: {}", minStar, stars);
 			continue;
 		}
 
@@ -91,7 +133,7 @@ static void PlayBeatmap(std::vector<std::string> list, CSimpleIniA* Settings, Pa
 
 		if (!beatmap->Search(criteria))
 		{
-			LOGGER_WARN("Search Criteria werent met => {}", criteria);
+			LOGGER_WARN("Search Criteria weren't met => {}", criteria);
 			continue;
 		}
 
@@ -113,7 +155,7 @@ static void PlayBeatmap(std::vector<std::string> list, CSimpleIniA* Settings, Pa
 		LOGGER_INFO("Original Length: {:02d}:{:02d}", a, b);
 
 		LOGGER_ERROR("Playing => {}", beatmap->GetMetadataText());
-		LOGGER_DEBUG("{:.2f} stars", ezpp_stars(ez));
+		LOGGER_DEBUG("{:.2f} stars", stars);
 
 		beatmap->SetGlobalVolume(masterVolume);
 		beatmap->SetSongVolume(songVolume);
@@ -133,6 +175,8 @@ static void PlayBeatmap(std::vector<std::string> list, CSimpleIniA* Settings, Pa
 			std::this_thread::sleep_for(std::chrono::microseconds(cpuSleep));
 		}
 
+		ezpp_free(ez);
+
 	} while (!foundSongToPlay);
 }
 
@@ -141,9 +185,6 @@ int main(int argc, const char * argv[])
 {
 	// Init the Logger for the whole Program
 	Parser::Logger::Init();
-
-	ez = ezpp_new();
-	ezpp_set_autocalc(ez, 1);
 
 	LOGGER_INFO("Osu! Music Player - Made by [BH]Lithium (osu) / MaxKruse (github)\n");
 	
@@ -232,13 +273,12 @@ int main(int argc, const char * argv[])
 
 	do // Main Loop
 	{
-		PlayBeatmap(list, Settings, p);
+		PlayBeatmap(list, *Settings, p);
 		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 
 	} while (true);
 
 	// On Exit, flush all debug output to logfile
 	LOGGER_FLUSH();
-	ezpp_free(ez);
 	return 0;
 }
