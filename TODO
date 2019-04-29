@@ -2,6 +2,7 @@
 ☐ Add Option Parser
     See: https://github.com/jarro2783/cxxopts
 ☐ Make GUI @low
+    ☐ wxWidget @created(19-04-17 22:24)
     I still dont know...
 
 ✔ Add sound lib @high @done(19-01-25 17:52)
