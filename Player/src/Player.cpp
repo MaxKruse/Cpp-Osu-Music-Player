@@ -15,6 +15,41 @@ extern "C" {
 #define SI_CONVERT_WIN32
 #include "SimpleIni.h"
 
+// Random Functions using Low/High or a vector of sorts, to return a random index between given low and high
+static size_t Random(size_t low = 0, size_t high = 0xFFFFFFF)
+{
+	size_t z = rand() % (high - low);
+	z += low;
+	return z;
+}
+
+template<typename T>
+static size_t Random(std::vector<T> input)
+{
+	if (input.size() == 1)
+	{
+		return 0;
+	}
+	size_t low = 0;
+	size_t high = input.size();
+	size_t z = rand() % (high - low);
+	z += low - 1;
+	return z;
+}
+
+// See: https://stackoverflow.com/a/3418285
+static void replaceAll(std::string & str, const std::string & from, const std::string & to) {
+	if (from.empty())
+	{
+		return;
+	}
+	size_t start_pos = 0;
+	while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+		str.replace(start_pos, from.length(), to);
+		start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+	}
+}
+
 static void PlayBeatmap(std::vector<std::string>& list, CSimpleIniA& Settings, Parser::Parser& p)
 {
 	bool foundSongToPlay = false;
@@ -25,7 +60,7 @@ static void PlayBeatmap(std::vector<std::string>& list, CSimpleIniA& Settings, P
 		foundSongToPlay = false;
 
 		// Get Beatmap
-		auto index = Parser::Random(list);
+		auto index = Random(list);
 		LOGGER_DEBUG("INDEX TO PLAY: {}", index);
 		//auto index = 3898; //FELY SEX
 		//auto index = 15411; //RAISE MY SWORD
